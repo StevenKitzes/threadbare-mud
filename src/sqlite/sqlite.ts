@@ -1,6 +1,6 @@
 import { Statement } from 'better-sqlite3';
 
-import db from '../../sqlite/sqlite-get-db.ts';
+const db = require('../../sqlite/sqlite-get-db.ts');
 
 import { Item, Scene } from '@/types.ts';
 

@@ -1,18 +1,23 @@
-import db from './sqlite-get-db.ts';
+const dbToHydrate = require('./sqlite-get-db.ts');
 
-import { v4 as uuid } from 'uuid';
+const uuid = require('uuid').v4;
 
-db.transaction(() => {
+dbToHydrate.transaction(() => {
   const sceneId: string = uuid();
   const itemId: string = uuid();
 
-  db
+  const userId: string = uuid();
+
+  dbToHydrate
     .prepare("INSERT INTO scenes (id, name) VALUES (?, ?);")
     .run(sceneId, 'A normal room.');
-  db
+  dbToHydrate
     .prepare("INSERT INTO items (id, name) VALUES (?, ?);")
     .run(itemId, 'A normal item.');
-  db
+  dbToHydrate
     .prepare("INSERT INTO scene_inventories (scene_id, item_id) VALUES (?, ?);")
     .run(sceneId, itemId);
+  dbToHydrate
+    .prepare("INSERT INTO users (id, username, password, email, session_token, session_expiry) VALUES (?, ?, ?, ?, ?, ?);")
+    .run(userId, 'admin', 'admin', 'winds23@gmail.com', 'token', '0');
 })();

@@ -1,6 +1,6 @@
-import Database from 'better-sqlite3';
+const Database = require('better-sqlite3');
 
-const db = new Database('threadbare.db', {});
-db.pragma('journal_mode = WAL');
+const SQLiteDB = new Database('threadbare.db', {});
+SQLiteDB.pragma('journal_mode = WAL');
 
-export default db;
+module.exports = SQLiteDB;
