@@ -1,4 +1,4 @@
-import { Database } from "./sqlite/sqlite";
+import { Database } from "../../sqlite/sqlite";
 
 type QueryContext = { database: Database };
 

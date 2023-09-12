@@ -15,6 +15,7 @@ statements.push(db.prepare(`DROP TABLE IF EXISTS users;`));
 statements.push(db.prepare(`CREATE TABLE IF NOT EXISTS users (
   id TEXT UNIQUE PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
+  salt TEXT NOT NULL,
   password TEXT NOT NULL,
   email TEXT UNIQUE,
   session_token TEXT,

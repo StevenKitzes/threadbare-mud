@@ -1,10 +1,10 @@
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 
-import typeDefs from '@/schema';
-import resolvers from '@/resolvers';
+import typeDefs from '@/graphql/schema';
+import resolvers from '@/graphql/resolvers';
 
-import database from '@/sqlite/sqlite';
+import database from '../../../sqlite/sqlite';
 
 const server = new ApolloServer({
   resolvers,

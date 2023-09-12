@@ -1,6 +1,6 @@
 import { Statement } from 'better-sqlite3';
 
-const db = require('../../sqlite/sqlite-get-db.ts');
+const db = require('./sqlite-get-db.ts');
 
 import { Item, Scene } from '@/types.ts';
 
@@ -19,6 +19,7 @@ export type TransactBundle = {
 
 export const readItem = (itemId: string): Item | null => {
   try {
+    console.log('trying read with itemId', itemId);
     const item: Item = db.prepare("SELECT * FROM items WHERE id = ?;").get(itemId) as Item;
     return item;
   } catch (err: any) {

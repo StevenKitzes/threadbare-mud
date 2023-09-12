@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { transact, writeScene, writeItem } from '@/sqlite/sqlite';
+import { transact, writeScene, writeItem } from '../../../sqlite/sqlite';
  
 type ResponseData = {
   message: string
