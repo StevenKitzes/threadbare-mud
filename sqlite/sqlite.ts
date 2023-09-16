@@ -10,6 +10,7 @@ export type Database = {
   transact: (bundles: TransactBundle[]) => void;
   writeItem: (id: string, name: string) => TransactBundle;
   writeScene: (id: string, name: string) => TransactBundle;
+  writeUser: (id: string, username: string, password: string, email: string) => TransactBundle;
 }
 
 export type TransactBundle = {
@@ -60,11 +61,19 @@ export const writeScene = (id: string, name: string): TransactBundle => {
   };
 };
 
+export const writeUser = (id: string, username: string, password: string, email: string): TransactBundle => {
+  return {
+    statement: db.prepare("INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?);"),
+    runValues: [id, username, password, email]
+  };
+};
+
 const database: Database = {
   readItem,
   readScene,
   transact,
   writeItem,
-  writeScene
+  writeScene,
+  writeUser
 };
 export default database;

@@ -1,5 +1,8 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 
+import { ApiResponse, RegistrationPayload } from '@/types';
+import postData from '@/utils/postData';
+
 const spanClassName = 'ml-2';
 const noteClassName = 'm-2 text-slate-500 text-2 text-justify leading-5';
 const inputClassName = 'text-white bg-slate-700 m-2 p-2 rounded-lg border-2 border-slate-300';
@@ -48,7 +51,16 @@ const Login = (): JSX.Element => {
     }
     setErrorElements(errors);
     if (errors.length < 1) {
-      alert('good submit!');
+      // submit may proceed!
+      const submitPackage: RegistrationPayload = {
+        user: newUser,
+        pass: newPass,
+        email
+      };
+      postData('api/register', submitPackage)
+        .then((res: ApiResponse) => {
+          alert(`status ${res.status}: ${res.message}`);
+        });
     }
   }
 
