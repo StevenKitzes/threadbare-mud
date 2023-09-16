@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { ReactNode, useState } from 'react';
+
+import { ApiResponse, LoginPayload } from '@/types';
+import postData from '@/utils/postData';
 
 const spanClassName = 'ml-2';
 const inputClassName = 'text-white bg-slate-700 m-2 p-2 rounded-lg border-2 border-slate-300';
@@ -8,15 +11,58 @@ const buttonAltClassName = `${buttonBase} text-slate-500 bg-violet-200 border-vi
 const linkClassName = 'text-violet-300 m-2 my-0.5 hover:underline';
 
 const Login = (): JSX.Element => {
+  const [usernameValue, setUsernameValue] = useState<string>('');
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [errorElements, setErrorElements] = useState<ReactNode[]>([]);
+
+  function submit() {
+    const errors = [];
+    if (!usernameValue || !usernameValue.trim()) {
+      errors.push(<span className={spanClassName + ' text-red-500'} key="name">
+        User name required.
+      </span>);
+    }
+    if (!passwordValue) {
+      errors.push(<span className={spanClassName + ' text-red-500'} key="pass">
+        Password required.
+      </span>);
+    }
+    setErrorElements(errors);
+    if (errors.length < 1) {
+      // submit may proceed!
+      const loginPayload: LoginPayload = {
+        user: usernameValue,
+        pass: passwordValue
+      };
+      postData('api/login', loginPayload)
+        .then((res: ApiResponse) => {
+          alert(`status ${res.status}: ${res.message}`);
+        });
+
+    }
+  }
+
   return (
     <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
       <span className={spanClassName}>User Name:</span>
-      <input className={inputClassName} id='username-input' />
+      <input
+        className={inputClassName}
+        id='username-input'
+        onChange={(evt) => setUsernameValue(evt.target.value)}
+        value={usernameValue}
+      />
       <span className={spanClassName}>Password:</span>
-      <input className={inputClassName} id='password-input' />
+      <input
+        className={inputClassName}
+        id='password-input'
+        onChange={(evt) => setPasswordValue(evt.target.value)}
+        type="password"
+        value={passwordValue}
+      />
       <button
         className={buttonMainClassName}
         id='login-button'
+        onClick={() => submit()}
       >
         Submit
       </button>
@@ -29,6 +75,7 @@ const Login = (): JSX.Element => {
       </button>
       <a className={linkClassName} href="http://localhost:3000">Forgot user name?</a>
       <a className={linkClassName} href="http://localhost:3000">Forgot password?</a>
+      {errorElements}
     </div>
   );
 };

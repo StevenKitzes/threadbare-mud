@@ -9,6 +9,7 @@ statements.push(db.prepare(`DROP TABLE IF EXISTS scene_inventories;`));
 statements.push(db.prepare(`DROP TABLE IF EXISTS scenes;`));
 statements.push(db.prepare(`DROP TABLE IF EXISTS items;`));
 statements.push(db.prepare(`DROP INDEX IF EXISTS user_session_index;`));
+statements.push(db.prepare(`DROP INDEX IF EXISTS user_username_index;`));
 statements.push(db.prepare(`DROP TABLE IF EXISTS users;`));
 
 // Create users table
@@ -52,6 +53,10 @@ db.transaction(() => {
 // Create user session index
 statements.push(db.prepare(`CREATE INDEX IF NOT EXISTS user_session_index
   ON users (session_token);`));
+
+// Create user name index
+statements.push(db.prepare(`CREATE INDEX IF NOT EXISTS user_username_index
+  ON users (username);`));
 
 // Create scene inventories index
 statements.push(db.prepare(`CREATE INDEX IF NOT EXISTS scene_inventories_index

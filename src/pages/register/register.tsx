@@ -52,12 +52,12 @@ const Login = (): JSX.Element => {
     setErrorElements(errors);
     if (errors.length < 1) {
       // submit may proceed!
-      const submitPackage: RegistrationPayload = {
+      const registrationPayload: RegistrationPayload = {
         user: newUser,
         pass: newPass,
         email
       };
-      postData('api/register', submitPackage)
+      postData('api/register', registrationPayload)
         .then((res: ApiResponse) => {
           alert(`status ${res.status}: ${res.message}`);
         });
