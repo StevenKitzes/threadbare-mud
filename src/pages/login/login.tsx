@@ -1,6 +1,18 @@
 'use client';
 
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useState } from 'react';
+
+type UserContextType = {
+  name: string;
+  setName: (name: string) => void;
+}
+
+const initialState: UserContextType = {
+  name: '',
+  setName: (name: string) => { console.log("needs implementation") }
+}
+
+const UserContext = createContext<UserContextType>(initialState);
 
 import { ApiResponse, LoginPayload } from '@/types';
 import postData from '@/utils/postData';
@@ -16,6 +28,9 @@ const Login = (): JSX.Element => {
   const [usernameValue, setUsernameValue] = useState<string>('');
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [errorElements, setErrorElements] = useState<ReactNode[]>([]);
+
+  const [username, setUsername] = useState<string>('');
+  const { name, setName } = useContext(UserContext);
 
   function submit() {
     const errors = [];
@@ -39,46 +54,49 @@ const Login = (): JSX.Element => {
       postData('api/login', loginPayload)
         .then((res: ApiResponse) => {
           alert(`status ${res.status}: ${res.message}`);
+          setName(usernameValue);
         });
-
     }
   }
 
   return (
-    <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
-      <span className={spanClassName}>User Name:</span>
-      <input
-        className={inputClassName}
-        id='username-input'
-        onChange={(evt) => setUsernameValue(evt.target.value)}
-        value={usernameValue}
-      />
-      <span className={spanClassName}>Password:</span>
-      <input
-        className={inputClassName}
-        id='password-input'
-        onChange={(evt) => setPasswordValue(evt.target.value)}
-        type="password"
-        value={passwordValue}
-      />
-      <button
-        className={buttonMainClassName}
-        id='login-button'
-        onClick={() => submit()}
-      >
-        Submit
-      </button>
-      <button
-        className={buttonAltClassName}
-        id='register-button'
-        onClick={() => {window.location.href='/register'}}
-      >
-        Register
-      </button>
-      <a className={linkClassName} href="http://localhost:3000">Forgot user name?</a>
-      <a className={linkClassName} href="http://localhost:3000">Forgot password?</a>
-      {errorElements}
-    </div>
+    <UserContext.Provider value={{name: username, setName: setUsername}}>
+      <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
+        <div>context name {name}</div>
+        <span className={spanClassName}>User Name:</span>
+        <input
+          className={inputClassName}
+          id='username-input'
+          onChange={(evt) => setUsernameValue(evt.target.value)}
+          value={usernameValue}
+        />
+        <span className={spanClassName}>Password:</span>
+        <input
+          className={inputClassName}
+          id='password-input'
+          onChange={(evt) => setPasswordValue(evt.target.value)}
+          type="password"
+          value={passwordValue}
+        />
+        <button
+          className={buttonMainClassName}
+          id='login-button'
+          onClick={() => submit()}
+        >
+          Submit
+        </button>
+        <button
+          className={buttonAltClassName}
+          id='register-button'
+          onClick={() => {window.location.href='/register'}}
+        >
+          Register
+        </button>
+        <a className={linkClassName} href="http://localhost:3000">Forgot user name?</a>
+        <a className={linkClassName} href="http://localhost:3000">Forgot password?</a>
+        {errorElements}
+      </div>
+    </UserContext.Provider>
   );
 };
 
