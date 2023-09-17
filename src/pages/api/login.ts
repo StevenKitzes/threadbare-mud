@@ -5,14 +5,14 @@ import bcrypt from 'bcrypt';
 import { ApiResponse, LoginPayload, User } from '@/types';
 import { readUserByName } from '../../../sqlite/sqlite';
  
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) {
   const payload: LoginPayload = req.body;
 
   try {
-    const user: User | null = readUserByName(payload.user);
+    const user: User | null = await readUserByName(payload.user);
     if (user === null) {
       console.log("User login attempt with unknown user name");
       return res.status(404).send({
@@ -20,26 +20,26 @@ export default function handler(
         status: 404
       });
     }
-    bcrypt.compare(payload.pass, user.password, function(err, result) {
-      if (err) {
-        console.error(`Error: problem comparing user pass against stored hash in login function: ${err}`);
+    return bcrypt.compare(payload.pass, user.password)
+      .then((result) => {
+        if (result) {
+          return res.status(200).send({
+            message: `User login successful.`,
+            status: 200
+          });
+        }
+        console.log("User login attempt with mismatched credentials");
+        return res.status(404).send({
+          message: `Unknown login credential.`,
+          status: 404
+        });
+      })
+      .catch((err) => {
         return res.status(500).send({
-          message: `Error encountered in login function.`,
+          message: `DB transaction error: ${err.toString()}`,
           status: 500
         });
-      }
-      if (result) {
-        return res.status(200).send({
-          message: `User login successful.`,
-          status: 200
-        });
-      }
-      console.log("User login attempt with mismatched credentials");
-      return res.status(404).send({
-        message: `Unknown login credential.`,
-        status: 404
       });
-    });
   } catch (err: any) {
     const errString = err.toString();
     console.error("Error: Caught in login API", errString);
