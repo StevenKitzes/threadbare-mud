@@ -13,8 +13,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* This div does not render in the browser AT ALL */}
-        <div>This is real content</div>
         {children}
       </body>
     </html>
