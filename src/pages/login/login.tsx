@@ -40,7 +40,6 @@ const Login = (): JSX.Element => {
         .then((res: ApiResponse) => {
           alert(`status ${res.status}: ${res.message}`);
         });
-
     }
   }
 
@@ -51,6 +50,7 @@ const Login = (): JSX.Element => {
         className={inputClassName}
         id='username-input'
         onChange={(evt) => setUsernameValue(evt.target.value)}
+        onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         value={usernameValue}
       />
       <span className={spanClassName}>Password:</span>
@@ -58,6 +58,7 @@ const Login = (): JSX.Element => {
         className={inputClassName}
         id='password-input'
         onChange={(evt) => setPasswordValue(evt.target.value)}
+        onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         type="password"
         value={passwordValue}
       />

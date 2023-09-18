@@ -27,7 +27,7 @@ const Login = (): JSX.Element => {
     usernameRef?.current?.focus();
   }, []);
 
-  const onSubmit = (): void => {
+  const submit = (): void => {
     const errors = [];
     if (!usernameRegex.test(newUser) || newUser.length < 5) {
       errors.push(<span className={spanClassName + ' text-red-500'} key="name">
@@ -76,6 +76,7 @@ const Login = (): JSX.Element => {
           if (!usernameRegex.test(newVal)) return;
           setNewUser(newVal)
         }}
+        onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         ref={usernameRef}
         value={newUser}
       />
@@ -88,6 +89,7 @@ const Login = (): JSX.Element => {
           const newVal = evt.target.value;
           setNewPass(newVal);
         }}
+        onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         type="password"
         value={newPass}
       />
@@ -100,6 +102,7 @@ const Login = (): JSX.Element => {
           const newVal = evt.target.value;
           setNewPassAgain(newVal);
         }}
+        onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         type="password"
         value={newPassAgain}
       />
@@ -112,6 +115,7 @@ const Login = (): JSX.Element => {
           const newVal = evt.target.value;
           setEmail(newVal);
         }}
+        onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         value={email}
       />
       
@@ -119,7 +123,7 @@ const Login = (): JSX.Element => {
       <button
         className={buttonMainClassName}
         id='login-button'
-        onClick={onSubmit}
+        onClick={submit}
       >
         Submit
       </button>

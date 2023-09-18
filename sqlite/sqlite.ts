@@ -5,10 +5,10 @@ const db = require('./sqlite-get-db.ts');
 import { Item, Scene, User } from '@/types.ts';
 
 export type Database = {
-  readItem: (itemId: string) => Item | null;
-  readScene: (sceneId: string) => Scene | null;
-  readUser: (id: string) => User | null;
-  readUserByName: (username: string) => User | null;
+  readItem: (itemId: string) => Item | undefined;
+  readScene: (sceneId: string) => Scene | undefined;
+  readUser: (id: string) => User | undefined;
+  readUserByName: (username: string) => User | undefined;
   transact: (bundles: TransactBundle[]) => void;
   writeItem: (id: string, name: string) => TransactBundle;
   writeScene: (id: string, name: string) => TransactBundle;
@@ -20,44 +20,44 @@ export type TransactBundle = {
   runValues: any[]
 }
 
-export const readItem = (itemId: string): Item | null => {
+export const readItem = (itemId: string): Item | undefined => {
   try {
     console.log('trying read with itemId', itemId);
     const item: Item = db.prepare("SELECT * FROM items WHERE id = ?;").get(itemId) as Item;
     return item;
   } catch (err: any) {
     console.error("Error retrieving item from database . . .", err.toString() || "could not parse error description");
-    return null;
+    return undefined;
   }
 }
 
-export const readScene = (sceneId: string): Scene | null => {
+export const readScene = (sceneId: string): Scene | undefined => {
   try {
     const scene: Scene = db.prepare("SELECT * FROM scenes WHERE id = ?;").get(sceneId) as Scene;
     return scene;
   } catch (err: any) {
     console.error("Error retrieving scene from database . . .", err.toString() || "could not parse error description");
-    return null;
+    return undefined;
   }
 }
 
-export const readUser = (id: string): User | null => {
+export const readUser = (id: string): User | undefined => {
   try {
     const user: User = db.prepare("SELECT * FROM users WHERE id = ?;").get(id) as User;
     return user;
   } catch (err: any) {
     console.error("Error retrieving user from database . . .", err.toString() || "could not parse error description");
-    return null;
+    return undefined;
   }
 }
 
-export const readUserByName = (username: string): User | null => {
+export const readUserByName = (username: string): User | undefined => {
   try {
     const user: User = db.prepare("SELECT * FROM users WHERE username = ?;").get(username) as User;
     return user;
   } catch (err: any) {
     console.error("Error retrieving user from database by name . . .", err.toString() || "could not parse error description");
-    return null;
+    return undefined;
   }
 }
 

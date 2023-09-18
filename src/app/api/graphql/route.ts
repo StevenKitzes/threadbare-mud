@@ -1,21 +1,24 @@
+import { NextRequest } from 'next/server';
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 
 import typeDefs from '@/graphql/schema';
 import resolvers from '@/graphql/resolvers';
 
-import database from '../../../sqlite/sqlite';
+import database from '../../../../sqlite/sqlite';
 
-const server = new ApolloServer({
+const server = new ApolloServer<object>({
+  typeDefs,
   resolvers,
-  typeDefs
-})
+});
 
-export default startServerAndCreateNextHandler(server, {
+const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async () => ({
     database
   })
 });
+
+export { handler as GET, handler as POST };
 
 // If CORS becomes needed, here's how you do it:
 
