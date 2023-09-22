@@ -69,6 +69,7 @@ const Login = (): JSX.Element => {
   return (
     // container level
     <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
+      <span className={noteClassName}>This site uses cookies to check login status.</span>
       <span className={spanClassName}>New User Name: *</span>
       <input
         className={inputClassName}

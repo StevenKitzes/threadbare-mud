@@ -23,6 +23,16 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "sqlite/sqlite-get-db.ts", "sqlite/sqlite-create-db.ts", "sqlite/sqlite-hydrate.mjs", "sqlite/sqlite-hydrate-db.mts"],
+  "include": [
+    "next-env.d.ts",
+    "environment.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "sqlite/sqlite-get-db.ts",
+    "sqlite/sqlite-create-db.ts",
+    "sqlite/sqlite-hydrate.mjs",
+    "sqlite/sqlite-hydrate-db.mts"
+  ],
   "exclude": ["node_modules"]
 }

@@ -27,8 +27,7 @@ statements.push(db.prepare(`CREATE TABLE IF NOT EXISTS users (
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   email TEXT UNIQUE,
-  session_token TEXT,
-  session_expiry INTEGER
+  session TEXT
 );`));
 
 // Create scenes table

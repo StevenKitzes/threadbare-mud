@@ -1,28 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { readUserByName, writeSessionToUser } from '../../../../sqlite/sqlite';
 import { ApiResponse, LoginPayload, User } from '@/types';
+import getJwt from '@/utils/jwt';
 import jStr from '@/utils/jStr';
-import { readUserByName } from '../../../../sqlite/sqlite';
 
 import bcrypt from 'bcrypt';
 
-const err404: ApiResponse = {
+const err401: ApiResponse = {
   message: "Unrecognized user credential detected.",
-  status: 404
+  status: 401
 };
 const err500: ApiResponse = {
   message: "Server error detected.",
   status: 500
-}
+};
 
 export async function POST(req: NextRequest) {
   const requestPayload: LoginPayload = await req.clone().json();
-
+  
   try {
     const user: User | undefined = await readUserByName(requestPayload.user);
 
     if (!user) {
-      return new NextResponse(jStr(err404), { status: err404.status });
+      return new NextResponse(jStr(err401), { status: err401.status });
     }
 
     return bcrypt.compare(requestPayload.pass, user.password)
@@ -34,12 +35,17 @@ export async function POST(req: NextRequest) {
             message: "Login successful.",
             status
           };
-          return new NextResponse(jStr(success), { status });
+          const token = getJwt();
+          writeSessionToUser(user.id, token);
+          return new NextResponse(jStr(success), {
+            headers: { 'Set-Cookie': `token=${token}; path=/`},
+            status
+          });
         }
 
         // otherwise, we have bad password match
         console.log("User login attempt with mismatched credentials.");
-        return new NextResponse(jStr(err404), { status: err404.status });
+        return new NextResponse(jStr(err401), { status: err401.status });
       })
       .catch((err) => {
         console.error("bcrypt error in login api route.", err.toString());

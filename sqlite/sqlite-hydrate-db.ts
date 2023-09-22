@@ -1,7 +1,5 @@
 const dbToHydrate = require('./sqlite-get-db.ts');
 
-const uuid = require('uuid').v4;
-
 function hydrate(sql: string, runArgs: string[]) {
   try {
     dbToHydrate.prepare(sql).run(...runArgs);
@@ -27,10 +25,10 @@ dbToHydrate.transaction(() => {
   ]);
 
   // Scenes table stuff
-  const scene1id = uuid();
+  const scene1id = "scene1TestId";
   const scene1name = "A boring room";
 
-  const scene2id = uuid();
+  const scene2id = "scene2TestId";
   const scene2name = "An interesting room";
 
   hydrate("INSERT INTO scenes (id, name) VALUES (?, ?);", [
@@ -41,7 +39,7 @@ dbToHydrate.transaction(() => {
   ]);
 
   // Characters table stuff
-  const characterId = uuid();
+  const characterId = "characterTestId";
   const characterName = "Mister Admin";
 
   hydrate("INSERT INTO characters (id, user_id, name, scene_id, active) VALUES (?, ?, ?, ?, ?);", [
@@ -49,11 +47,11 @@ dbToHydrate.transaction(() => {
   ]);
 
   // Items table stuff
-  const item1id = uuid();
+  const item1id = "item1TestId";
   const item1name = "A sword";
   const item1description = "It is probably a sword, but how can you be so sure?";
 
-  const item2id = uuid();
+  const item2id = "item2TestId";
   const item2name = "A shovel";
   const item2description = "It looks a lot like a shovel, but how can you be certain it's not a sword?";
 

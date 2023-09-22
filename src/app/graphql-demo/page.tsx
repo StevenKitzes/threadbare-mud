@@ -25,8 +25,8 @@ export default () => {
   const { loading, error, data } = useQuery(GET_ITEM, {
     client,
     variables: {
-      itemId: 'testItemId',
-      sceneId: 'testSceneId'
+      itemId: '8157dc95-b4ef-4f81-bdea-c4099685e123',
+      sceneId: '3a1b2410-c93b-4e5c-9c34-918ffaa81c4d'
     }
   });
 

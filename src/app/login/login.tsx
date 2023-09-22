@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 import { ApiResponse, LoginPayload } from '@/types';
 import postData from '@/utils/postData';
@@ -16,6 +16,15 @@ const Login = (): JSX.Element => {
   const [usernameValue, setUsernameValue] = useState<string>('');
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [errorElements, setErrorElements] = useState<ReactNode[]>([]);
+
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetch('api/check-session', { method: "POST" })
+      .then((res) => {
+        if (res.status === 200) setLoggedIn(true);
+      })
+  }, []);
 
   function submit() {
     const errors = [];
@@ -37,12 +46,31 @@ const Login = (): JSX.Element => {
         pass: passwordValue
       };
       postData('api/login', loginPayload)
-        .then((res: ApiResponse) => {
-          alert(`status ${res.status}: ${res.message}`);
+        .then(() => {
+          setLoggedIn(true);
+          setUsernameValue('');
+          setPasswordValue('');
         });
     }
   }
 
+  function logout() {
+    document.cookie = 'token=; expires=Fri, 3 Aug 2001 20:47:11 UTC; path=/';
+    setLoggedIn(false);
+  }
+
+  if (loggedIn) return (
+    <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
+      <span className={spanClassName}>You are already logged in.</span>
+      <button
+        className={buttonMainClassName}
+        id='logout-button'
+        onClick={() => logout()}
+      >
+        Log Out
+      </button>
+    </div>
+  );
   return (
     <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
       <span className={spanClassName}>User Name:</span>

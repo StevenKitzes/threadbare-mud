@@ -1,5 +1,13 @@
 // Data types
 
+export type Character = {
+  id: string,
+  user_id: string,
+  name: string,
+  scene_id: string,
+  active: number,
+};
+
 export type Item = {
   id: string;
   name: string;
@@ -10,13 +18,17 @@ export type Scene = {
   name: string;
 }
 
+export type SceneInventory = {
+  scene: Scene;
+  inventory: Item[];
+}
+
 export type User = {
   id: string,
   username: string,
   password: string,
   email?: string,
-  session_token?: string,
-  session_expiry?: number
+  characters?: Character[]
 }
 
 // App type definitions
