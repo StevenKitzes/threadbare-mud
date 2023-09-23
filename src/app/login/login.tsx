@@ -55,7 +55,7 @@ const Login = (): JSX.Element => {
   }
 
   function logout() {
-    document.cookie = 'token=; expires=Fri, 3 Aug 2001 20:47:11 UTC; path=/';
+    document.cookie = 'token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/';
     setLoggedIn(false);
   }
 

@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import typeDefs from '@/graphql/schema';
 import resolvers from '@/graphql/resolvers';
 
-import database, { readUserByName, readUserBySession } from '../../../../sqlite/sqlite';
+import database, { readUserBySession } from '../../../../sqlite/sqlite';
 import { User } from '@/types';
 
 const server = new ApolloServer<object>({

@@ -23,7 +23,10 @@ export async function POST(req: NextRequest) {
     const user: User | undefined = await readUserByName(requestPayload.user);
 
     if (!user) {
-      return new NextResponse(jStr(err401), { status: err401.status });
+      return new NextResponse(jStr(err401), {
+        headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
+        status: err401.status
+      });
     }
 
     return bcrypt.compare(requestPayload.pass, user.password)
@@ -45,15 +48,24 @@ export async function POST(req: NextRequest) {
 
         // otherwise, we have bad password match
         console.log("User login attempt with mismatched credentials.");
-        return new NextResponse(jStr(err401), { status: err401.status });
+        return new NextResponse(jStr(err401), {
+          headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
+          status: err401.status
+        });
       })
       .catch((err) => {
         console.error("bcrypt error in login api route.", err.toString());
-        return new NextResponse(jStr(err500), { status: err500.status });
+        return new NextResponse(jStr(err500), {
+          headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
+          status: err500.status
+        });
       });
   } catch ( err: any ) {
     const errString: string = err.toString();
     console.error("Error in login API", errString);
-    return new NextResponse(jStr(err500), { status: err500.status });
+    return new NextResponse(jStr(err500), {
+      headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
+      status: err500.status
+    });
   }
 }
