@@ -24,6 +24,7 @@
     "autoprefixer": "10.4.15",
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^8.6.0",
+    "encoding": "^0.1.13",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "graphql-tag": "^2.12.6",

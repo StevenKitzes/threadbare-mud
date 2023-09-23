@@ -8,8 +8,6 @@ export const typeDefs = gql`
     item(itemId: String!): Item!
     "Query to get a scene"
     scene(sceneId: String!): Scene!
-    "Query to get the inventory for a scene along with the scene's information"
-    sceneInventory(sceneId: String!): SceneInventory!
     "Query to get a user"
     user(userId: String, username: String): User!
   }
@@ -17,13 +15,29 @@ export const typeDefs = gql`
   "A character owned by a user, possessing an inventory, and so on"
   type Character {
     "The id string representing a character"
-    id: String!,
+    id: String!
     "The name of the character being queried"
-    name: String!,
+    name: String!
     "The scene location the character is currently located"
-    scene_id: String!,
+    scene_id: String!
+    "Scene information for the character's location"
+    scene: Scene
     "Whether this character is the one the user is currently playing with, 0 is false and 1 is true"
-    active: Int!,
+    active: Int!
+    "Any items that might be owned by this character"
+    inventory: [Item]
+  }
+
+  "A way to travel out of a room"
+  type Exit {
+    "The scene id where the character currently is"
+    fromId: String!
+    "The scene id of a possible place the character can go"
+    toId: String!
+    "A desciption of the exit/path"
+    description: String!
+    "Possible keywords the user can enter to use this exit"
+    keywords: [String]!
   }
 
   "A item refers to an inventory item that can belong to a room or character"
@@ -31,6 +45,8 @@ export const typeDefs = gql`
     id: String!
     "The item's name"
     name: String!
+    "A more detailed description of the item"
+    description: String!
   }
 
   "A scene represents a room or other location a character can visit"
@@ -38,14 +54,10 @@ export const typeDefs = gql`
     id: String!
     "The name describing the location independent of its state"
     name: String!
-  }
-
-  "A scene and whatever items it currently possesses"
-  type SceneInventory {
-    "Information about the scene whose inventory we are retrieving"
-    scene: Scene!
-    "The inventory of items present at the scene"
-    inventory: [Item]
+    "Items located in a scene"
+    inventory: [Item]!
+    "Exits from this room"
+    exits: [Exit]!
   }
 
   "A user account"

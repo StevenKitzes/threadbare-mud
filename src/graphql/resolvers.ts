@@ -1,12 +1,12 @@
 import { User } from "@/types";
 import { Database } from "../../sqlite/sqlite";
+import jStr from "@/utils/jStr";
 
-type QueryContext = { database: Database };
+type QueryContext = { database: Database, user: User };
 
 type CharacterArgs = { characterId: string };
 type ItemArgs = { itemId: string };
 type SceneArgs = { sceneId: string };
-type SceneInventoryArgs = { sceneId: string };
 type UserArgs = {
   userId?: string;
   username?: string;
@@ -29,23 +29,53 @@ export const resolvers = {
       return context.database.readScene(args.sceneId);
     },
 
-    // returns a list of items that a scene has in it
-    sceneInventory: (_: any, args: SceneInventoryArgs, context: QueryContext ) => {
-      return context.database.readSceneInventory(args.sceneId);
-    },
-
     // returns all meaningful user data
     user: (_: any, args: UserArgs, context: QueryContext ) => {
-      const user: User | undefined =
-        args.userId ? context.database.readUser(args.userId) :
-          args.username ? context.database.readUserByName(args.username) :
-            undefined;
-      if (user === undefined) return undefined;
+      // catch case user forgot to provide any info to find a user
+      if (!args.userId && !args.username) {
+        throw new Error("No identifier provided for user authentication.");
+      }
+      
+      const isAdmin = context.user.username === "admin";
 
-      user.characters = context.database.readCharactersByUserId(user.id);
-      return user;
+      // ensure auth
+      if (args.userId && (isAdmin || args.userId === context.user.id)) {
+        return context.database.readUser(args.userId);
+      } else if (args.username && (isAdmin || args.username === context.user.username)) {
+        return context.database.readUserByName(args.username);
+      } else {
+        throw new Error("Unable to verify user authentication in data request.");
+      }
     }
   },
+  Character: {
+    // returns a single object describing this character's scene
+    scene: ({ scene_id }: { scene_id: string }, _: any, context: QueryContext) => {
+      return context.database.readScene(scene_id);
+    },
+
+    // returns the items this character is holding
+    inventory: ({ id }: { id: string }, _: any, context: QueryContext) => {
+      return context.database.readCharacterInventory(id);
+    }
+  },
+  Scene: {
+    // returns the items present in this scene
+    inventory: ({ id }: { id: string }, _: any, context: QueryContext) => {
+      return context.database.readSceneInventory(id);
+    },
+
+    // returns a list of ways out of the room
+    exits: ({ id }: { id: string }, _: any, context: QueryContext) => {
+      return context.database.readSceneExits(id);
+    }
+  },
+  User: {
+    // returns a list of characters belonging to the user
+    characters: ({ id }: { id: string }, _: any, context: QueryContext) => {
+      return context.database.readCharactersByUserId(id);
+    }
+  }
 };
 
 export default resolvers;

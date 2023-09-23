@@ -5,8 +5,15 @@ export type Character = {
   user_id: string,
   name: string,
   scene_id: string,
-  active: number,
+  active: number
 };
+
+export type Exit = {
+  fromId: string,
+  toId: string,
+  description: string,
+  keywords: string[]
+}
 
 export type Item = {
   id: string;
@@ -18,17 +25,11 @@ export type Scene = {
   name: string;
 }
 
-export type SceneInventory = {
-  scene: Scene;
-  inventory: Item[];
-}
-
 export type User = {
   id: string,
   username: string,
   password: string,
-  email?: string,
-  characters?: Character[]
+  email?: string
 }
 
 // App type definitions

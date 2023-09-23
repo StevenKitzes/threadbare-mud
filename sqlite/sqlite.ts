@@ -2,14 +2,17 @@ import { Statement } from 'better-sqlite3';
 
 const db = require('./sqlite-get-db.ts');
 
-import { Character, Item, Scene, SceneInventory, User } from '@/types.ts';
+import { Character, Exit, Item, Scene, User } from '@/types.ts';
+import jStr from '@/utils/jStr';
 
 export type Database = {
   readCharacter: (characterId: string) => Character | undefined;
+  readCharacterInventory: (characterId: string) => Item[] | undefined;
   readCharactersByUserId: (userId: string) => Character[] | undefined;
   readItem: (itemId: string) => Item | undefined;
   readScene: (sceneId: string) => Scene | undefined;
-  readSceneInventory: (sceneId: string) => SceneInventory | undefined;
+  readSceneExits: (sceneId: string) => Exit[] | undefined;
+  readSceneInventory: (sceneId: string) => Item[] | undefined;
   readUser: (id: string) => User | undefined;
   readUserByName: (username: string) => User | undefined;
   readUserBySession: (token: string) => User | undefined;
@@ -25,12 +28,33 @@ export type TransactBundle = {
   runValues: any[]
 };
 
+type RawExit = {
+  from_id: string,
+  to_id: string,
+  description: string,
+  keyword_csv: string
+}
+
 export const readCharacter = (characterId: string): Character | undefined => {
   try {
     const character: Character = db.prepare("SELECT * FROM characters WHERE id = ?;").get(characterId) as Character;
     return character;
   } catch (err: any) {
     console.error("Error retrieving character from database . . .", err.toString() || "could not parse error description");
+    return undefined;
+  }
+};
+
+export const readCharacterInventory = (characterId: string): Item[] | undefined => {
+  try {
+    return db.prepare(`
+      SELECT * FROM items
+      JOIN character_inventories
+      ON items.id = character_inventories.item_id
+      WHERE character_inventories.character_id = ?;
+    `).all(characterId) as Item[];
+  } catch (err: any) {
+    console.error("Error retrieving character inventory list from database . . .", err.toString() || "count not parse error description");
     return undefined;
   }
 };
@@ -67,23 +91,34 @@ export const readScene = (sceneId: string): Scene | undefined => {
   }
 };
 
-export const readSceneInventory = (sceneId: string): SceneInventory | undefined => {
+export const readSceneExits = (sceneId: string): Exit[] | undefined => {
   try {
-    const sceneInventory: SceneInventory = {
-      inventory:
-        db.prepare(`
-          SELECT * FROM items
-          JOIN scene_inventories
-          ON items.id = scene_inventories.item_id
-          WHERE scene_inventories.scene_id = ?;
-        `).all(sceneId) as Item[],
-      scene:
-        db.prepare(`
-          SELECT * FROM scenes
-          WHERE id = ?;
-        `).get(sceneId) as Scene
-    };
-    return sceneInventory;
+    const rawExits: RawExit[] = db.prepare(`
+      SELECT * FROM scene_exits
+      JOIN scenes
+      ON scenes.id = scene_exits.from_id
+      WHERE scenes.id = ?;
+    `).all(sceneId) as RawExit[];
+    return rawExits.map((rawExit: RawExit) => ({
+      fromId: rawExit.from_id,
+      toId: rawExit.to_id,
+      description: rawExit.description,
+      keywords: rawExit.keyword_csv.split(',')
+    }));
+  } catch (err: any) {
+    console.error("Error retrieving potential scene exits from database . . .", err.toString() || "could not parse error description");
+    return undefined;
+  }
+}
+
+export const readSceneInventory = (sceneId: string): Item[] | undefined => {
+  try {
+    return db.prepare(`
+      SELECT * FROM items
+      JOIN scene_inventories
+      ON items.id = scene_inventories.item_id
+      WHERE scene_inventories.scene_id = ?;
+    `).all(sceneId) as Item[];
   } catch (err: any) {
     console.error("Error retrieving scene item list from database . . .", err.toString() || "count not parse error description");
     return undefined;
@@ -162,9 +197,11 @@ export const writeUser = (id: string, username: string, password: string, email:
 
 const database: Database = {
   readCharacter,
+  readCharacterInventory,
   readCharactersByUserId,
   readItem,
   readScene,
+  readSceneExits,
   readSceneInventory,
   readUser,
   readUserByName,
