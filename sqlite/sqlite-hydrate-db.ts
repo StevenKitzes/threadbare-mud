@@ -1,70 +1,75 @@
 const dbToHydrate = require('./sqlite-get-db.ts');
 
+// constants to use in hydration of test db environment\
+const MAIN_STORY = 'MAIN_STORY';
+
+const adminId = "d3ae16dc-453b-4717-b0ec-31e33ca0a2d8";
+const adminUsername = "admin";
+const adminPassword = "$2b$12$A7fcgDqKv3b0gvtjTGZoy.eIMJgXRNJ.wQp9FPdZCZKGQKv71tCLu";
+const adminEmail = "winds23@gmail.com";
+
+const userId = "userTestId";
+const username = "justauser";
+const userPassword = "$2b$12$A7fcgDqKv3b0gvtjTGZoy.eIMJgXRNJ.wQp9FPdZCZKGQKv71tCLu";
+const userEmail = "winds23@sharklasers.com";
+
+const scene1id = "scene1TestId";
+const scene1name = "A boring room";
+
+const scene2id = "scene2TestId";
+const scene2name = "An interesting room";
+
+const characterId = "characterTestId";
+const characterName = "Mister Admin";
+
+const userCharacterId = "userCharacterTestId";
+const userCharacterName = "Not Admin Character";
+
+const item1id = "item1TestId";
+const item1name = "A sword";
+const item1description = "It is probably a sword, but how can you be so sure?";
+
+const item2id = "item2TestId";
+const item2name = "A shovel";
+const item2description = "It looks a lot like a shovel, but how can you be certain it's not a sword?";
+
 function hydrate(sql: string, runArgs: string[]) {
   try {
     dbToHydrate.prepare(sql).run(...runArgs);
   } catch (err) {
     console.error(err, "that was an error");
-  }
-}
+  }          
+}      
 
+// Main stuff
 dbToHydrate.transaction(() => {
   // Stories table stuff
-  const MAIN_STORY = 'MAIN_STORY';
-
   hydrate("INSERT INTO stories (story) VALUES (?);", [MAIN_STORY]);
 
   // Users table stuff
-  const userId = "d3ae16dc-453b-4717-b0ec-31e33ca0a2d8";
-  const username = "admin";
-  const password = "$2b$12$A7fcgDqKv3b0gvtjTGZoy.eIMJgXRNJ.wQp9FPdZCZKGQKv71tCLu";
-  const email = "winds23@gmail.com";
-
   hydrate("INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?);", [
-    userId, username, password, email
-  ]);
+    adminId, adminUsername, adminPassword, adminEmail
+  ]);      
 
   // Scenes table stuff
-  const scene1id = "scene1TestId";
-  const scene1name = "A boring room";
-
-  const scene2id = "scene2TestId";
-  const scene2name = "An interesting room";
-
   hydrate("INSERT INTO scenes (id, name) VALUES (?, ?);", [
     scene1id, scene1name
-  ]);
+  ]);    
   hydrate("INSERT INTO scenes (id, name) VALUES (?, ?);", [
     scene2id, scene2name
-  ]);
+  ]);    
 
   // Characters table stuff
-  const characterId = "characterTestId";
-  const characterName = "Mister Admin";
-
   hydrate("INSERT INTO characters (id, user_id, name, scene_id, active) VALUES (?, ?, ?, ?, ?);", [
-    characterId, userId, characterName, scene1id, "1"
-  ]);
+    characterId, adminId, characterName, scene1id, "1"
+  ]);  
 
   // Items table stuff
-  const item1id = "item1TestId";
-  const item1name = "A sword";
-  const item1description = "It is probably a sword, but how can you be so sure?";
-
-  const item2id = "item2TestId";
-  const item2name = "A shovel";
-  const item2description = "It looks a lot like a shovel, but how can you be certain it's not a sword?";
-
   hydrate("INSERT INTO items (id, name, description) VALUES (?, ?, ?);", [
     item1id, item1name, item1description
   ]);
   hydrate("INSERT INTO items (id, name, description) VALUES (?, ?, ?);", [
     item2id, item2name, item2description
-  ]);
-
-  // Character story progress stuff
-  hydrate("INSERT INTO character_story_progress (character_id, story, progress) VALUES (?, ?, ?);", [
-    characterId, MAIN_STORY, "0"
   ]);
 
   // Scene inventory stuff
@@ -105,5 +110,37 @@ dbToHydrate.transaction(() => {
   // Character story progress stuff
   hydrate("INSERT INTO character_story_progress (character_id, story, progress) VALUES (?, ?, ?);", [
     characterId, MAIN_STORY, "0"
+  ]);
+})();
+
+// Non-admin user
+dbToHydrate.transaction(() => {
+  // Users table stuff
+  hydrate("INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?);", [
+    userId, username, userPassword, userEmail
+  ]);      
+
+  // Characters table stuff
+  hydrate("INSERT INTO characters (id, user_id, name, scene_id, active) VALUES (?, ?, ?, ?, ?);", [
+    userCharacterId, userId, userCharacterName, scene2id, "1"
+  ]);
+
+  // Character story progress stuff
+  hydrate("INSERT INTO character_story_progress (character_id, story, progress) VALUES (?, ?, ?);", [
+    userCharacterId, MAIN_STORY, "1"
+  ]);
+
+  // Character inventory stuff
+  hydrate("INSERT INTO character_inventories (character_id, item_id) VALUES (?, ?);", [
+    userCharacterId, item1id
+  ]);
+  hydrate("INSERT INTO character_inventories (character_id, item_id) VALUES (?, ?);", [
+    userCharacterId, item1id
+  ]);
+  hydrate("INSERT INTO character_inventories (character_id, item_id) VALUES (?, ?);", [
+    userCharacterId, item2id
+  ]);
+  hydrate("INSERT INTO character_inventories (character_id, item_id) VALUES (?, ?);", [
+    userCharacterId, item2id
   ]);
 })();
