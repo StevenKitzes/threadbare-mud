@@ -6,47 +6,38 @@ import jwt from 'jsonwebtoken';
 
 import typeDefs from '@/graphql/schema';
 import resolvers from '@/graphql/resolvers';
-
+import { ReUpResult, User } from '@/types';
+import { checkAndReUpToken } from '@/utils/checkAndReUpToken';
+import killCookieResponse from '@/utils/killCookieResponse';
 import database, { readUserBySession } from '../../../../sqlite/sqlite';
-import { User } from '@/types';
+import { err401 } from '@/utils/apiResponses';
 
 const server = new ApolloServer<object>({
   typeDefs,
   resolvers,
 });
 
-function throwErr(msg: string) {
-  console.error(msg);
-  return new Error(msg);
-}
-
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async () => {
-    const clientToken = cookies().get('token');
+    const tokenCookie = cookies().get('token');
+    if (!tokenCookie) throw new Error("Unable to authenticate GraphQL request.");
 
-    if (clientToken) {
-      try {
-        // verify it is not expired
-        jwt.verify(clientToken.value, process.env.JWT_SECRET);
-        // verify it belongs to an actual user
-        const user: User | undefined = readUserBySession(clientToken.value);
-        if (user === undefined) {
-          throw throwErr("Client tried to make GQL query with valid JWT but no matching user.");
-        }
-        // actual context definition
-        return {
-          user,
-          database
-        };
-      } catch (err: any) {
-        // if it is expired
-        if (err.toString().includes("TokenExpiredError")) {
-          throw throwErr("Token found but expired in GraphQL query request.");
-        }
-        throw throwErr("Problem with JWT verification in GraphQL query request.");
+    let user: User | undefined;
+
+    try {
+      // verify it is not expired
+      jwt.verify(tokenCookie?.value, process.env.JWT_SECRET);
+      // verify it belongs to an actual user
+      user = readUserBySession(tokenCookie.value);
+      if (user === undefined) {
+        throw new Error("Got valid JWT but no matching user.");
       }
-    } else { // no token at all
-      throw throwErr("No token cookie found in GraphQL query request.");
+      return {
+        user,
+        database
+      }
+    } catch (err) {
+      throw new Error("Error validating JWT in GraphQL request.");
     }
   }
 });

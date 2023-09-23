@@ -7,15 +7,7 @@ import jStr from '@/utils/jStr';
 
 import bcrypt from 'bcrypt';
 import killCookieResponse from '@/utils/killCookieResponse';
-
-const err401: ApiResponse = {
-  message: "Unrecognized user credential detected.",
-  status: 401
-};
-const err500: ApiResponse = {
-  message: "Server error detected.",
-  status: 500
-};
+import { err401, err500 } from '@/utils/apiResponses';
 
 export async function POST(req: NextRequest) {
   const requestPayload: LoginPayload = await req.clone().json();
@@ -24,7 +16,8 @@ export async function POST(req: NextRequest) {
     const user: User | undefined = await readUserByName(requestPayload.user);
 
     if (!user) {
-      return killCookieResponse(err401);
+      console.info("User not found by name in login flow.");
+      return killCookieResponse(err401());
     }
 
     return bcrypt.compare(requestPayload.pass, user.password)
@@ -46,15 +39,15 @@ export async function POST(req: NextRequest) {
 
         // otherwise, we have bad password match
         console.log("User login attempt with mismatched credentials.");
-        return killCookieResponse(err401);
+        return killCookieResponse(err401());
       })
       .catch((err) => {
         console.error("bcrypt error in login api route.", err.toString());
-        return killCookieResponse(err500);
+        return killCookieResponse(err500());
       });
   } catch ( err: any ) {
     const errString: string = err.toString();
     console.error("Error in login API", errString);
-    return killCookieResponse(err500);
+    return killCookieResponse(err500());
   }
 }
