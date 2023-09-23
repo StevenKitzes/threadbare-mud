@@ -3,7 +3,6 @@ import { Statement } from 'better-sqlite3';
 const db = require('./sqlite-get-db.ts');
 
 import { Character, Exit, Item, Scene, User } from '@/types.ts';
-import jStr from '@/utils/jStr';
 
 export type Database = {
   readCharacter: (characterId: string) => Character | undefined;
@@ -177,7 +176,7 @@ export const writeScene = (id: string, name: string): TransactBundle => {
   };
 };
 
-export const writeSessionToUser = (userId: string, token: string): boolean => {
+export const writeSessionToUser = (userId: string, token: string | null): boolean => {
   try {
     db.prepare("UPDATE users SET session = ? WHERE id = ?;")
       .run(token, userId);

@@ -6,6 +6,7 @@ import getJwt from '@/utils/jwt';
 import jStr from '@/utils/jStr';
 
 import bcrypt from 'bcrypt';
+import killCookieResponse from '@/utils/killCookieResponse';
 
 const err401: ApiResponse = {
   message: "Unrecognized user credential detected.",
@@ -23,10 +24,7 @@ export async function POST(req: NextRequest) {
     const user: User | undefined = await readUserByName(requestPayload.user);
 
     if (!user) {
-      return new NextResponse(jStr(err401), {
-        headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-        status: err401.status
-      });
+      return killCookieResponse(err401);
     }
 
     return bcrypt.compare(requestPayload.pass, user.password)
@@ -48,24 +46,15 @@ export async function POST(req: NextRequest) {
 
         // otherwise, we have bad password match
         console.log("User login attempt with mismatched credentials.");
-        return new NextResponse(jStr(err401), {
-          headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-          status: err401.status
-        });
+        return killCookieResponse(err401);
       })
       .catch((err) => {
         console.error("bcrypt error in login api route.", err.toString());
-        return new NextResponse(jStr(err500), {
-          headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-          status: err500.status
-        });
+        return killCookieResponse(err500);
       });
   } catch ( err: any ) {
     const errString: string = err.toString();
     console.error("Error in login API", errString);
-    return new NextResponse(jStr(err500), {
-      headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-      status: err500.status
-    });
+    return killCookieResponse(err500);
   }
 }

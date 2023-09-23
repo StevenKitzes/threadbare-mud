@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useState } from 'react';
 
-import { ApiResponse, LoginPayload } from '@/types';
+import { LoginPayload } from '@/types';
 import postData from '@/utils/postData';
 
 const spanClassName = 'ml-2';
@@ -55,8 +55,18 @@ const Login = (): JSX.Element => {
   }
 
   function logout() {
-    document.cookie = 'token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/';
-    setLoggedIn(false);
+    fetch('api/logout')
+      .then(() => {
+        document.cookie = 'token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/';
+        setLoggedIn(false);
+      })
+      .catch(err => {
+        setErrorElements([
+          <span className={spanClassName + ' text-red-500'} key="pass">
+            There was a problem logging you out.  You can try again if you want?
+          </span>
+        ]);
+      })
   }
 
   if (loggedIn) return (

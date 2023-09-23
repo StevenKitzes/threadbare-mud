@@ -6,6 +6,7 @@ import { ApiResponse } from '@/types';
 import jStr from '@/utils/jStr';
 import getJwt from '@/utils/jwt';
 import { readUserBySession, writeSessionToUser } from '../../../../sqlite/sqlite';
+import killCookieResponse from '@/utils/killCookieResponse';
 
 const err401: ApiResponse = {
   message: "Session invalid.",
@@ -29,29 +30,17 @@ export async function POST() {
       user = readUserBySession(clientToken.value);
       if (user === undefined) {
         console.info("Client tried to validate session with valid JWT but no matching user.");
-        return new NextResponse(jStr(err401), {
-          headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-          status: err401.status
-        });
+        return killCookieResponse(err401);
       }
     } catch (err: any) {
       // if it is expired
       if (err.toString().includes("TokenExpiredError")) {
-        return new NextResponse(jStr(err401), {
-          headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-          status: err401.status
-        });
+        return killCookieResponse(err401);
       }
-      return new NextResponse(jStr(err500), {
-        headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-        status: err500.status
-      });
+      return killCookieResponse(err500);
     }
   } else { // no token at all
-    return new NextResponse(jStr(err401), {
-      headers: { 'Set-Cookie': `token=; expires=Fri, 1 Jan 2000 0:00:00 UTC; path=/` },
-      status: err401.status
-    });
+    return killCookieResponse(err401);
   }
 
   // if nothing has gone wrong by here, we have a valid, un-expired token!

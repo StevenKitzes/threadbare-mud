@@ -1,6 +1,5 @@
 import { User } from "@/types";
 import { Database } from "../../sqlite/sqlite";
-import jStr from "@/utils/jStr";
 
 type QueryContext = { database: Database, user: User };
 

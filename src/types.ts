@@ -8,6 +8,11 @@ export type Character = {
   active: number
 };
 
+export type CookieKillerBody = {
+  headers: { 'Set-Cookie': string },
+  status: number
+}
+
 export type Exit = {
   fromId: string,
   toId: string,
