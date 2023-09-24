@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         }
 
         // otherwise, we have bad password match
-        console.log("User login attempt with mismatched credentials.");
+        console.info("User login attempt with mismatched credentials.");
         return killCookieResponse(err401());
       })
       .catch((err) => {

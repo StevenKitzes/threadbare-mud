@@ -8,3 +8,7 @@ export const err500 = (customMessage?: string): ApiResponse => ({
   message: `Server error.${customMessage ? ` ${customMessage}` : ''}`,
   status: 500
 });
+export const success200 = (customMessage?: string): ApiResponse => ({
+  message: `Success.${customMessage ? ` ${customMessage}` : ''}`,
+  status: 200
+});

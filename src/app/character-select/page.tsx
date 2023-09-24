@@ -8,6 +8,7 @@ import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
 import jStr from '@/utils/jStr';
 import LoginCTA from '@/components/LoginCTA';
 import LogoutCTA from '@/components/LogoutCTA';
+import { CharacterList } from './CharacterList';
 
 const client = new ApolloClient({
   uri: "http://localhost:3000/api/graphql",
@@ -66,9 +67,9 @@ const CharacterSelectPage = (): JSX.Element => {
   } else {
     return (
       <div className='page-foundation'>
-        <div className='page-title'>
+        <div className='m-16 mr-auto text-6xl max-w-[calc(100vw-24rem)] flex flex-col'>
           Choose your active character.
-          {jStr(data)}
+          <CharacterList characters={data.user.characters} />
         </div>
         <LogoutCTA />
       </div>

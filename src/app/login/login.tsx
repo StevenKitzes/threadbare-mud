@@ -4,7 +4,6 @@ import React, { ReactNode, useEffect, useState } from 'react';
 
 import { LoginPayload } from '@/types';
 import postData from '@/utils/postData';
-import jStr from '@/utils/jStr';
 
 const spanClassName = 'ml-2';
 const inputClassName = 'text-white bg-slate-700 m-2 p-2 rounded-lg border-2 border-slate-300';

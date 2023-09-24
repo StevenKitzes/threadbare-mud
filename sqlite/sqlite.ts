@@ -16,6 +16,7 @@ export type Database = {
   readUserByName: (username: string) => User | undefined;
   readUserBySession: (token: string) => User | undefined;
   transact: (bundles: TransactBundle[]) => void;
+  writeActiveCharacter: (userId: string, characterId: string) => boolean;
   writeItem: (id: string, name: string) => TransactBundle;
   writeScene: (id: string, name: string) => TransactBundle;
   writeSessionToUser: (userId: string, token: string) => boolean;
@@ -162,6 +163,30 @@ export const transact = (bundles: TransactBundle[]): void => {
   })();
 };
 
+// update ud
+//   set assid = s.assid
+// from sale s 
+// where ud.id = s.udid;
+
+export const writeActiveCharacter = (userId: string, characterId: string): boolean => {
+  try {
+    const statements: TransactBundle[] = [];
+    statements.push({
+      statement: db.prepare("UPDATE characters SET active = 0 WHERE user_id = ? AND active = 1;"),
+      runValues: [userId]
+    })
+    statements.push({
+      statement: db.prepare("UPDATE characters SET active = 1 WHERE id = ?;"),
+      runValues: [characterId]
+    })
+    transact(statements);
+    return true;
+  } catch (err: any) {
+    console.error("Error updating active character", characterId, "for user:", userId, err.toString());
+    return false;
+  }
+}
+
 export const writeItem = (id: string, name: string): TransactBundle => {
   return {
     statement: db.prepare("INSERT INTO items (id, name) VALUES (?, ?);"),
@@ -206,6 +231,7 @@ const database: Database = {
   readUserByName,
   readUserBySession,
   transact,
+  writeActiveCharacter,
   writeItem,
   writeScene,
   writeSessionToUser,
