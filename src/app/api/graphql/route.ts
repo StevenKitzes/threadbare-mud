@@ -6,11 +6,8 @@ import jwt from 'jsonwebtoken';
 
 import typeDefs from '@/graphql/schema';
 import resolvers from '@/graphql/resolvers';
-import { ReUpResult, User } from '@/types';
-import { checkAndReUpToken } from '@/utils/checkAndReUpToken';
-import killCookieResponse from '@/utils/killCookieResponse';
+import { User } from '@/types';
 import database, { readUserBySession } from '../../../../sqlite/sqlite';
-import { err401 } from '@/utils/apiResponses';
 
 const server = new ApolloServer<object>({
   typeDefs,

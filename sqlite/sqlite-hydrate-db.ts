@@ -25,6 +25,12 @@ const characterName = "Mister Admin";
 const userCharacterId = "userCharacterTestId";
 const userCharacterName = "Not Admin Character";
 
+const anotherCharacterId = "anotherCharacterTestId";
+const anotherCharacterName = "Another Character";
+
+const andAnotherCharacterId = "andAnnotherCharacterTestId";
+const andAnotherCharacterName = "And Another Character";
+
 const item1id = "item1TestId";
 const item1name = "A sword";
 const item1description = "It is probably a sword, but how can you be so sure?";
@@ -124,10 +130,22 @@ dbToHydrate.transaction(() => {
   hydrate("INSERT INTO characters (id, user_id, name, scene_id, active) VALUES (?, ?, ?, ?, ?);", [
     userCharacterId, userId, userCharacterName, scene2id, "1"
   ]);
+  hydrate("INSERT INTO characters (id, user_id, name, scene_id, active) VALUES (?, ?, ?, ?, ?);", [
+    anotherCharacterId, userId, anotherCharacterName, scene2id, "0"
+  ]);
+  hydrate("INSERT INTO characters (id, user_id, name, scene_id, active) VALUES (?, ?, ?, ?, ?);", [
+    andAnotherCharacterId, userId, andAnotherCharacterName, scene2id, "0"
+  ]);
 
   // Character story progress stuff
   hydrate("INSERT INTO character_story_progress (character_id, story, progress) VALUES (?, ?, ?);", [
     userCharacterId, MAIN_STORY, "1"
+  ]);
+  hydrate("INSERT INTO character_story_progress (character_id, story, progress) VALUES (?, ?, ?);", [
+    anotherCharacterId, MAIN_STORY, "1"
+  ]);
+  hydrate("INSERT INTO character_story_progress (character_id, story, progress) VALUES (?, ?, ?);", [
+    andAnotherCharacterId, MAIN_STORY, "1"
   ]);
 
   // Character inventory stuff

@@ -45,8 +45,9 @@ export type User = {
 // App type definitions
 
 export type ApiResponse = {
-  status: number;
   message: string;
+  status: number;
+  username?: string;
 };
 
 export type LoginPayload = {

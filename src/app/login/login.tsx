@@ -4,6 +4,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 
 import { LoginPayload } from '@/types';
 import postData from '@/utils/postData';
+import jStr from '@/utils/jStr';
 
 const spanClassName = 'ml-2';
 const inputClassName = 'text-white bg-slate-700 m-2 p-2 rounded-lg border-2 border-slate-300';
@@ -18,11 +19,18 @@ const Login = (): JSX.Element => {
   const [errorElements, setErrorElements] = useState<ReactNode[]>([]);
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>('');
 
   useEffect(() => {
     fetch('api/check-session', { method: "POST" })
       .then((res) => {
-        if (res.status === 200) setLoggedIn(true);
+        if (res.status === 200) {
+          setLoggedIn(true);
+          res.json()
+            .then((json) => {
+              setUsername(json.username);
+            })
+        }
       })
   }, []);
 
@@ -46,10 +54,19 @@ const Login = (): JSX.Element => {
         pass: passwordValue
       };
       postData('api/login', loginPayload)
-        .then(() => {
-          setLoggedIn(true);
-          setUsernameValue('');
-          setPasswordValue('');
+        .then((res) => {
+          if (res.status === 200) {
+            setLoggedIn(true);
+            setUsernameValue('');
+            setPasswordValue('');
+            setUsername(res.username);
+          } else {
+            setErrorElements([
+              <span className={spanClassName + ' text-red-500'} key="pass">
+                Unable to log you in with those credentials.  Try again?
+              </span>
+            ]);
+          }
         });
     }
   }
@@ -71,7 +88,14 @@ const Login = (): JSX.Element => {
 
   if (loggedIn) return (
     <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
-      <span className={spanClassName}>You are already logged in.</span>
+      <span className={spanClassName}>Hello, {username}.</span>
+      <button
+        className={buttonAltClassName}
+        id='character-select-button'
+        onClick={() => {window.location.href='/character-select'}}
+      >
+        Character Select
+      </button>
       <button
         className={buttonMainClassName}
         id='logout-button'

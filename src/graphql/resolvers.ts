@@ -32,7 +32,7 @@ export const resolvers = {
     user: (_: any, args: UserArgs, context: QueryContext ) => {
       // catch case user forgot to provide any info to find a user
       if (!args.userId && !args.username) {
-        throw new Error("No identifier provided for user authentication.");
+        return context.database.readUser(context.user.id);
       }
       
       const isAdmin = context.user.username === "admin";

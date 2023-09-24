@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
           const status = 200;
           const success: ApiResponse = {
             message: "Login successful.",
-            status
+            status,
+            username: user.username
           };
           const token = getJwt();
           writeSessionToUser(user.id, token);

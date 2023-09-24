@@ -1,5 +1,5 @@
 // Example POST method implementation from MDN here: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-export async function postData(url: string, data: any): Promise<any> {
+export async function postData(url: string, data?: any): Promise<any> {
   // Default options are marked with *
   const response = await fetch(url, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.

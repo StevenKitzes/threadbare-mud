@@ -31,6 +31,6 @@ body {
     @apply bg-black text-white flex flex-row w-screen h-screen;
   }
   .page-title {
-    @apply m-16 mr-auto text-6xl;
+    @apply m-16 mr-auto text-6xl max-w-[calc(100vw-24rem)];
   }
 }
