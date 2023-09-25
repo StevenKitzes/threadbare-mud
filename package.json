@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "all": "concurrently --kill-others \"next dev\" \"ts-node-esm src/socket-server/server.mts\"",
     "build": "next build",
     "create": "ts-node-esm sqlite/sqlite-create-db.ts",
     "dev": "next dev",
     "hydrate": "ts-node-esm sqlite/sqlite-hydrate-db.ts",
     "lint": "next lint",
+    "sockets": "ts-node-esm src/socket-server/server.mts",
     "start": "next start"
   },
   "dependencies": {
@@ -24,9 +26,11 @@
     "autoprefixer": "10.4.15",
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^8.6.0",
+    "concurrently": "^8.2.1",
     "encoding": "^0.1.13",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "fastify": "^4.23.2",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",
     "next": "13.4.19",
