@@ -7,7 +7,8 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   // @ts-expect-error
   cors: {
-    origin: "*"
+    // origin means, the client info, not the server; meaning, the client is the "origin"ator
+    origin: "http://localhost:3000"
   }
 });
 
