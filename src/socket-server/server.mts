@@ -1,19 +1,31 @@
-import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 
-const fastify = Fastify({
-  logger: true
-})
-const port: number = 3030;
-
-fastify.get('/health-check', async function healthCheckHandler(req: FastifyRequest, res: FastifyReply) {
-  res.send({ message: "success" });
+const app = express();
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  // @ts-expect-error
+  cors: {
+    origin: "*"
+  }
 });
 
-fastify.listen({ port })
-  .then(() => console.log(`Running Fastify-based socket server on port ${port}.`))
-  .catch((err) => {
-    fastify.log.error(err)
-    process.exit(1)
+const port = 3030;
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+  
+  // Handle socket events here
+  socket.on('data', (payload) => {
+    console.log(payload);
   });
 
-export {}
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+httpServer.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
