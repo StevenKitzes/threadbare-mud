@@ -5,6 +5,7 @@ const db = require('./sqlite-get-db.ts');
 import { Character, Exit, Item, Scene, User } from '@/types.ts';
 
 export type Database = {
+  readActiveCharacterByUserId: (userId: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
   readCharacterInventory: (characterId: string) => Item[] | undefined;
   readCharactersByUserId: (userId: string) => Character[] | undefined;
@@ -34,6 +35,18 @@ type RawExit = {
   description: string,
   keyword_csv: string
 }
+
+export const readActiveCharacterByUserId = (userId: string): Character | undefined => {
+  try {
+    const character: Character = db.prepare(`
+      SELECT * FROM characters WHERE user_id = ? AND active = 1;
+    `).get(userId) as Character;
+    return character;
+  } catch (err: any) {
+    console.error("Error retrieving active character from database by user id . . .", err.toString() || "count not parse error description");
+    return undefined;
+  }
+};
 
 export const readCharacter = (characterId: string): Character | undefined => {
   try {
@@ -220,6 +233,7 @@ export const writeUser = (id: string, username: string, password: string, email:
 };
 
 const database: Database = {
+  readActiveCharacterByUserId,
   readCharacter,
   readCharacterInventory,
   readCharactersByUserId,
