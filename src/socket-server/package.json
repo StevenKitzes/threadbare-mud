@@ -1,0 +1,17 @@
+{
+  "name": "threadbare-sockets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "scripts": {
+    "sockets": "ts-node server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "socket.io": "^4.7.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

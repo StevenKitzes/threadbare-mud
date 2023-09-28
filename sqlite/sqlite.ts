@@ -2,10 +2,10 @@ import { Statement } from 'better-sqlite3';
 
 const db = require('./sqlite-get-db.ts');
 
-import { Character, Exit, Item, Scene, User } from '@/types.ts';
+import { Character, Exit, Item, Scene, User } from '../src/types';
 
 export type Database = {
-  readActiveCharacterByUserId: (userId: string) => Character | undefined;
+  readActiveCharacterBySession: (token: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
   readCharacterInventory: (characterId: string) => Item[] | undefined;
   readCharactersByUserId: (userId: string) => Character[] | undefined;
@@ -36,11 +36,13 @@ type RawExit = {
   keyword_csv: string
 }
 
-export const readActiveCharacterByUserId = (userId: string): Character | undefined => {
+export const readActiveCharacterBySession = (token: string): Character | undefined => {
   try {
     const character: Character = db.prepare(`
-      SELECT * FROM characters WHERE user_id = ? AND active = 1;
-    `).get(userId) as Character;
+      SELECT characters.* FROM characters
+      JOIN users ON characters.user_id = users.id
+      WHERE users.session = ? AND characters.active = 1;
+    `).get(token) as Character;
     return character;
   } catch (err: any) {
     console.error("Error retrieving active character from database by user id . . .", err.toString() || "count not parse error description");
@@ -233,7 +235,7 @@ export const writeUser = (id: string, username: string, password: string, email:
 };
 
 const database: Database = {
-  readActiveCharacterByUserId,
+  readActiveCharacterBySession,
   readCharacter,
   readCharacterInventory,
   readCharactersByUserId,

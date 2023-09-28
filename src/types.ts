@@ -8,11 +8,6 @@ export type Character = {
   active: number
 };
 
-export type CookieKillerBody = {
-  headers: { 'Set-Cookie': string },
-  status: number
-};
-
 export type Exit = {
   fromId: string,
   toId: string,
@@ -23,11 +18,6 @@ export type Exit = {
 export type Item = {
   id: string;
   name: string;
-};
-
-export type ReUpResult = false | {
-  user: User;
-  token: string;
 };
 
 export type Scene = {
@@ -50,6 +40,23 @@ export type ApiResponse = {
   username?: string;
 };
 
+export type CookieKillerBody = {
+  headers: { 'Set-Cookie': string },
+  status: number
+};
+
+export type GameAction = {
+  token: string;
+  gameAction: string;
+}
+
+export type GameText = {
+  gameText: string | string[];
+  options?: {
+    error?: boolean;
+  };
+}
+
 export type LoginPayload = {
   user: string;
   pass: string;
@@ -59,4 +66,9 @@ export type RegistrationPayload = {
   user: string;
   pass: string;
   email: string;
+};
+
+export type ReUpResult = false | {
+  user: User;
+  token: string;
 };
