@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/stevenkitzes/dev/threadbare-mud/threadbare.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1336"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,24:maincharacter_story_progress"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="character_inventories" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="109"/><column index="2" value="68"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="character_story_progress" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="150"/><column index="2" value="77"/><column index="3" value="54"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="characters" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="150"/><column index="2" value="223"/><column index="3" value="122"/><column index="4" value="76"/><column index="5" value="40"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="scene_descriptions" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="1" mode="0"/></sort><column_widths><column index="1" value="76"/><column index="2" value="77"/><column index="3" value="54"/><column index="4" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="users" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="223"/><column index="2" value="59"/><column index="3" value="300"/><column index="4" value="140"/><column index="5" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">SELECT *
+FROM scene_descriptions sd
+JOIN characters c ON  sd.scene_id = c.scene_id
+JOIN users u ON c.user_id = u.id
+JOIN character_story_progress csp ON sd.story = csp.story AND c.id = csp.character_id 
+WHERE u.session = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgyMDY5MDIsImlhdCI6MTY5NTYxNDkwMn0.lyx03_WzpXhMNa_UlQ1I7OgTPZwU8PswGZSuBBozp_8'
+  AND c.active = 1;
+  
+SELECT *
+FROM users u 
+JOIN characters c ON  u.id = c.user_id  
+JOIN scene_descriptions sd ON c.scene_id = sd.scene_id
+JOIN character_story_progress csp ON sd.story = csp.story AND c.id = csp.character_id 
+WHERE u.session = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgyMDY5MDIsImlhdCI6MTY5NTYxNDkwMn0.lyx03_WzpXhMNa_UlQ1I7OgTPZwU8PswGZSuBBozp_8'
+				AND c.active = 1;
+				
+select sdm.scene_id, max(progress) from scene_descriptions sdm  group by sdm.scene_id;
+				
+select sd.*, csp.*, (select max(progress) from scene_descriptions sdm where sd.scene_id = sdm.scene_id )  
+from scene_descriptions sd 
+ join (select scene_id, max(progress)  maxProgress from scene_descriptions   group by scene_id) sdm on sd.scene_id = sdm.scene_id and sd.progress = sdm.maxprogress
+ JOIN character_story_progress csp ON sd.story = csp.story 
+	where sd.scene_id ='scene1TestId'
+				and sdm.maxprogress &lt;=csp.progress
+	order by  scene_id, character_id;
+	
+	
+--	(char, scene, story, progress) &lt;= max story prog
+	
+
+SELECT u.session, u.id user_id, c.active, c.id character_id, sd.*, csp.*
+	FROM users u 
+ 	 JOIN characters c ON  u.id = c.user_id  
+	 JOIN scene_descriptions sd ON c.scene_id = sd.scene_id
+	 JOIN character_story_progress csp ON sd.story = csp.story AND c.id = csp.character_id  and sd.progress &lt;=csp.progress
+WHERE u.username = 'admin'
+			    AND c.active = 1
+	;
+	
+	
+	</sql><current_tab id="0"/></tab_sql></sqlb_project>
