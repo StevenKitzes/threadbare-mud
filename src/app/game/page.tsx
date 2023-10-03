@@ -30,10 +30,23 @@ export const Game = (): JSX.Element => {
   const gameTextRef = useRef<HTMLDivElement>(null);
 
   function emitGameAction() {
+    const cmd: string = command.trim();
+    const gt: GameText = {
+      gameText: cmd,
+      options: {
+        echo: true
+      }
+    }
     if (socket !== null) {
+      setGameTextList((gameTextList) => {
+        return [
+          ...gameTextList,
+          gt
+        ];
+      });
       socket.emit('gameAction', {
         token,
-        gameAction: command.trim()
+        gameAction: cmd
       });
       setCommand('');
     }
@@ -122,8 +135,11 @@ export const Game = (): JSX.Element => {
         Threadbare
         <div ref={gameTextRef} className='bg-slate-900 mt-8 rounded-xl border-2 border-slate-500 p-4 w-full max-h-96 overflow-scroll'>
           {gameTextList.map(gt => {
-            const classString: string = gt.options?.error ? 'text-lg text-red-500' : 'text-lg';
-            return (<div className={classString} key={ v4() }>{gt.gameText}</div>);
+            const classStrings: string[] = [ 'text-lg' ];
+            if (gt.options?.echo) classStrings.push('text-green-600');
+            if (gt.options?.error) classStrings.push('text-red-500');
+            if (gt.options?.other) classStrings.push('text-slate-400');
+            return (<div className={classStrings.join(' ')} key={ v4() }>{gt.gameText}</div>);
           })}
         </div>
         <div className='text-base mt-4 ml-4'>

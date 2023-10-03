@@ -2,9 +2,12 @@ import { Statement } from 'better-sqlite3';
 
 const db = require('./sqlite-get-db.ts');
 
-import { Character, Exit, Item, Scene, User } from '../src/types';
+import { Character, User } from '../src/types';
+import { SceneIds } from '../src/socket-server/scenes/scenes';
 
 export type Database = {
+  bumpStoryMain: (id: string) => boolean;
+  navigateCharacter: (charId: string, sceneIdEnum: SceneIds) => boolean;
   readActiveCharacterBySession: (token: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
   readCharactersByUserId: (userId: string) => Character[] | undefined;
@@ -22,6 +25,29 @@ export type TransactBundle = {
   statement: Statement,
   runValues: any[]
 };
+
+export const bumpStoryMain = (id: string): boolean => {
+  try {
+    db.prepare("UPDATE characters SET story_main = story_main + 1 WHERE id = ?;")
+      .run(id);
+    return true;
+  } catch (err: any) {
+    console.error("Error bumping story_main for user with id", id, err.toString());
+    return false;
+  }
+}
+
+export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolean => {
+  const sceneId: string = sceneIdEnum.toString();
+  try {
+    db.prepare("UPDATE characters SET scene_id = ? WHERE id = ?;")
+      .run(sceneId, charId);
+    return true;
+  } catch (err: any) {
+    console.error("Error navigating character with id", charId, "to scene with id", sceneId, err.toString());
+    return false;
+  }
+}
 
 export const readActiveCharacterBySession = (token: string): Character | undefined => {
   console.log('readActiveCharacterBySession using tokne', token);
@@ -146,6 +172,8 @@ export const writeUser = (id: string, username: string, password: string, email:
 };
 
 const database: Database = {
+  bumpStoryMain,
+  navigateCharacter,
   readActiveCharacterBySession,
   readCharacter,
   readCharactersByUserId,

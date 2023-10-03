@@ -5,24 +5,8 @@ export type Character = {
   user_id: string,
   name: string,
   scene_id: string,
-  active: number
-};
-
-export type Exit = {
-  fromId: string,
-  toId: string,
-  description: string,
-  keywords: string[]
-};
-
-export type Item = {
-  id: string;
-  name: string;
-};
-
-export type Scene = {
-  id: string;
-  name: string;
+  active: number,
+  story_main: number,
 };
 
 export type User = {
@@ -57,7 +41,9 @@ export type GameAction = {
 export type GameText = {
   gameText: string | string[];
   options?: {
+    echo?: boolean;
     error?: boolean;
+    other?: boolean;
   };
 }
 

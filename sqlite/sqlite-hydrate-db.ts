@@ -11,7 +11,12 @@ const testUserUsername = "testUserUsername";
 const testUserPassword = "$2b$12$A7fcgDqKv3b0gvtjTGZoy.eIMJgXRNJ.wQp9FPdZCZKGQKv71tCLu";
 const testUserEmail = "email@fake2.com";
 
-const testScene1Id = "testScene1Id";
+const anotherUserId = "anotherUserId";
+const anotherUserUsername = "anotherUserUsername";
+const anotherUserPassword = "$2b$12$A7fcgDqKv3b0gvtjTGZoy.eIMJgXRNJ.wQp9FPdZCZKGQKv71tCLu";
+const anotherUserEmail = "email@fake3.com";
+
+const testScene1Id = "0";
 
 const adminCharacterId = "adminCharacterId";
 const adminCharacterName = "Sintur";
@@ -41,6 +46,9 @@ dbToHydrate.transaction(() => {
   ]);
   hydrate("INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?);", [
     testUserId, testUserUsername, testUserPassword, testUserEmail
+  ]);      
+  hydrate("INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?);", [
+    anotherUserId, anotherUserUsername, anotherUserPassword, anotherUserEmail
   ]);      
 
   // Characters table stuff

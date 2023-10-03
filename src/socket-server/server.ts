@@ -9,6 +9,16 @@ dotenv.config({ path: '.env.local'});
 dotenv.config({ override: true });
 
 import { readActiveCharacterBySession } from '../../sqlite/sqlite';
+import { handleCharacterCommand } from './character/character';
+import { scenes } from './scenes/scenes';
+
+export type HandlerOptions = {
+  io: Server;
+  socket: Socket;
+  character: Character;
+  characterList: Map<string, Character>;
+  command: string;
+}
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -24,7 +34,31 @@ const port = 3030;
 
 const characters: Map<string, Character> = new Map<string, Character>();
 
-function handleGameAction(socket: Socket, token: string, command: string) {
+function handleGameAction(handlerOptions: HandlerOptions): void {
+  const { character, command, socket } = handlerOptions;
+  // check if the player just needs a little help
+  if (command === 'help') {
+    socket.emit('game-text', {
+      gameText: [
+        "You can [look] at things you find in the world.",
+        "- Try [look self] to see what happens!  Or just [look] to see what is around you.",
+        "You can [peek] to look inside closed items or try to catch a glimpse through closed doors.",
+        "- Try [peek door] when you see a [door] and maybe you can see what lies beyond . . .",
+        "When you come across interesting characters, you can [talk] to them or even [fight] with them!",
+        "- Try [talk old man] or [fight squirrel]!",
+        "If you want to leave a scene, you can [go] through an exit.",
+        "- Try [go heavy door] to see where you will end up!"
+      ]
+    });
+    return;
+  }
+
+  // check if there are any character level input options for this character
+  if (handleCharacterCommand(handlerOptions)) return;
+
+  // check if there are any scene level input options for this character's scene
+  if (scenes.get(character.scene_id).handleSceneCommand(handlerOptions)) return;
+  
   // if the action was not recognized
   socket.emit('game-text', {
     gameText: `We know here no magic by the name of [${command}] . . .`,
@@ -69,26 +103,52 @@ io.on('connection', (socket) => {
       socket.join(connectedCharacter.scene_id);
 
       socket.on('gameAction', (payload: GameAction) => {
-        handleGameAction(socket, payload.token, payload.gameAction);
+        handleGameAction({
+          io,
+          socket,
+          character: connectedCharacter,
+          characterList: characters,
+          command: payload.gameAction
+        });
       });    
 
       socket.on('disconnect', () => {
+        socket.to(connectedCharacter.scene_id).emit('game-text', {
+          gameText: `${connectedCharacter.name} vanishes into the Lifelight . . .`,
+          options: { other: true }
+        })
         characters.delete(connectedCharacter.id);
         console.info(`Character ${connectedCharacter.name} disconnected`);
-        console.log("Characters in session:");
-        characters.forEach((value: Character) => {
-          console.log("We got", value.name);
-        })
-        });
-
-      socket.emit('game-text', {
-        gameText: `Welcome to the World of Threadbare, O ${connectedCharacter.name}!`
+        // console.log("Characters in session:");
+        // characters.forEach((value: Character) => {
+        //   console.log("We got", value.name);
+        // });
       });
 
-      console.log("Characters in session:");
-      characters.forEach((value: Character) => {
-        console.log("We got", value.name);
+      socket.emit('game-text', {
+        gameText: [
+          `Welcome to the World of Threadbare, O ${connectedCharacter.name}!`,
+          `You may type "help" for some basic assistance.`,
+          `- - - - - - - - - -`
+        ]
+      });
+      socket.to(connectedCharacter.scene_id).emit('game-text', {
+        gameText: `${connectedCharacter.name} materializes from the Lifelight . . .`,
+        options: { other: true }
       })
+
+      handleGameAction({
+        io,
+        socket,
+        character: connectedCharacter,
+        characterList: characters,
+        command: 'look'
+      });
+
+      // console.log("Characters in session:");
+      // characters.forEach((value: Character) => {
+      //   console.log("We got", value.name);
+      // })
     } catch (err: any) {
       console.error("Error reading character from session", err.toString());
       const errText: GameText = {
