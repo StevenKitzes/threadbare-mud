@@ -72,7 +72,6 @@ export type RegistrationPayload = {
   email: string;
 };
 
-export type ReUpResult = false | {
+export type ConfirmedUser = false | {
   user: User;
-  token: string;
 };

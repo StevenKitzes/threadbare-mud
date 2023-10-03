@@ -1,10 +1,9 @@
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import jwt from 'jsonwebtoken';
-import { ReUpResult, User } from "@/types";
-import { readUserBySession, writeSessionToUser } from "../../sqlite/sqlite";
-import getJwt from "./jwt";
+import { ConfirmedUser, User } from "@/types";
+import { readUserBySession } from "../../sqlite/sqlite";
 
-export const checkAndReUpToken = (tokenCookie: RequestCookie | undefined): ReUpResult => {
+export const getUserFromToken = (tokenCookie: RequestCookie | undefined): ConfirmedUser => {
   if (!tokenCookie) return false;
 
   const token: string = tokenCookie.value;
@@ -18,10 +17,7 @@ export const checkAndReUpToken = (tokenCookie: RequestCookie | undefined): ReUpR
       console.info("Got valid JWT but no matching user.");
       return false;
     }
-    const newToken = getJwt();
-    writeSessionToUser(user.id, newToken);
     return {
-      token: newToken,
       user
     };
   } catch (err: any) {

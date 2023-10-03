@@ -22,18 +22,11 @@ const io = new Server(httpServer, {
 
 const port = 3030;
 
-function handleGameAction(socket: Socket, token: string, command: string) {
-  if (command === 'connect') {
-    const character: Character | undefined = readActiveCharacterBySession(token);
-    if (!character) return socket.emit('error');
-  
-    return socket.emit('gameText', {
-      gameText: `Welcome to the World of Threadbare, O ${character.name}!`
-    });
-  }
+const characters: Map<string, Character> = new Map<string, Character>();
 
+function handleGameAction(socket: Socket, token: string, command: string) {
   // if the action was not recognized
-  socket.emit('gameText', {
+  socket.emit('game-text', {
     gameText: `We know here no magic by the name of [${command}] . . .`,
     options: {
       error: true
@@ -43,9 +36,10 @@ function handleGameAction(socket: Socket, token: string, command: string) {
 
 io.on('connection', (socket) => {
   console.info('A user connected');
-  socket.emit('gameText', { gameText: "Connected.  Divining your character information . . ."});
+  socket.emit('request-initialization', { gameText: "Connected.  Divining your character information . . ."});
 
-  socket.on('gameAction', (payload: GameAction) => {
+  socket.on('provide-token', (payload: { token: string }) => {
+    console.log('Got provide-token event.');
     // Validate socket connection
     const secret: string = process.env.JWT_SECRET || '';
     if (secret === '') {
@@ -54,8 +48,9 @@ io.on('connection', (socket) => {
     }
     try {
       jwt.verify(payload.token, secret);
+      console.log('Verified token in provide-token event.');
     } catch (err: any) {
-      console.error('Error validating session in socket connection');
+      console.error('Error validating session in socket connection during provide-token event');
       const errText: GameText = {
         gameText: "Unable to verify your login session.",
         options: {
@@ -64,12 +59,47 @@ io.on('connection', (socket) => {
       }
       return socket.emit('logout', errText);
     }
-    handleGameAction(socket, payload.token, payload.gameAction);
-  });
 
-  socket.on('disconnect', () => {
-    console.info('User disconnected');
-  });
+    // valid token confirmed
+    try {
+      const connectedCharacter: Character | undefined = readActiveCharacterBySession(payload.token);
+      if (connectedCharacter === undefined) throw new Error("Got empty character from database.");
+
+      characters.set(connectedCharacter.id, connectedCharacter);
+      socket.join(connectedCharacter.scene_id);
+
+      socket.on('gameAction', (payload: GameAction) => {
+        handleGameAction(socket, payload.token, payload.gameAction);
+      });    
+
+      socket.on('disconnect', () => {
+        characters.delete(connectedCharacter.id);
+        console.info(`Character ${connectedCharacter.name} disconnected`);
+        console.log("Characters in session:");
+        characters.forEach((value: Character) => {
+          console.log("We got", value.name);
+        })
+        });
+
+      socket.emit('game-text', {
+        gameText: `Welcome to the World of Threadbare, O ${connectedCharacter.name}!`
+      });
+
+      console.log("Characters in session:");
+      characters.forEach((value: Character) => {
+        console.log("We got", value.name);
+      })
+    } catch (err: any) {
+      console.error("Error reading character from session", err.toString());
+      const errText: GameText = {
+        gameText: "Problem encountered reading character from database.",
+        options: {
+          error: true
+        }
+      }
+      return socket.emit('error', errText);
+    }
+  })
 });
 
 httpServer.listen(port, () => {

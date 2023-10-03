@@ -24,15 +24,19 @@ export type TransactBundle = {
 };
 
 export const readActiveCharacterBySession = (token: string): Character | undefined => {
+  console.log('readActiveCharacterBySession using tokne', token);
   try {
     const character: Character = db.prepare(`
       SELECT characters.* FROM characters
       JOIN users ON characters.user_id = users.id
       WHERE users.session = ? AND characters.active = 1;
     `).get(token) as Character;
+    if (character === undefined) throw new Error("Got undefined character.");
+    console.log('got character by name', character.name);
     return character;
   } catch (err: any) {
     console.error("Error retrieving active character from database by user id . . .", err.toString() || "count not parse error description");
+    console.error("Had token:", token);
     return undefined;
   }
 };

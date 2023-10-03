@@ -82,18 +82,19 @@ export const Game = (): JSX.Element => {
     // Create socket connection
     const skt = io('ws://localhost:3030');
     setSocket(skt);
+
     // On successful connection . . .
-    skt.on('connect', () => {
+    skt.on('request-initialization', (payload) => {
       console.info('Connected to Socket.io');
+      handleGameText(payload);
       // Confirm auth
-      skt.emit('gameAction', {
+      skt.emit('provide-token', {
         token: tokenStr,
-        gameAction: 'connect'
       })
     });
 
     // Handle socket events here
-    skt.on('gameText', (payload) => {
+    skt.on('game-text', (payload) => {
       handleGameText(payload);
     });
 
@@ -101,8 +102,8 @@ export const Game = (): JSX.Element => {
       alert('logout socket message received');
     });
 
-    skt.on('error', () => {
-      alert('error socket message received');
+    skt.on('error', (payload) => {
+      handleGameText(payload);
     });
 
     skt.on('disconnect', () => {
@@ -114,6 +115,7 @@ export const Game = (): JSX.Element => {
       setSocket(null);
     };
   }, []);
+
   return (
     <div className='page-foundation'>
       <div className='page-title'>
