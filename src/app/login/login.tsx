@@ -7,31 +7,18 @@ import postData from '@/utils/postData';
 
 const spanClassName = 'ml-2';
 const inputClassName = 'text-white bg-slate-700 m-2 p-2 rounded-lg border-2 border-slate-300';
-const buttonBase = 'h-10 min-h-[2.5rem] m-2 rounded-lg border-2';
-const buttonMainClassName = `${buttonBase} text-white bg-violet-400 border-white`;
-const buttonAltClassName = `${buttonBase} text-slate-500 bg-violet-200 border-violet-500`;
 const linkClassName = 'text-violet-300 m-2 my-0.5 hover:underline';
 
-const Login = (): JSX.Element => {
+export type LoginProps = {
+  loggedIn: boolean;
+  setLoggedIn: (loggedIn: boolean) => void;
+  setUsername: (username: string) => void;
+}
+
+const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element => {
   const [usernameValue, setUsernameValue] = useState<string>('');
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [errorElements, setErrorElements] = useState<ReactNode[]>([]);
-
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>('');
-
-  useEffect(() => {
-    fetch('api/check-session', { method: "POST" })
-      .then((res) => {
-        if (res.status === 200) {
-          setLoggedIn(true);
-          res.json()
-            .then((json) => {
-              setUsername(json.username);
-            })
-        }
-      })
-  }, []);
 
   function submit() {
     const errors = [];
@@ -55,10 +42,7 @@ const Login = (): JSX.Element => {
       postData('api/login', loginPayload)
         .then((res) => {
           if (res.status === 200) {
-            setLoggedIn(true);
-            setUsernameValue('');
-            setPasswordValue('');
-            setUsername(res.username);
+            window.location.href="/character-select"
           } else {
             setErrorElements([
               <span className={spanClassName + ' text-red-500'} key="pass">
@@ -87,16 +71,15 @@ const Login = (): JSX.Element => {
 
   if (loggedIn) return (
     <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
-      <span className={spanClassName}>Hello, {username}.</span>
       <button
-        className={buttonAltClassName}
+        className="h-10 min-h-[2.5rem] m-2 rounded-lg border-2 text-slate-500 bg-violet-200 border-violet-500"
         id='character-select-button'
         onClick={() => {window.location.href='/character-select'}}
       >
         Character Select
       </button>
       <button
-        className={buttonMainClassName}
+        className="h-10 min-h-[2.5rem] m-2 rounded-lg border-2 text-white bg-violet-400 border-white"
         id='logout-button'
         onClick={() => logout()}
       >
@@ -124,14 +107,14 @@ const Login = (): JSX.Element => {
         value={passwordValue}
       />
       <button
-        className={buttonMainClassName}
+        className="h-10 min-h-[2.5rem] m-2 rounded-lg border-2 text-white bg-violet-400 border-white"
         id='login-button'
         onClick={() => submit()}
       >
         Submit
       </button>
       <button
-        className={buttonAltClassName}
+        className="h-10 min-h-[2.5rem] m-2 rounded-lg border-2 text-slate-500 bg-violet-200 border-violet-500"
         id='register-button'
         onClick={() => {window.location.href='/register'}}
       >

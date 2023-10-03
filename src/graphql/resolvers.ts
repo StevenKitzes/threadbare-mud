@@ -18,16 +18,6 @@ export const resolvers = {
       return context.database.readCharacter(args.characterId);
     },
 
-    // returns a single object describing an inventory item
-    item: (_: any, args: ItemArgs, context: QueryContext) => {
-      return context.database.readItem(args.itemId);
-    },
-
-    // returns a single object describing a scene
-    scene: (_: any, args: SceneArgs, context: QueryContext ) => {
-      return context.database.readScene(args.sceneId);
-    },
-
     // returns all meaningful user data
     user: (_: any, args: UserArgs, context: QueryContext ) => {
       // catch case user forgot to provide any info to find a user
@@ -45,28 +35,6 @@ export const resolvers = {
       } else {
         throw new Error("Unable to verify user authentication in data request.");
       }
-    }
-  },
-  Character: {
-    // returns a single object describing this character's scene
-    scene: ({ scene_id }: { scene_id: string }, _: any, context: QueryContext) => {
-      return context.database.readScene(scene_id);
-    },
-
-    // returns the items this character is holding
-    inventory: ({ id }: { id: string }, _: any, context: QueryContext) => {
-      return context.database.readCharacterInventory(id);
-    }
-  },
-  Scene: {
-    // returns the items present in this scene
-    inventory: ({ id }: { id: string }, _: any, context: QueryContext) => {
-      return context.database.readSceneInventory(id);
-    },
-
-    // returns a list of ways out of the room
-    exits: ({ id }: { id: string }, _: any, context: QueryContext) => {
-      return context.database.readSceneExits(id);
     }
   },
   User: {

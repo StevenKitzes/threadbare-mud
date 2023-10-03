@@ -5,14 +5,27 @@ import io, { Socket } from 'socket.io-client';
 import { v4 } from 'uuid';
 
 import '../../app/globals.css';
-import { SideNav } from './SideNav';
 import { GameText } from '@/types';
+import SideNav from '@/components/SideNav';
 
 export const Game = (): JSX.Element => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [gameTextList, setGameTextList] = useState<GameText[]>([ { gameText: 'Game initializing . . .', options: { error: true } } ]);
   const [command, setCommand] = useState<string>('');
   const [token, setToken] = useState<string|null>(null);
+  const [username, setUsername] = useState<string>('[loading . . .]');
+
+  useEffect(() => {
+    fetch('api/check-session', { method: "POST" })
+      .then((res) => {
+        if (res.status === 200) {
+          res.json()
+            .then((json) => {
+              setUsername(json.username);
+            })
+        }
+      })
+  }, []);
 
   const gameTextRef = useRef<HTMLDivElement>(null);
 
@@ -127,7 +140,7 @@ export const Game = (): JSX.Element => {
           value={command}
         />
       </div>
-      <SideNav />
+      <SideNav username={username} />
     </div>
   );
 }

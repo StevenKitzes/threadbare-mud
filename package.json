@@ -7,9 +7,9 @@
     "build": "next build",
     "create": "ts-node-esm sqlite/sqlite-create-db.ts",
     "dev": "next dev",
-    "hydrate": "ts-node-esm sqlite/sqlite-hydrate-db.ts",
+    "hydrate": "npm run create && ts-node-esm sqlite/sqlite-hydrate-db.ts",
     "lint": "next lint",
-    "sockets": "ts-node-esm src/socket-server/server.mts",
+    "sockets": "ts-node-esm src/socket-server/server.ts",
     "start": "next start"
   },
   "dependencies": {

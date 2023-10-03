@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import '../../app/globals.css';
 
 import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
 import jStr from '@/utils/jStr';
 import LoginCTA from '@/components/LoginCTA';
-import LogoutCTA from '@/components/LogoutCTA';
+import SideNav from '@/components/SideNav';
 import { CharacterList } from './CharacterList';
+import CharacterCreate from './CharacterCreate';
 
 const client = new ApolloClient({
   uri: "http://localhost:3000/api/graphql",
@@ -31,6 +32,19 @@ const GET_CHARACTERS = gql`
 
 const CharacterSelectPage = (): JSX.Element => {
   const { loading, error, data } = useQuery(GET_CHARACTERS, { client });
+  const [username, setUsername] = useState<string>('[loading . . .]');
+
+  useEffect(() => {
+    fetch('api/check-session', { method: "POST" })
+      .then((res) => {
+        if (res.status === 200) {
+          res.json()
+            .then((json) => {
+              setUsername(json.username);
+            })
+        }
+      })
+  }, []);
 
   if (loading) {
     return (
@@ -70,8 +84,9 @@ const CharacterSelectPage = (): JSX.Element => {
         <div className='m-16 mr-auto text-6xl max-w-[calc(100vw-24rem)] flex flex-col'>
           Choose your active character.
           <CharacterList characters={data.user.characters} />
+          <CharacterCreate />
         </div>
-        <LogoutCTA />
+        <SideNav username={username} />
       </div>
     );
   }

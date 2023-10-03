@@ -33,7 +33,8 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
         user,
         database
       }
-    } catch (err) {
+    } catch (err: any) {
+      console.error(err.toString());
       throw new Error("Error validating JWT in GraphQL request.");
     }
   }

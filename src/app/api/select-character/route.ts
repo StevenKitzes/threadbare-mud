@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-
 import { writeActiveCharacter } from '../../../../sqlite/sqlite';
 import { ReUpResult, User } from '@/types';
 import killCookieResponse from '@/utils/killCookieResponse';

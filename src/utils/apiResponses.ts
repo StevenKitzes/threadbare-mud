@@ -1,5 +1,9 @@
 import { ApiResponse } from "@/types";
 
+export const err400 = (customMessage?: string): ApiResponse => ({
+  message: `Input not accepted.${customMessage ? ` ${customMessage}` : ''}`,
+  status: 400
+});
 export const err401 = (customMessage?: string): ApiResponse => ({
   message: `Session invalid.${customMessage ? ` ${customMessage}` : ''}`,
   status: 401

@@ -45,6 +45,10 @@ export type CookieKillerBody = {
   status: number
 };
 
+export type CreateCharacterPayload = {
+  name: string;
+};
+
 export type GameAction = {
   token: string;
   gameAction: string;
