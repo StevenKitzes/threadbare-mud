@@ -87,10 +87,12 @@ export const readCharacter = (characterId: string): Character | undefined => {
 };
 
 export const readCharactersByUserId = (userId: string): Character[] | undefined => {
+  console.log('trying to read character list with', userId)
   try {
     const intermediaries: CharacterDBIntermediary[] = db.prepare(`
       SELECT * FROM characters WHERE user_id = ?;
     `).all(userId) as CharacterDBIntermediary[];
+    intermediaries.forEach(i => console.log('intermediary:', i));
     return intermediaries.map(i => dbToChar(i));
   } catch (err: any) {
     console.error("Error retrieving character list from database . . .", err.toString() || "count not parse error description");

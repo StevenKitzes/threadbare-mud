@@ -49,7 +49,39 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             character.inventory = newInventory;
             scenes.get(character.scene_id).publicInventory.push(itemId);
             emitSelf(`You dropped ${itemTitle}.`);
-            emitOthers(`${character.name} dropped ${itemTitle}.`)
+            emitOthers(`${character.name} dropped ${itemTitle}.`);
+            return true;
+          }
+        }
+      };
+      emitSelf(`You do not have any [${itemTitle}] to drop.`);
+    }
+
+    return true;
+  }
+
+  // pick up an item in your current scene
+  if (
+    command.match(/^get /)
+  ) {
+    const getPattern = /^get (.*)$/;
+    const match = command.match(getPattern);
+    
+    if (!match) return false;
+
+    if (match.length > 1) {
+      const itemTitle: string = match[1];
+      const sceneInventory: string[] = scenes.get(character.scene_id).publicInventory;
+
+      for (let i = 0; i < sceneInventory.length; i++) {
+        if (itemTitle === items.get(sceneInventory[i]).title) {
+          const itemId: string = items.get(sceneInventory[i]).id;
+          const newInventory: string[] = [...character.inventory, itemId];
+          if (writeCharacterInventory(character.id, newInventory)) {
+            character.inventory = newInventory;
+            sceneInventory.splice(i, 1);
+            emitSelf(`You picked up ${itemTitle}.`);
+            emitOthers(`${character.name} picked up ${itemTitle}.`);
             return true;
           }
         }
