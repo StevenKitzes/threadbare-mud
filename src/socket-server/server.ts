@@ -70,7 +70,12 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
 
 io.on('connection', (socket) => {
   console.info('A user connected');
-  socket.emit('request-initialization', { gameText: "Connected.  Divining your character information . . ."});
+  socket.emit('request-initialization', {
+    gameText: "Connected.  Divining your character information . . .",
+    options: {
+      echo: true
+    }
+  });
 
   socket.on('provide-token', (payload: { token: string }) => {
     console.log('Got provide-token event.');

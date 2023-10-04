@@ -2,11 +2,31 @@ import { Statement } from 'better-sqlite3';
 
 const db = require('./sqlite-get-db.ts');
 
-import { Character, User } from '../src/types';
+import { Character, Stories, User } from '../src/types';
 import { SceneIds } from '../src/socket-server/scenes/scenes';
 
+type CharacterDBIntermediary = {
+  id: string;
+  user_id: string;
+  name: string;
+  scene_id: string;
+  active: number;
+  stories: string;
+  scene_states: string;
+  money: number;
+  inventory: string;
+}
+
+function dbToChar(intermediary: CharacterDBIntermediary): Character {
+  return {
+    ...intermediary,
+    stories: JSON.parse(intermediary.stories),
+    scene_states: JSON.parse(intermediary.scene_states),
+    inventory: JSON.parse(intermediary.inventory)
+  }
+}
+
 export type Database = {
-  bumpStoryMain: (id: string) => boolean;
   navigateCharacter: (charId: string, sceneIdEnum: SceneIds) => boolean;
   readActiveCharacterBySession: (token: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
@@ -16,6 +36,7 @@ export type Database = {
   readUserBySession: (token: string) => User | undefined;
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
+  writeCharacterStory: (charId: string, story: Stories) => boolean;
   writeNewCharacter: (charId: string, userId: string, name: string) => TransactBundle;
   writeSessionToUser: (userId: string, token: string) => boolean;
   writeUser: (id: string, username: string, password: string, email: string) => TransactBundle;
@@ -25,17 +46,6 @@ export type TransactBundle = {
   statement: Statement,
   runValues: any[]
 };
-
-export const bumpStoryMain = (id: string): boolean => {
-  try {
-    db.prepare("UPDATE characters SET story_main = story_main + 1 WHERE id = ?;")
-      .run(id);
-    return true;
-  } catch (err: any) {
-    console.error("Error bumping story_main for user with id", id, err.toString());
-    return false;
-  }
-}
 
 export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolean => {
   const sceneId: string = sceneIdEnum.toString();
@@ -52,14 +62,13 @@ export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolea
 export const readActiveCharacterBySession = (token: string): Character | undefined => {
   console.log('readActiveCharacterBySession using tokne', token);
   try {
-    const character: Character = db.prepare(`
+    const intermediary: CharacterDBIntermediary = db.prepare(`
       SELECT characters.* FROM characters
       JOIN users ON characters.user_id = users.id
       WHERE users.session = ? AND characters.active = 1;
-    `).get(token) as Character;
-    if (character === undefined) throw new Error("Got undefined character.");
-    console.log('got character by name', character.name);
-    return character;
+    `).get(token) as CharacterDBIntermediary;
+    if (intermediary === undefined) throw new Error("Got undefined character.");
+    return dbToChar(intermediary);
   } catch (err: any) {
     console.error("Error retrieving active character from database by user id . . .", err.toString() || "count not parse error description");
     console.error("Had token:", token);
@@ -69,8 +78,8 @@ export const readActiveCharacterBySession = (token: string): Character | undefin
 
 export const readCharacter = (characterId: string): Character | undefined => {
   try {
-    const character: Character = db.prepare("SELECT * FROM characters WHERE id = ?;").get(characterId) as Character;
-    return character;
+    const intermediary: CharacterDBIntermediary = db.prepare("SELECT * FROM characters WHERE id = ?;").get(characterId) as CharacterDBIntermediary;
+    return dbToChar(intermediary);
   } catch (err: any) {
     console.error("Error retrieving character from database . . .", err.toString() || "could not parse error description");
     return undefined;
@@ -79,10 +88,10 @@ export const readCharacter = (characterId: string): Character | undefined => {
 
 export const readCharactersByUserId = (userId: string): Character[] | undefined => {
   try {
-    const characters: Character[] = db.prepare(`
+    const intermediaries: CharacterDBIntermediary[] = db.prepare(`
       SELECT * FROM characters WHERE user_id = ?;
-    `).all(userId) as Character[];
-    return characters;
+    `).all(userId) as CharacterDBIntermediary[];
+    return intermediaries.map(i => dbToChar(i));
   } catch (err: any) {
     console.error("Error retrieving character list from database . . .", err.toString() || "count not parse error description");
     return undefined;
@@ -146,9 +155,23 @@ export const writeActiveCharacter = (userId: string, characterId: string): boole
   }
 }
 
+export const writeCharacterStory = (charId: string, stories: Stories): boolean => {
+  try {
+    db.prepare("UPDATE characters SET stories = ? WHERE id = ?;")
+      .run(JSON.stringify(stories), charId);
+    return true;
+  } catch (err: any) {
+    console.error("Error updating character story for charId:", charId, "with stories", stories, err.toString());
+    return false;
+  }
+}
+
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
-    statement: db.prepare("INSERT INTO characters (id, user_id, name, scene_id, active, story_main) VALUES (?, ?, ?, 'testScene1Id', 0, 0);"),
+    statement: db.prepare(`
+      INSERT INTO characters (id, user_id, name, scene_id, active, stories, scene_states, money, inventory)
+      VALUES (?, ?, ?, '0', 0, '{\"main\": 0}', '{}', 0, '[]');
+    `),
     runValues: [charId, userId, name]
   };
 }
@@ -172,7 +195,6 @@ export const writeUser = (id: string, username: string, password: string, email:
 };
 
 const database: Database = {
-  bumpStoryMain,
   navigateCharacter,
   readActiveCharacterBySession,
   readCharacter,
@@ -182,6 +204,7 @@ const database: Database = {
   readUserBySession,
   transact,
   writeActiveCharacter,
+  writeCharacterStory,
   writeNewCharacter,
   writeSessionToUser,
   writeUser

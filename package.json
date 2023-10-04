@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "all": "concurrently --kill-others \"next dev\" \"ts-node src/socket-server/server.ts\"",
+    "all": "concurrently --kill-others \"next dev\" \"nodemon src/socket-server/server.ts\"",
     "build": "next build",
     "create": "ts-node-esm sqlite/sqlite-create-db.ts",
     "dev": "next dev",
@@ -35,6 +35,7 @@
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",
     "next": "13.4.19",
+    "nodemon": "^3.0.1",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",

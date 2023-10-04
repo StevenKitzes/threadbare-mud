@@ -1,4 +1,4 @@
-import { GameText } from "@/types";
+import { GameText } from "../types";
 
 export type OptsType = {
   echo?: boolean;

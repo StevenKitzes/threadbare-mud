@@ -23,7 +23,10 @@ statements.push(db.prepare(`CREATE TABLE IF NOT EXISTS characters (
   name TEXT UNIQUE NOT NULL,
   scene_id TEXT NOT NULL,
   active INTEGER NOT NULL,
-  story_main INTEGER NOT NULL,
+  stories TEXT NOT NULL,
+  scene_states TEXT NOT NULL,
+  money INTEGER NOT NULL,
+  inventory TEXT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users (id)
 );`));
 

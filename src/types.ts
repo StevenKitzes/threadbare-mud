@@ -1,19 +1,30 @@
 // Data types
 
+export type Stories = {
+  main: number;
+};
+
 export type Character = {
-  id: string,
-  user_id: string,
-  name: string,
-  scene_id: string,
-  active: number,
-  story_main: number,
+  id: string;
+  user_id: string;
+  name: string;
+  scene_id: string;
+  active: number;
+  stories: Stories;       // kvp object - key is story name, value is integer denoting progress
+  scene_states: any;      // kvp object - key is scene id enum, value is a state defined by that scene
+  money: number;
+  inventory: string[];    // simple list of item enums, duplicates allowed
 };
 
 export type User = {
-  id: string,
-  username: string,
-  password: string,
-  email?: string
+  id: string;
+  username: string;
+  password: string;
+  email?: string;
+};
+
+export type StoryProgress = {
+  main: number;
 };
 
 // App type definitions
@@ -25,8 +36,8 @@ export type ApiResponse = {
 };
 
 export type CookieKillerBody = {
-  headers: { 'Set-Cookie': string },
-  status: number
+  headers: { 'Set-Cookie': string };
+  status: number;
 };
 
 export type CreateCharacterPayload = {
@@ -36,7 +47,7 @@ export type CreateCharacterPayload = {
 export type GameAction = {
   token: string;
   gameAction: string;
-}
+};
 
 export type GameText = {
   gameText: string | string[];
@@ -45,7 +56,7 @@ export type GameText = {
     error?: boolean;
     other?: boolean;
   };
-}
+};
 
 export type LoginPayload = {
   user: string;

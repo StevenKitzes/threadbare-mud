@@ -1,11 +1,11 @@
-import { bumpStoryMain, navigateCharacter } from '../../../sqlite/sqlite';
+import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import { HandlerOptions } from '../server';
 import { appendAlsoHereString } from '../../utils/appendAlsoHereString';
-import { getGameTextObject } from '../../utils/getGameTextObject';
 import { getEmitters } from '../../utils/emitHelper';
 
 export type Scene = {
   title: string;
+  publicInventory: string[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
 };
 
@@ -18,6 +18,7 @@ export enum SceneIds {
 
 scenes.set(SceneIds.A_COLD_BEDROOM, {
   title: "A cold bedroom",
+  publicInventory: [],
   handleSceneCommand: (handlerOptions: HandlerOptions): boolean => {
     const { character, characterList, command, socket } = handlerOptions;
     const { name, scene_id: sceneId } = character;
@@ -27,8 +28,11 @@ scenes.set(SceneIds.A_COLD_BEDROOM, {
       emitOthers(`${name} looks around the bedroom.`);
 
       const actorText: string[] = [];
-      if (character.story_main === 0 && bumpStoryMain(character.id)) {
-        character.story_main++;
+      if (
+        character.stories.main === 0 &&
+        writeCharacterStory(character.id, { ...character.stories, main: 1 })
+      ) {
+        character.stories.main++;
         actorText.push("You awaken to the feeling of satin sheets against your skin and a comfortable mattress beneath you.  You hear voices, a whole grandiose chorus of them, singing a song that seems to fall from its crescendo just as you are coming to your senses.  As your thoughts begin to coalesce, you realize that you have no memory of how you came to be where you are.  In fact, you aren't even sure who you are, beyond a name that rings in the corner of your mind:");
         actorText.push(`${name}.`);
       }
@@ -91,6 +95,7 @@ scenes.set(SceneIds.A_COLD_BEDROOM, {
 
 scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
   title: "A marvelous library",
+  publicInventory: [],
   handleSceneCommand: (handlerOptions: HandlerOptions): boolean => {
     const { character, characterList, command, socket } = handlerOptions;
     const { name, scene_id: sceneId } = character;
@@ -145,7 +150,7 @@ scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
       socket.leave(sceneId);
       character.scene_id = SceneIds.A_COLD_BEDROOM;
       socket.join(SceneIds.A_COLD_BEDROOM)
-      
+
       return scenes.get(SceneIds.A_COLD_BEDROOM).handleSceneCommand({
         ...handlerOptions,
         command: 'look'
