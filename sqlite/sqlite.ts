@@ -36,6 +36,7 @@ export type Database = {
   readUserBySession: (token: string) => User | undefined;
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
+  writeCharacterInventory: (charId: string, inventory: string[]) => boolean;
   writeCharacterStory: (charId: string, story: Stories) => boolean;
   writeNewCharacter: (charId: string, userId: string, name: string) => TransactBundle;
   writeSessionToUser: (userId: string, token: string) => boolean;
@@ -60,7 +61,6 @@ export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolea
 }
 
 export const readActiveCharacterBySession = (token: string): Character | undefined => {
-  console.log('readActiveCharacterBySession using tokne', token);
   try {
     const intermediary: CharacterDBIntermediary = db.prepare(`
       SELECT characters.* FROM characters
@@ -155,6 +155,17 @@ export const writeActiveCharacter = (userId: string, characterId: string): boole
   }
 }
 
+export const writeCharacterInventory = (charId: string, inventory: string[]) => {
+  try {
+    db.prepare("UPDATE characters SET inventory = ? WHERE id = ?;")
+      .run(JSON.stringify(inventory), charId);
+    return true;
+  } catch (err: any) {
+    console.error("Error updating character inventory for charId:", charId, "with inventory", inventory, err.toString());
+    return false;
+  }
+}
+
 export const writeCharacterStory = (charId: string, stories: Stories): boolean => {
   try {
     db.prepare("UPDATE characters SET stories = ? WHERE id = ?;")
@@ -204,6 +215,7 @@ const database: Database = {
   readUserBySession,
   transact,
   writeActiveCharacter,
+  writeCharacterInventory,
   writeCharacterStory,
   writeNewCharacter,
   writeSessionToUser,

@@ -3,7 +3,10 @@ import { HandlerOptions } from '../server';
 import { appendAlsoHereString } from '../../utils/appendAlsoHereString';
 import { getEmitters } from '../../utils/emitHelper';
 
+import { items } from '../items/items';
+
 export type Scene = {
+  id: string;
   title: string;
   publicInventory: string[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
@@ -16,7 +19,16 @@ export enum SceneIds {
   A_MARVELOUS_LIBRARY = "1",
 }
 
+function appendItemsHereString(actorText: string[], sceneId: string): void {
+  const itemTitles: string[] | null =
+    scenes.get(sceneId).publicInventory.map(i => `There is ${items.get(i).title} laying here.`);
+  if (!itemTitles) return;
+  actorText.push(...itemTitles);
+}
+
+// Example with story happening
 scenes.set(SceneIds.A_COLD_BEDROOM, {
+  id: SceneIds.A_COLD_BEDROOM,
   title: "A cold bedroom",
   publicInventory: [],
   handleSceneCommand: (handlerOptions: HandlerOptions): boolean => {
@@ -38,7 +50,8 @@ scenes.set(SceneIds.A_COLD_BEDROOM, {
       }
       actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural shape, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
       appendAlsoHereString(actorText, character, characterList);
-      
+      appendItemsHereString(actorText, SceneIds.A_COLD_BEDROOM);
+
       emitSelf(actorText);
 
       return true;
@@ -94,6 +107,7 @@ scenes.set(SceneIds.A_COLD_BEDROOM, {
 });
 
 scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
+  id: SceneIds.A_MARVELOUS_LIBRARY,
   title: "A marvelous library",
   publicInventory: [],
   handleSceneCommand: (handlerOptions: HandlerOptions): boolean => {
@@ -108,6 +122,7 @@ scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
       actorText.push("The arched ceiling soars high overhead, obscured in darkness.  The [bookshelves] lining the walls of this circular room rise into those same shadows.  Down below, light of every color streams in through stained glass windows, and motes of dust hang in the air, sparkling and shimmering.  Luxurious pillows and upholstery line the elaborate furnishings - though the vivacity of the scene is dulled a bit by a thin layer of dust that lies over everything.  The number and variety of the library's many [books] and [scrolls] is also impressive.  They are stacked on tables and desks in piles, disorderly but not quite discarded.");
       actorText.push("Aside from the [heavy door] you first used to enter this room, there are a few others, but for now they are all locked.");
       appendAlsoHereString(actorText, character, characterList);
+      appendItemsHereString(actorText, SceneIds.A_COLD_BEDROOM);
       
       emitSelf(actorText);
 

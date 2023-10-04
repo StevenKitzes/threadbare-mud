@@ -10,6 +10,8 @@ dotenv.config({ override: true });
 
 import { readActiveCharacterBySession } from '../../sqlite/sqlite';
 import { handleCharacterCommand } from './character/character';
+
+import { items } from './items/items';
 import { scenes } from './scenes/scenes';
 
 export type HandlerOptions = {
