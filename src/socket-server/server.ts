@@ -49,7 +49,15 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
         "When you come across interesting characters, you can [talk] to them or even [fight] with them!",
         "- Try [talk old man] or [fight squirrel]!",
         "If you want to leave a scene, you can [go] through an exit.",
-        "- Try [go heavy door] to see where you will end up!"
+        "- Try [go heavy door] to see where you will end up!",
+        "If you want to pick up an item you find in the world, [get] it!",
+        "- Try [get sword] if you see one!",
+        "If you want to drop an item in your inventory, [drop] it!",
+        "- Try [drop helmet] if you have one you don't want anymore!",
+        "You can [use], [wear], or [equip] appropriate items in your inventory.",
+        "- Try [use wand], [wear armor], or [equip magic staff]!",
+        "",
+        "If you are ever stuck or confused, try [hint] in your current scene to see if there is anything you haven't tried."
       ]
     });
     return;

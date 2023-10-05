@@ -1,8 +1,11 @@
+import { HandlerOptions } from "../server";
+
 export type Item = {
   id: string;
   type: ItemTypes;
   title: string;
   value: number;
+  handleSceneCommand?: (handlerOptions: HandlerOptions) => boolean;
 };
 
 export const items: Map<string, Item> = new Map<string, Item>();
