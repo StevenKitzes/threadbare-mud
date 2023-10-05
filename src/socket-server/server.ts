@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
         socket,
         character: connectedCharacter,
         characterList: characters,
-        command: 'look'
+        command: 'enter'
       });
 
       // console.log("Characters in session:");

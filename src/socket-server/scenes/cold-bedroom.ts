@@ -1,4 +1,4 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
+import { navigateCharacter, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
@@ -24,7 +24,11 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (command === 'enter') {
     if (!character.scene_states.hasOwnProperty(id)) {
-      character.scene_states[id] = initialSceneState;
+      const newSceneState: any = { ...character.scene_states };
+      newSceneState[sceneId] = initialSceneState;
+      if (writeCharacterSceneStates(character.id, newSceneState)) {
+        character.scene_states[id] = initialSceneState;
+      }
     }
     return handleSceneCommand({
       ...handlerOptions,

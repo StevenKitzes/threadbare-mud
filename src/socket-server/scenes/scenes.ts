@@ -15,9 +15,9 @@ export enum SceneIds {
   CURVING_STONE_STAIRCASE = "3",
 }
 
-import('../scenes/cold-bedroom').then(scene => scenes.set(scene.id, scene));
-import('../scenes/magnificent-library').then(scene => scenes.set(scene.id, scene));
-import('../scenes/curving-stone-staircase').then(scene => scenes.set(scene.id, scene));
+import('./cold-bedroom').then(scene => scenes.set(scene.id, scene));
+import('./magnificent-library').then(scene => scenes.set(scene.id, scene));
+import('./curving-stone-staircase').then(scene => scenes.set(scene.id, scene));
 
 export default {
   scenes

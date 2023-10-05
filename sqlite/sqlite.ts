@@ -46,6 +46,7 @@ export type Database = {
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
   writeCharacterInventory: (charId: string, inventory: string[]) => boolean;
+  writeCharacterSceneStates: (charId: string, sceneStates: any) => boolean;
   writeCharacterStory: (charId: string, story: Stories) => boolean;
   writeNewCharacter: (charId: string, userId: string, name: string) => TransactBundle;
   writeSessionToUser: (userId: string, token: string) => boolean;
@@ -174,6 +175,17 @@ export const writeCharacterInventory = (charId: string, inventory: string[]) => 
   }
 }
 
+export const writeCharacterSceneStates = (charId: string, sceneStates: any) => {
+  try {
+    db.prepare("UPDATE characters SET scene_states = ? WHERE id = ?;")
+      .run(JSON.stringify(sceneStates), charId);
+    return true;
+  } catch (err: any) {
+    console.error("Error updating character scene states for charId:", charId, "with scene states", sceneStates, err.toString());
+    return false;
+  }
+}
+
 export const writeCharacterStory = (charId: string, stories: Stories): boolean => {
   try {
     db.prepare("UPDATE characters SET stories = ? WHERE id = ?;")
@@ -224,6 +236,7 @@ const database: Database = {
   transact,
   writeActiveCharacter,
   writeCharacterInventory,
+  writeCharacterSceneStates,
   writeCharacterStory,
   writeNewCharacter,
   writeSessionToUser,

@@ -19,11 +19,15 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
   if (command === 'enter') {
-    // Only relevant to scenes that need to track internal state
+    // Only relevant to scenes with scene state, to set up initial state
     if (!character.scene_states.hasOwnProperty(id)) {
-      character.scene_states[id] = initialSceneState;
+      const newSceneState: any = { ...character.scene_states };
+      newSceneState[sceneId] = initialSceneState;
+      if (writeCharacterSceneStates(character.id, newSceneState)) {
+        character.scene_states[id] = initialSceneState;
+      }
     }
-    // Look at the room you just entered
+    
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
