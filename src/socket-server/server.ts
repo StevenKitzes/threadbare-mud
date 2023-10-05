@@ -10,9 +10,8 @@ dotenv.config({ override: true });
 
 import { readActiveCharacterBySession } from '../../sqlite/sqlite';
 import { handleCharacterCommand } from './character/character';
-import jStr from '../utils/jStr';
 
-import { scenes } from './scenes/scenes';
+import { Scene, scenes } from './scenes/scenes';
 
 export type HandlerOptions = {
   io: Server;
@@ -63,9 +62,20 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
 
   // check if there are any character level input options for this character
   if (handleCharacterCommand(handlerOptions)) return;
-
+  
   // check if there are any scene level input options for this character's scene
-  if (scenes.get(character.scene_id).handleSceneCommand(handlerOptions)) return;
+  try {
+    const scene: Scene | undefined = scenes.get(character.scene_id);
+    if (scene === undefined) {
+      console.error("Could not get character's scene at handleGameAction in server.ts with sceneId:", character.scene_id);
+      return;
+    }
+    if (scene.handleSceneCommand(handlerOptions)) return;
+  } catch(err) {
+    console.error('failed loading scene id', character.scene_id)
+    console.error('scene ids', scenes.keys())
+  }
+  
   
   // if the action was not recognized
   socket.emit('game-text', {
