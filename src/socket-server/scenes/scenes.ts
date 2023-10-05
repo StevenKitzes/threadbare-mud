@@ -18,6 +18,7 @@ export const scenes: Map<string, Scene> = new Map<string, Scene>();
 export enum SceneIds {
   A_COLD_BEDROOM = "1",
   A_MARVELOUS_LIBRARY = "2",
+  A_CURVING_STONE_STAIRCASE = "3",
 }
 
 function appendItemsHereString(actorText: string[], sceneId: string): void {
@@ -58,7 +59,6 @@ function lookSceneItem(
   }
 }
 
-// Example with story happening
 scenes.set(SceneIds.A_COLD_BEDROOM, {
   id: SceneIds.A_COLD_BEDROOM,
   title: "A cold bedroom",
@@ -123,14 +123,15 @@ scenes.set(SceneIds.A_COLD_BEDROOM, {
       return true;
     }
 
-    if (command.includes('go door') && navigateCharacter(character.id, SceneIds.A_MARVELOUS_LIBRARY)) {
+    let destination: SceneIds = SceneIds.A_MARVELOUS_LIBRARY;
+    if (command.includes('go door') && navigateCharacter(character.id, destination)) {
       emitOthers(`${name} departs through a heavy wooden door.`);
 
       socket.leave(sceneId);
-      character.scene_id = SceneIds.A_MARVELOUS_LIBRARY
-      socket.join(SceneIds.A_MARVELOUS_LIBRARY)
+      character.scene_id = destination;
+      socket.join(destination);
 
-      return scenes.get(SceneIds.A_MARVELOUS_LIBRARY).handleSceneCommand({
+      return scenes.get(destination).handleSceneCommand({
         ...handlerOptions,
         command: 'look'
       });
@@ -154,14 +155,16 @@ scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
 
       const actorText: string[] = [];
       actorText.push("The arched ceiling soars high overhead, obscured in darkness.  The [bookshelves] lining the walls of this circular room rise into those same shadows.  Down below, light of every color streams in through stained glass windows, and motes of dust hang in the air, sparkling and shimmering.  Luxurious pillows and upholstery line the elaborate furnishings - though the vivacity of the scene is dulled a bit by a thin layer of dust that lies over everything.  The number and variety of the library's many [books] and [scrolls] is also impressive.  They are stacked on tables and desks in piles, disorderly but not quite discarded.");
-      actorText.push("Aside from the [heavy door] you first used to enter this room, there are a few others, but for now they are all locked.");
+      actorText.push("Aside from the [heavy door] you first used to enter this room, there are a few others, but for now they are all locked.  You can also go down a curving stone [staircase].");
       appendAlsoHereString(actorText, character, characterList);
-      appendItemsHereString(actorText, SceneIds.A_COLD_BEDROOM);
+      appendItemsHereString(actorText, SceneIds.A_MARVELOUS_LIBRARY);
       
       emitSelf(actorText);
 
       return true;
     }
+    
+    if (lookSceneItem(command, SceneIds.A_MARVELOUS_LIBRARY, character.name, emitOthers, emitSelf)) return true;
     
     if (command.includes('look bookshelves')) {
       emitOthers(`${name} gazes up at the soaring bookshelves.`);
@@ -193,14 +196,29 @@ scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
       return true;
     }
 
-    if (command.includes('go heavy door') && navigateCharacter(character.id, SceneIds.A_COLD_BEDROOM)) {
+    let destination: SceneIds = SceneIds.A_COLD_BEDROOM;
+    if (command.includes('go heavy door') && navigateCharacter(character.id, destination)) {
       emitOthers(`${name} departs through a heavy wooden door.`);
 
       socket.leave(sceneId);
-      character.scene_id = SceneIds.A_COLD_BEDROOM;
-      socket.join(SceneIds.A_COLD_BEDROOM)
+      character.scene_id = destination;
+      socket.join(destination);
 
-      return scenes.get(SceneIds.A_COLD_BEDROOM).handleSceneCommand({
+      return scenes.get(destination).handleSceneCommand({
+        ...handlerOptions,
+        command: 'look'
+      });
+    }
+
+    destination = SceneIds.A_CURVING_STONE_STAIRCASE;
+    if (command.includes('go staircase') && navigateCharacter(character.id, destination)) {
+      emitOthers(`${name} heads down a curving stone staircase.`);
+
+      socket.leave(sceneId);
+      character.scene_id = destination;
+      socket.join(destination);
+
+      return scenes.get(destination).handleSceneCommand({
         ...handlerOptions,
         command: 'look'
       });
@@ -209,6 +227,111 @@ scenes.set(SceneIds.A_MARVELOUS_LIBRARY, {
     return false;
   }
 });
+
+scenes.set(SceneIds.A_CURVING_STONE_STAIRCASE, {
+  id: SceneIds.A_CURVING_STONE_STAIRCASE,
+  title: "A curving stone staircase",
+  publicInventory: [],
+  handleSceneCommand: (handlerOptions: HandlerOptions): boolean => {
+    const { character, characterList, command, socket } = handlerOptions;
+    const { name, scene_id: sceneId } = character;
+    const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
+
+    if (command === 'look') {
+      emitOthers(`${name} looks around the bedroom.`);
+
+      const actorText: string[] = [];
+
+      actorText.push("This is a pretty plain stone staircase.  At the bottom is stuff I haven't created yet.  You can go [up] the stairs, but the bottom is blocked.");
+      appendAlsoHereString(actorText, character, characterList);
+      appendItemsHereString(actorText, SceneIds.A_CURVING_STONE_STAIRCASE);
+
+      emitSelf(actorText);
+
+      return true;
+    }
+
+    if (lookSceneItem(command, SceneIds.A_CURVING_STONE_STAIRCASE, character.name, emitOthers, emitSelf)) return true;
+    
+    let destination: SceneIds = SceneIds.A_MARVELOUS_LIBRARY;
+    if (command.includes('go up') && navigateCharacter(character.id, destination)) {
+      emitOthers(`${name} wanders up the stairs.`);
+
+      socket.leave(sceneId);
+      character.scene_id = destination;
+      socket.join(destination);
+
+      return scenes.get(destination).handleSceneCommand({
+        ...handlerOptions,
+        command: 'look'
+      });
+    }
+
+    return false;
+  }
+});
+
+
+/* Scene template
+scenes.set(SceneIds, {
+  id: SceneIds,
+  title: ,
+  publicInventory: [],
+  handleSceneCommand: (handlerOptions: HandlerOptions): boolean => {
+    const { character, characterList, command, socket } = handlerOptions;
+    const { name, scene_id: sceneId } = character;
+    const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
+
+    if (command === 'look') {
+      emitOthers(`${name} looks around the bedroom.`);
+
+      const actorText: string[] = [];
+
+      // Story handling
+      if (
+        character.stories. ===  &&
+        writeCharacterStory(character.id, { ...character.stories, :  })
+      ) {
+        character.stories.++;
+        actorText.push(storytext);
+      }
+      actorText.push(scenedescription);
+      appendAlsoHereString(actorText, character, characterList);
+      appendItemsHereString(actorText, SceneIds);
+
+      emitSelf(actorText);
+
+      return true;
+    }
+
+    if (lookSceneItem(command, SceneIds, character.name, emitOthers, emitSelf)) return true;
+    
+    if (command.includes(specialcommand)) {
+      emitOthers(specialothersemit);
+
+      emitSelf(specialselfemit);
+
+      return true;
+    }
+
+    let destination: SceneIds = SceneIds;
+    if (command.includes(gocommand) && navigateCharacter(character.id, destination)) {
+      emitOthers(emitothers);
+
+      socket.leave(sceneId);
+      character.scene_id = destination;
+      socket.join(destination);
+
+      return scenes.get(destination).handleSceneCommand({
+        ...handlerOptions,
+        command: 'look'
+      });
+    }
+
+    return false;
+  }
+});
+/* Scene template */
 
 export default {
   scenes

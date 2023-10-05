@@ -109,7 +109,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       for (let i = 0; i < sceneInventory.length; i++) {
         if (items.get(sceneInventory[i]).keywords.includes(userInput)) {
           const itemId: string = items.get(sceneInventory[i]).id;
-          const itemTitle: string = items.get(character.inventory[i]).title;
+          const itemTitle: string = items.get(sceneInventory[i]).title;
           const newInventory: string[] = [...character.inventory, itemId];
           if (writeCharacterInventory(character.id, newInventory)) {
             character.inventory = newInventory;
