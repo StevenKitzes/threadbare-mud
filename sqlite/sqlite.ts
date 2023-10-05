@@ -15,15 +15,24 @@ type CharacterDBIntermediary = {
   scene_states: string;
   money: number;
   inventory: string;
+  // worn items
+  headgear?: string;
+  armor?: string;
+  gloves?: string;
+  legwear?: string;
+  footwear?: string;
+  weapon?: string;
+  offhand?: string;
 }
 
 function dbToChar(intermediary: CharacterDBIntermediary): Character {
-  return {
+  const character: Character = {
     ...intermediary,
     stories: JSON.parse(intermediary.stories),
     scene_states: JSON.parse(intermediary.scene_states),
     inventory: JSON.parse(intermediary.inventory)
-  }
+  };
+  return character;
 }
 
 export type Database = {
@@ -63,9 +72,9 @@ export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolea
 export const readActiveCharacterBySession = (token: string): Character | undefined => {
   try {
     const intermediary: CharacterDBIntermediary = db.prepare(`
-      SELECT characters.* FROM characters
-      JOIN users ON characters.user_id = users.id
-      WHERE users.session = ? AND characters.active = 1;
+    SELECT characters.* FROM characters
+    JOIN users ON characters.user_id = users.id
+    WHERE users.session = ? AND characters.active = 1;
     `).get(token) as CharacterDBIntermediary;
     if (intermediary === undefined) throw new Error("Got undefined character.");
     return dbToChar(intermediary);

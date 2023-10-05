@@ -14,6 +14,13 @@ export type Character = {
   scene_states: any;      // kvp object - key is scene id enum, value is a state defined by that scene
   money: number;
   inventory: string[];    // simple list of item enums, duplicates allowed
+  headgear?: string;
+  armor?: string;
+  gloves?: string;
+  legwear?: string;
+  footwear?: string;
+  weapon?: string;
+  offhand?: string;
 };
 
 export type User = {

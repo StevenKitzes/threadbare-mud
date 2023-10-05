@@ -10,8 +10,8 @@ dotenv.config({ override: true });
 
 import { readActiveCharacterBySession } from '../../sqlite/sqlite';
 import { handleCharacterCommand } from './character/character';
+import jStr from '../utils/jStr';
 
-import { items } from './items/items';
 import { scenes } from './scenes/scenes';
 
 export type HandlerOptions = {
@@ -46,8 +46,6 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
         "- Try [look self] to see what happens!  Or just [look] to see what is around you.",
         "You can [peek] to look inside closed items or try to catch a glimpse through closed doors.",
         "- Try [peek door] when you see a [door] and maybe you can see what lies beyond . . .",
-        "When you come across interesting characters, you can [talk] to them or even [fight] with them!",
-        "- Try [talk old man] or [fight squirrel]!",
         "If you want to leave a scene, you can [go] through an exit.",
         "- Try [go heavy door] to see where you will end up!",
         "If you want to pick up an item you find in the world, [get] it!",
@@ -57,7 +55,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
         "You can [use], [wear], or [equip] appropriate items in your inventory.",
         "- Try [use wand], [wear armor], or [equip magic staff]!",
         "",
-        "If you are ever stuck or confused, try [hint] in your current scene to see if there is anything you haven't tried."
+        "Keep a look out for scene, item, and other desciptions with brackets for hints about what kinds of things you can [do] in the world!"
       ]
     });
     return;

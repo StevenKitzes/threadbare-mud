@@ -28,6 +28,7 @@ export const Game = (): JSX.Element => {
   }, []);
 
   const gameTextRef = useRef<HTMLDivElement>(null);
+  const gameInputRef = useRef<HTMLTextAreaElement>(null);
 
   function emitGameAction() {
     const cmd: string = command.trim();
@@ -76,6 +77,10 @@ export const Game = (): JSX.Element => {
   useEffect(() => {
     gameTextRef.current?.scrollTo(0, gameTextRef.current.scrollHeight);
   }, [ gameTextList ])
+
+  useEffect(() => {
+    gameInputRef.current?.focus();
+  }, [])
 
   useEffect(() => {
     // Make sure we have an auth token cookie
@@ -155,6 +160,7 @@ export const Game = (): JSX.Element => {
               emitGameAction();
             }
           }}
+          ref={gameInputRef}
           value={command}
         />
       </div>

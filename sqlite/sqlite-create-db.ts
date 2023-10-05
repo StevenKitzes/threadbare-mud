@@ -27,6 +27,13 @@ statements.push(db.prepare(`CREATE TABLE IF NOT EXISTS characters (
   scene_states TEXT NOT NULL,
   money INTEGER NOT NULL,
   inventory TEXT NOT NULL,
+  headgear TEXT,
+  armor TEXT,
+  gloves TEXT,
+  legwear TEXT,
+  footwear TEXT,
+  weapon TEXT,
+  offhand TEXT,
   FOREIGN KEY (user_id) REFERENCES users (id)
 );`));
 

@@ -3,7 +3,8 @@ import { HandlerOptions } from '../server';
 import { appendAlsoHereString } from '../../utils/appendAlsoHereString';
 import { getEmitters } from '../../utils/emitHelper';
 
-import { items } from '../items/items';
+import { Item, items } from '../items/items';
+import { OptsType } from '../../utils/getGameTextObject';
 
 export type Scene = {
   id: string;
@@ -15,15 +16,46 @@ export type Scene = {
 export const scenes: Map<string, Scene> = new Map<string, Scene>();
 
 export enum SceneIds {
-  A_COLD_BEDROOM = "0",
-  A_MARVELOUS_LIBRARY = "1",
+  A_COLD_BEDROOM = "1",
+  A_MARVELOUS_LIBRARY = "2",
 }
 
 function appendItemsHereString(actorText: string[], sceneId: string): void {
   const itemTitles: string[] | null =
     scenes.get(sceneId).publicInventory.map(i => `There is ${items.get(i).title} laying here.`);
-  if (!itemTitles) return;
+  if (!itemTitles || itemTitles.length === 0) return;
   actorText.push(...itemTitles);
+  actorText.push('You can look more closely with [look scene <item>].');
+}
+
+function lookSceneItem(
+  command: string,
+  sceneId: string,
+  charName: string,
+  emitOthers: (text: string | string[], opts?: OptsType) => void,
+  emitSelf: (text: string | string[], opts?: OptsType) => void
+) {
+  if (command.match(/^look scene /)) {
+    const lookPattern = /^look scene (.*)$/;
+    const match = command.match(lookPattern);
+    
+    if (!match) return false;
+
+    if (match.length > 1) {
+      const userInput: string = match[1];
+      const sceneInventory: string[] = scenes.get(sceneId).publicInventory;
+      for (let i = 0; i < sceneInventory.length; i++) {
+        const item: Item = items.get(sceneInventory[i]);
+        if (item.keywords.includes(userInput)) {
+          const itemDescription: string = item.description;
+          const itemTitle: string = item.title;
+          emitSelf(itemDescription);
+          emitOthers(`${charName} is closely inspecting ${itemTitle}.`);
+          return true;
+        }
+      };
+    }
+  }
 }
 
 // Example with story happening
@@ -56,6 +88,8 @@ scenes.set(SceneIds.A_COLD_BEDROOM, {
 
       return true;
     }
+
+    if (lookSceneItem(command, SceneIds.A_COLD_BEDROOM, character.name, emitOthers, emitSelf)) return true;
     
     if (command.includes('look drawers')) {
       emitOthers(`${name} investigates a chest of drawers.`);
