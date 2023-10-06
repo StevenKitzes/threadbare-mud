@@ -27,6 +27,9 @@ body {
 }
 
 @layer components {
+  .command-hint {
+    color: salmon;
+  }
   .page-foundation {
     @apply bg-black text-white flex flex-row w-screen h-screen;
   }

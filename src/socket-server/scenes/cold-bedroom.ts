@@ -104,8 +104,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (command.includes('get outfit')) {
-    console.log('get outfit called')
+  if (command.match(/^get (?:outfit|clothes)$/)) {
     if (!character.scene_states[id].outfitHere) return false;
 
     const newInventory: string[] = [

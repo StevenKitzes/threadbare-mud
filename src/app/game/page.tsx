@@ -143,11 +143,20 @@ export const Game = (): JSX.Element => {
           className='flex-grow bg-slate-900 mt-8 rounded-xl border-2 border-slate-500 p-4 w-full overflow-scroll'
         >
           {gameTextList.map(gt => {
-            const classStrings: string[] = [ 'text-lg' ];
+            const classStrings: string[] = [ 'text-lg mt-2' ];
             if (gt.options?.echo) classStrings.push('text-green-600');
             if (gt.options?.error) classStrings.push('text-red-500');
             if (gt.options?.other) classStrings.push('text-slate-400');
-            return (<div className={classStrings.join(' ')} key={ v4() }>{gt.gameText}</div>);
+            const content: string = Array.isArray(gt.gameText) ? gt.gameText.join(' ') : gt.gameText;
+            const formattedContent: string =
+              content.replace(/\[([^\]]+)\]/g, '<strong class="command-hint">[$1]</strong>');
+            return (
+              <div
+                className={classStrings.join(' ')}
+                dangerouslySetInnerHTML={{__html: formattedContent}}
+                key={ v4() }
+              />
+            );
           })}
         </div>
         <div className='text-base mt-4 ml-4'>
