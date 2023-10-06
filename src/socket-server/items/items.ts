@@ -22,6 +22,7 @@ export enum ItemTypes {
   gloves = "gloves",
   legwear = "legwear",
   footwear = "footwear",
+  offhand = "offhand",
   weapon = "weapon"
 };
 

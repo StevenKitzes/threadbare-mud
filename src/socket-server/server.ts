@@ -12,6 +12,7 @@ import { readActiveCharacterBySession } from '../../sqlite/sqlite';
 import { handleCharacterCommand } from './character/character';
 
 import { Scene, scenes } from './scenes/scenes';
+import jStr from '../utils/jStr';
 
 export type HandlerOptions = {
   io: Server;

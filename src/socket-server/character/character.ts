@@ -1,8 +1,8 @@
 import { HandlerOptions } from '../server';
 import { getEmitters } from '../../utils/emitHelper';
-import { items } from '../items/items';
+import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
-import { writeCharacterInventory } from '../../../sqlite/sqlite';
+import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
@@ -96,8 +96,8 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   }
 
   // pick up an item in your current scene
-  if (command.match(/^get /)) {
-    const getPattern = /^get (.*)$/;
+  if (command.match(/^(?:get|grab|pick up|take) /)) {
+    const getPattern = /^(?:get|grab|pick up|take) (.*)$/;
     const match = command.match(getPattern);
     
     if (!match) return false;
@@ -120,15 +120,13 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           }
         }
       };
-      emitSelf(`You do not have any [${userInput}] to drop.`);
     }
-
-    return true;
+    return false
   }
 
   // look at an item in your inventory
-  if (command.match(/^look inventory /)) {
-    const lookPattern = /^look inventory (.*)$/;
+  if (command.match(/^(?:look inventory|look inv|inspect) /)) {
+    const lookPattern = /^(?:look inventory|look inv|inspect) (.*)$/;
     const match = command.match(lookPattern);
     
     if (!match) return false;
@@ -136,14 +134,306 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (match.length > 1) {
       const userInput: string = match[1];
       for (let i = 0; i < character.inventory.length; i++) {
-        if (items.get(character.inventory[i]).keywords.includes(userInput)) {
-          const itemDescription: string = items.get(character.inventory[i]).description;
-          const itemTitle: string = items.get(character.inventory[i]).title;
-          emitSelf(itemDescription);
+        const item: Item = items.get(character.inventory[i]);
+        if (item.keywords.includes(userInput)) {
+          const itemDescription: string = item.description;
+          const itemTitle: string = item.title;
+          emitSelf(['In your inventory:', itemDescription]);
           emitOthers(`${character.name} is closely inspecting ${itemTitle}.`);
           return true;
         }
+      }
+
+      const headgear: Item = items.get(character.headgear);
+      if (headgear?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', headgear.description]);
+        emitOthers(`${character.name} is closely inspecting ${headgear.title}.`);
+        return true;
+      }
+
+      const armor: Item = items.get(character.armor);
+      if (armor?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', armor.description]);
+        emitOthers(`${character.name} is closely inspecting ${armor.title}.`);
+        return true;
+      }
+      const gloves: Item = items.get(character.gloves);
+      if (gloves?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', gloves.description]);
+        emitOthers(`${character.name} is closely inspecting ${gloves.title}.`);
+        return true;
+      }
+      const legwear: Item = items.get(character.legwear);
+      if (legwear?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', legwear.description]);
+        emitOthers(`${character.name} is closely inspecting ${legwear.title}.`);
+        return true;
+      }
+      const footwear: Item = items.get(character.footwear);
+      if (footwear?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', footwear.description]);
+        emitOthers(`${character.name} is closely inspecting ${footwear.title}.`);
+        return true;
+      }
+      const weapon: Item = items.get(character.weapon);
+      if (weapon?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', weapon.description]);
+        emitOthers(`${character.name} is closely inspecting ${weapon.title}.`);
+        return true;
+      }
+      const offhand: Item = items.get(character.offhand);
+      if (offhand?.keywords.includes(userInput)) {
+        emitSelf(['In your inventory:', offhand.description]);
+        emitOthers(`${character.name} is closely inspecting ${offhand.title}.`);
+        return true;
+      }
+    }
+  }
+
+  // equip an item from your inventory
+  if (command.match(/^(?:equip|wear|use) (.*)$/)) {
+    const equipPattern = /^(?:equip|wear|use) (.*)$/;
+    const match = command.match(equipPattern);
+    
+    if (!match) return false;
+
+    if (match.length > 1) {
+      const userInput: string = match[1];
+      for (let i = 0; i < character.inventory.length; i++) {
+        const item: Item = items.get(character.inventory[i]);
+        // If this is the item the user is trying to equip
+        if (item.keywords.includes(userInput)) {
+          
+          if (item.type === ItemTypes.headgear) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.headgear) newInventory.push(character.headgear);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              headgear: item.id,
+              inventory: newInventory
+            })) {
+              character.headgear = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} wears ${item.title} on their head.`);
+              emitSelf(`You wear ${item.title} on your head.`);
+              return true;
+            }
+          }
+          
+          if (item.type === ItemTypes.armor) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.armor) newInventory.push(character.armor);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              armor: item.id,
+              inventory: newInventory
+            })) {
+              character.armor = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} dons ${item.title} upon their person.`);
+              emitSelf(`You wear ${item.title} on your body.`);
+              return true;
+            }
+          }
+          
+          if (item.type === ItemTypes.gloves) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.gloves) newInventory.push(character.gloves);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              gloves: item.id,
+              inventory: newInventory
+            })) {
+              character.gloves = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} slips ${item.title} onto their hands.`);
+              emitSelf(`You slip your hands into ${item.title}.`);
+              return true;
+            }
+          }
+          
+          if (item.type === ItemTypes.legwear) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.legwear) newInventory.push(character.legwear);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              legwear: item.id,
+              inventory: newInventory
+            })) {
+              character.legwear = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} slips into ${item.title}.`);
+              emitSelf(`You put on ${item.title}.`);
+              return true;
+            }
+          }
+          
+          if (item.type === ItemTypes.footwear) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.footwear) newInventory.push(character.footwear);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              footwear: item.id,
+              inventory: newInventory
+            })) {
+              character.footwear = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} puts ${item.title} on their feet.`);
+              emitSelf(`You slip your feet into ${item.title}.`);
+              return true;
+            }
+          }
+          
+          if (item.type === ItemTypes.weapon) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.weapon) newInventory.push(character.weapon);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              weapon: item.id,
+              inventory: newInventory
+            })) {
+              character.weapon = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} wields ${item.title}.`);
+              emitSelf(`You ready ${item.title} for combat.`);
+              return true;
+            }
+          }
+          
+          if ([ ItemTypes.offhand, ItemTypes.trinket ].includes(item.type)) {
+            const newInventory: string[] = [ ...character.inventory ];
+            if (character.offhand) newInventory.push(character.offhand);
+            newInventory.splice(i, 1);
+            if (writeCharacterData(character.id, {
+              offhand: item.id,
+              inventory: newInventory
+            })) {
+              character.offhand = item.id;
+              character.inventory = newInventory;
+              emitOthers(`${character.name} holds ${item.title} in their hand.`);
+              emitSelf(`You hold onto ${item.title}.`);
+              return true;
+            }
+          }
+        }
       };
+    }
+  }
+
+  // remove an item and put it into your inventory
+  if (command.match(/^(?:remove|unequip) (.*)$/)) {
+    const removePattern = /^(?:remove|unequip) (.*)$/;
+    const match = command.match(removePattern);
+    
+    if (!match) return false;
+
+    if (match.length > 1) {
+      const userInput: string = match[1];
+
+      if (character.headgear && items.get(character.headgear).keywords.includes(userInput)) {
+        const item: Item = items.get(character.headgear);
+        const newInventory: string[] = [ ...character.inventory, character.headgear ];
+        if (writeCharacterData(character.id, {
+          headgear: null,
+          inventory: newInventory
+        })) {
+          character.headgear = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} removes ${item.title} from their head.`);
+          emitSelf(`You remove ${item.title} from your head.`);
+          return true;
+        }
+      }
+
+      if (character.armor && items.get(character.armor).keywords.includes(userInput)) {
+        const item: Item = items.get(character.armor);
+        const newInventory: string[] = [ ...character.inventory, character.armor ];
+        if (writeCharacterData(character.id, {
+          armor: null,
+          inventory: newInventory
+        })) {
+          character.armor = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} removes ${item.title}.`);
+          emitSelf(`You remove ${item.title}.`);
+          return true;
+        }
+      }
+
+      if (character.gloves && items.get(character.gloves).keywords.includes(userInput)) {
+        const item: Item = items.get(character.gloves);
+        const newInventory: string[] = [ ...character.inventory, character.gloves ];
+        if (writeCharacterData(character.id, {
+          gloves: null,
+          inventory: newInventory
+        })) {
+          character.gloves = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} pulls ${item.title} off of their hands.`);
+          emitSelf(`You remove ${item.title} from your hands.`);
+          return true;
+        }
+      }
+
+      if (character.legwear && items.get(character.legwear).keywords.includes(userInput)) {
+        const item: Item = items.get(character.legwear);
+        const newInventory: string[] = [ ...character.inventory, character.legwear ];
+        if (writeCharacterData(character.id, {
+          legwear: null,
+          inventory: newInventory
+        })) {
+          character.legwear = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} slips out of ${item.title}.`);
+          emitSelf(`You pull ${item.title} off of your legs.`);
+          return true;
+        }
+      }
+
+      if (character.footwear && items.get(character.footwear).keywords.includes(userInput)) {
+        const item: Item = items.get(character.footwear);
+        const newInventory: string[] = [ ...character.inventory, character.footwear ];
+        if (writeCharacterData(character.id, {
+          footwear: null,
+          inventory: newInventory
+        })) {
+          character.footwear = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} wrestles ${item.title} off of their feet.`);
+          emitSelf(`You pry ${item.title} off of your feet.`);
+          return true;
+        }
+      }
+
+      if (character.weapon && items.get(character.weapon).keywords.includes(userInput)) {
+        const item: Item = items.get(character.weapon);
+        const newInventory: string[] = [ ...character.inventory, character.weapon ];
+        if (writeCharacterData(character.id, {
+          weapon: null,
+          inventory: newInventory
+        })) {
+          character.weapon = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} puts ${item.title} away.`);
+          emitSelf(`You put away ${item.title}.`);
+          return true;
+        }
+      }
+
+      if (character.offhand && items.get(character.offhand).keywords.includes(userInput)) {
+        const item: Item = items.get(character.offhand);
+        const newInventory: string[] = [ ...character.inventory, character.offhand ];
+        if (writeCharacterData(character.id, {
+          offhand: null,
+          inventory: newInventory
+        })) {
+          character.offhand = null;
+          character.inventory = newInventory;
+          emitOthers(`${character.name} puts away ${item.title}.`);
+          emitSelf(`You put ${item.title} away.`);
+          return true;
+        }
+      }
     }
   }
 

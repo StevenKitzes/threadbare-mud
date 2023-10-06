@@ -5,6 +5,8 @@ const db = require('./sqlite-get-db.ts');
 import { Character, Stories, User } from '../src/types';
 import { SceneIds } from '../src/socket-server/scenes/scenes';
 
+import jStr from '../src/utils/jStr';
+
 type CharacterDBIntermediary = {
   id: string;
   user_id: string;
@@ -16,13 +18,13 @@ type CharacterDBIntermediary = {
   money: number;
   inventory: string;
   // worn items
-  headgear?: string;
-  armor?: string;
-  gloves?: string;
-  legwear?: string;
-  footwear?: string;
-  weapon?: string;
-  offhand?: string;
+  headgear: string | null;
+  armor: string | null;
+  gloves: string | null;
+  legwear: string | null;
+  footwear: string | null;
+  weapon: string | null;
+  offhand: string | null;
 }
 
 function dbToChar(intermediary: CharacterDBIntermediary): Character {
@@ -45,6 +47,19 @@ export type Database = {
   readUserBySession: (token: string) => User | undefined;
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
+  writeCharacterData: (charId: string, opts: {
+    stories?: Stories;
+    scene_states?: any;
+    money?: number;
+    inventory?: string[];
+    headgear?: string;
+    armor?: string;
+    gloves?: string;
+    legwear?: string;
+    footwear?: string;
+    weapon?: string;
+    offhand?: string;
+  }) => boolean;
   writeCharacterInventory: (charId: string, inventory: string[]) => boolean;
   writeCharacterSceneStates: (charId: string, sceneStates: any) => boolean;
   writeCharacterStory: (charId: string, story: Stories) => boolean;
@@ -167,7 +182,7 @@ export const writeActiveCharacter = (userId: string, characterId: string): boole
 export const writeCharacterInventory = (charId: string, inventory: string[]) => {
   try {
     db.prepare("UPDATE characters SET inventory = ? WHERE id = ?;")
-      .run(JSON.stringify(inventory), charId);
+      .run(jStr(inventory), charId);
     return true;
   } catch (err: any) {
     console.error("Error updating character inventory for charId:", charId, "with inventory", inventory, err.toString());
@@ -178,7 +193,7 @@ export const writeCharacterInventory = (charId: string, inventory: string[]) => 
 export const writeCharacterSceneStates = (charId: string, sceneStates: any) => {
   try {
     db.prepare("UPDATE characters SET scene_states = ? WHERE id = ?;")
-      .run(JSON.stringify(sceneStates), charId);
+      .run(jStr(sceneStates), charId);
     return true;
   } catch (err: any) {
     console.error("Error updating character scene states for charId:", charId, "with scene states", sceneStates, err.toString());
@@ -186,10 +201,79 @@ export const writeCharacterSceneStates = (charId: string, sceneStates: any) => {
   }
 }
 
+export const writeCharacterData = (charId: string, opts: {
+  stories?: Stories;
+  scene_states?: any;
+  money?: number;
+  inventory?: string[];
+  headgear?: string;
+  armor?: string;
+  gloves?: string;
+  legwear?: string;
+  footwear?: string;
+  weapon?: string;
+  offhand?: string;
+}): boolean => {
+  try {
+    const statements: TransactBundle[] = [];
+
+    if (opts.stories !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET stories = ? WHERE id = ?;"),
+      runValues: [jStr(opts.stories), charId]
+    });
+    if (opts.scene_states !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET scene_states = ? WHERE id = ?;"),
+      runValues: [jStr(opts.scene_states), charId]
+    });
+    if (opts.money !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET money = ? WHERE id = ?;"),
+      runValues: [opts.money, charId]
+    });
+    if (opts.inventory !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET inventory = ? WHERE id = ?;"),
+      runValues: [jStr(opts.inventory), charId]
+    });
+    if (opts.headgear !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET headgear = ? WHERE id = ?;"),
+      runValues: [opts.headgear, charId]
+    });
+    if (opts.armor !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET armor = ? WHERE id = ?;"),
+      runValues: [opts.armor, charId]
+    });
+    if (opts.gloves !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET gloves = ? WHERE id = ?;"),
+      runValues: [opts.gloves, charId]
+    });
+    if (opts.legwear !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET legwear = ? WHERE id = ?;"),
+      runValues: [opts.legwear, charId]
+    });
+    if (opts.footwear !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET footwear = ? WHERE id = ?;"),
+      runValues: [opts.footwear, charId]
+    });
+    if (opts.weapon !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET weapon = ? WHERE id = ?;"),
+      runValues: [opts.weapon, charId]
+    });
+    if (opts.offhand !== undefined) statements.push({
+      statement: db.prepare("UPDATE characters SET offhand = ? WHERE id = ?;"),
+      runValues: [opts.offhand, charId]
+    });
+
+    transact(statements);
+    return true;
+  } catch (err: any) {
+    console.error("Error updating faceted character data", err.toString());
+    return false;
+  }
+}
+
 export const writeCharacterStory = (charId: string, stories: Stories): boolean => {
   try {
     db.prepare("UPDATE characters SET stories = ? WHERE id = ?;")
-      .run(JSON.stringify(stories), charId);
+      .run(jStr(stories), charId);
     return true;
   } catch (err: any) {
     console.error("Error updating character story for charId:", charId, "with stories", stories, err.toString());
@@ -235,6 +319,7 @@ const database: Database = {
   readUserBySession,
   transact,
   writeActiveCharacter,
+  writeCharacterData,
   writeCharacterInventory,
   writeCharacterSceneStates,
   writeCharacterStory,

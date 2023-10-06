@@ -25,7 +25,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command === 'look') {
     emitOthers(`${name} looks around the bedroom.`);
 
-    const actorText: string[] = [];
+    const actorText: string[] = [title, '- - -'];
 
     actorText.push("This is a pretty plain stone staircase.  At the bottom is stuff I haven't created yet.  You can go [up] the stairs, but the bottom is blocked.");
     appendAlsoHereString(actorText, character, characterList);

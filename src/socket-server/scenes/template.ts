@@ -27,7 +27,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         character.scene_states[id] = initialSceneState;
       }
     }
-    
+
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
@@ -37,7 +37,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command === 'look') {
     emitOthers();
 
-    const actorText: string[] = [];
+    const actorText: string[] = [title, '- - -'];
+    
     // Only relevant to scenes that need to respond to story status
     if (
       // Check current story status

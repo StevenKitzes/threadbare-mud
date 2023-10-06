@@ -9,8 +9,8 @@ export function lookSceneItem(
   emitOthers: (text: string | string[], opts?: OptsType) => void,
   emitSelf: (text: string | string[], opts?: OptsType) => void
 ): boolean {
-  if (command.match(/^look scene /)) {
-    const lookPattern = /^look scene (.*)$/;
+  if (command.match(/^(?:look scene|inspect) /)) {
+    const lookPattern = /^(?:look scene|inspect) (.*)$/;
     const match = command.match(lookPattern);
     
     if (!match) return false;

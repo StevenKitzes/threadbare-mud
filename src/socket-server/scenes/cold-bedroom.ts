@@ -1,8 +1,10 @@
-import { navigateCharacter, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
+import { navigateCharacter, writeCharacterData, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
+import jStr from '../../utils/jStr';
 import lookSceneItem from '../../utils/lookSceneItem';
+import { ItemIds } from '../items/items';
 import { scenes, SceneIds } from '../scenes/scenes';
 import { HandlerOptions } from '../server';
 
@@ -10,11 +12,7 @@ const id: SceneIds = SceneIds.COLD_BEDROOM;
 const title: string = "A cold bedroom";
 const publicInventory: string[] = [];
 const initialSceneState: any = {
-  headbandHere: true,
-  tunicHere: true,
-  pantsHere: true,
-  bootsHere: true,
-  daggerHere: true
+  outfitHere: true
 };
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -39,7 +37,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command === 'look') {
     emitOthers(`${name} looks around the bedroom.`);
 
-    const actorText: string[] = [];
+    const actorText: string[] = [title, '- - -'];
     if (
       character.stories.main === 0 &&
       writeCharacterStory(character.id, { ...character.stories, main: 1 })
@@ -69,7 +67,20 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (command.includes('peek drawers')) {
     emitOthers(`${name} peeks inside a chest of drawers.`);
-    emitSelf('There is nothing inside.');
+
+    const actorText: string[] = [];
+    if (character.scene_states[id].outfitHere)
+      actorText.push('An [outfit] made of black cloth and leather rests in a drawer.');
+    else
+      actorText.push('There is nothing in the drawers.');
+
+    emitSelf(actorText);
+    return true;
+  }
+
+  if (command.includes('look outfit') && character.scene_states[id].outfitHere) {
+    emitOthers(`${name} inspects a black outfit.`);
+    emitSelf("This outfit, made of black cloth and leather, includes a tunic, pants, boots, and a black headband.");
     return true;
   }
 
@@ -89,6 +100,31 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     emitOthers(`${name} sneaks a peek through a heavy wooden door.`);
     emitSelf('Beyond the door, you can make out what looks to be a fabulous library.  You can see hints of bookshelves and dusty piles of old tomes and stacked scrolls.  The furniture is diverse and elaborate and the room is lit by a sparkling, multi-colored light filtering in through stained glass windows.');
     return true;
+  }
+
+  if (command.includes('get outfit')) {
+    console.log('get outfit called')
+    if (!character.scene_states[id].outfitHere) return false;
+
+    const newInventory: string[] = [
+      ...character.inventory,
+      ItemIds.BLACK_HEADBAND,
+      ItemIds.LOOSE_BLACK_TUNIC,
+      ItemIds.LOOSE_BLACK_PANTS,
+      ItemIds.SOFT_BLACK_BOOTS
+    ];
+    const newSceneStates: any = { ...character.scene_states[sceneId], outfitHere: false };
+    if (writeCharacterData(character.id, {
+      inventory: newInventory,
+      scene_states: newSceneStates
+    })) {
+      character.inventory = newInventory;
+      character.scene_states = newSceneStates;
+      emitOthers(`${character.name} digs a black outfit out of the chest of drawers.`);
+      emitSelf('You retrieve the outfit from the chest of drawers.');
+      return true;
+    }
+    return false;
   }
 
   let destination: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
