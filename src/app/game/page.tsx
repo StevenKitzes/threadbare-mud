@@ -136,9 +136,12 @@ export const Game = (): JSX.Element => {
 
   return (
     <div className='page-foundation'>
-      <div className='page-title'>
+      <div className='page-title flex flex-col'>
         Threadbare
-        <div ref={gameTextRef} className='bg-slate-900 mt-8 rounded-xl border-2 border-slate-500 p-4 w-full max-h-96 overflow-scroll'>
+        <div
+          ref={gameTextRef}
+          className='flex-grow bg-slate-900 mt-8 rounded-xl border-2 border-slate-500 p-4 w-full overflow-scroll'
+        >
           {gameTextList.map(gt => {
             const classStrings: string[] = [ 'text-lg' ];
             if (gt.options?.echo) classStrings.push('text-green-600');
