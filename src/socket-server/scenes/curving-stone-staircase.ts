@@ -23,11 +23,11 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   if (command === 'look') {
-    emitOthers(`${name} looks around the bedroom.`);
+    emitOthers(`${name} looks around the confined space of the stair well.`);
 
     const actorText: string[] = [title, '- - -'];
 
-    actorText.push("This is a pretty plain stone staircase.  At the bottom is stuff I haven't created yet.  You can go [up] the stairs, but the bottom is blocked.");
+    actorText.push("The walls of the staircase are made of the same plain, smooth-faced stone as the other rooms you've seen here.  There are tall, narrow tapestries of fine quality hanging there, and there is a lush carpet underfoot to soften your steps.  At the top of the stairs, you can see a [magnificent library], and below is another [large heavy door].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
 
@@ -38,8 +38,9 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, id, character.name, emitOthers, emitSelf)) return true;
   
-  let destination: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
-  if (command.includes('go up') && navigateCharacter(character.id, destination)) {
+  let destination: SceneIds;
+  destination = SceneIds.MAGNIFICENT_LIBRARY;
+  if (['magnificent library', 'library', 'up'].includes(command) && navigateCharacter(character.id, destination)) {
     emitOthers(`${name} wanders up the stairs.`);
 
     socket.leave(sceneId);

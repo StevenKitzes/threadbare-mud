@@ -19,23 +19,23 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       naked = false;
     }
     if (character.armor) {
-      actorText.push(`On your body, you have donned ${items.get(character.armor).title}`);
+      actorText.push(`On your body, you have donned ${items.get(character.armor).title}.`);
       naked = false;
     }
     if (character.gloves) {
-      actorText.push(`Covering your hands: ${items.get(character.gloves).title}`);
+      actorText.push(`Covering your hands: ${items.get(character.gloves).title}.`);
       naked = false;
     }
     if (character.legwear) {
-      actorText.push(`Your legs are covered by ${items.get(character.legwear).title}`);
+      actorText.push(`Your legs are covered by ${items.get(character.legwear).title}.`);
       naked = false;
     }
     if (character.footwear) {
-      actorText.push(`Your feet are protected by ${items.get(character.footwear).title}`);
+      actorText.push(`Your feet are protected by ${items.get(character.footwear).title}.`);
       naked = false;
     }
     if (character.weapon) {
-      actorText.push(`In case of trouble, you carry ${items.get(character.weapon).title}`);
+      actorText.push(`In case of trouble, you carry ${items.get(character.weapon).title}.`);
     }
     if (character.offhand) {
       actorText.push(`You carry ${items.get(character.offhand).title} at the ready in your off-hand.`);

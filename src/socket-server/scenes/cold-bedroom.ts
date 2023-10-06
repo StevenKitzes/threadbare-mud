@@ -45,6 +45,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       character.stories.main++;
       actorText.push("You awaken to the feeling of satin sheets against your skin and a comfortable mattress beneath you.  You hear voices, a whole grandiose chorus of them, singing a song that seems to fall from its crescendo just as you are coming to your senses.  As your thoughts begin to coalesce, you realize that you have no memory of how you came to be where you are.  In fact, you aren't even sure who you are, beyond a name that rings in the corner of your mind:");
       actorText.push(`${name}.`);
+    } else if (character.stories.main > 0) {
+      actorText.push("This was the room where you awoke on satin sheets.  You recall hearing singing voices and a song that made your skin tingle.");
     }
     actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural shape, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
     appendAlsoHereString(actorText, character, characterList);

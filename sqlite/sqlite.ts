@@ -215,54 +215,58 @@ export const writeCharacterData = (charId: string, opts: {
   offhand?: string;
 }): boolean => {
   try {
-    const statements: TransactBundle[] = [];
+    const updatePrefix: string = "UPDATE characters SET ";
+    const columnAssignments: string[] = [];
+    const updateSuffix: string = " WHERE id = ?;";
+    const values: any[] = [];
 
-    if (opts.stories !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET stories = ? WHERE id = ?;"),
-      runValues: [jStr(opts.stories), charId]
-    });
-    if (opts.scene_states !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET scene_states = ? WHERE id = ?;"),
-      runValues: [jStr(opts.scene_states), charId]
-    });
-    if (opts.money !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET money = ? WHERE id = ?;"),
-      runValues: [opts.money, charId]
-    });
-    if (opts.inventory !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET inventory = ? WHERE id = ?;"),
-      runValues: [jStr(opts.inventory), charId]
-    });
-    if (opts.headgear !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET headgear = ? WHERE id = ?;"),
-      runValues: [opts.headgear, charId]
-    });
-    if (opts.armor !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET armor = ? WHERE id = ?;"),
-      runValues: [opts.armor, charId]
-    });
-    if (opts.gloves !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET gloves = ? WHERE id = ?;"),
-      runValues: [opts.gloves, charId]
-    });
-    if (opts.legwear !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET legwear = ? WHERE id = ?;"),
-      runValues: [opts.legwear, charId]
-    });
-    if (opts.footwear !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET footwear = ? WHERE id = ?;"),
-      runValues: [opts.footwear, charId]
-    });
-    if (opts.weapon !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET weapon = ? WHERE id = ?;"),
-      runValues: [opts.weapon, charId]
-    });
-    if (opts.offhand !== undefined) statements.push({
-      statement: db.prepare("UPDATE characters SET offhand = ? WHERE id = ?;"),
-      runValues: [opts.offhand, charId]
-    });
+    if (opts.stories !== undefined) {
+      columnAssignments.push("stories = ?");
+      values.push(jStr(opts.stories));
+    }
+    if (opts.scene_states !== undefined) {
+      columnAssignments.push("scene_states = ?");
+      values.push(jStr(opts.scene_states));
+    }
+    if (opts.money !== undefined) {
+      columnAssignments.push("money = ?");
+      values.push(opts.money);
+    }
+    if (opts.inventory !== undefined) {
+      columnAssignments.push("inventory = ?");
+      values.push(jStr(opts.inventory));
+    }
+    if (opts.headgear !== undefined) {
+      columnAssignments.push("headgear = ?");
+      values.push(opts.headgear);
+    }
+    if (opts.armor !== undefined) {
+      columnAssignments.push("armor = ?");
+      values.push(opts.armor);
+    }
+    if (opts.gloves !== undefined) {
+      columnAssignments.push("gloves = ?");
+      values.push(opts.gloves);
+    }
+    if (opts.legwear !== undefined) {
+      columnAssignments.push("legwear = ?");
+      values.push(opts.legwear);
+    }
+    if (opts.footwear !== undefined) {
+      columnAssignments.push("footwear = ?");
+      values.push(opts.footwear);
+    }
+    if (opts.weapon !== undefined) {
+      columnAssignments.push("weapon = ?");
+      values.push(opts.weapon);
+    }
+    if (opts.offhand !== undefined) {
+      columnAssignments.push("offhand = ?");
+      values.push(opts.offhand);
+    }
 
-    transact(statements);
+    db.prepare(`${updatePrefix}${columnAssignments.join(', ')}${updateSuffix}`)
+      .run(...values, charId);
     return true;
   } catch (err: any) {
     console.error("Error updating faceted character data", err.toString());
