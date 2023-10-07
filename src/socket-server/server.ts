@@ -12,7 +12,7 @@ import { readActiveCharacterBySession } from '../../sqlite/sqlite';
 import { handleCharacterCommand } from './character/character';
 
 import { Scene, scenes } from './scenes/scenes';
-import jStr from '../utils/jStr';
+import handleQuestsCommand from './quests/quests';
 
 export type HandlerOptions = {
   io: Server;
@@ -42,24 +42,23 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   if (command === 'help') {
     socket.emit('game-text', {
       gameText: [
-        "You can [look] at things you find in the world.",
-        "- Try [look self] to see what happens!  Or just [look] to see what is around you.",
-        "You can [peek] to look inside closed items or try to catch a glimpse through closed doors.",
-        "- Try [peek door] when you see a [door] and maybe you can see what lies beyond . . .",
-        "If you want to leave a scene, you can [go] through an exit.",
-        "- Try [go heavy door] to see where you will end up!",
-        "If you want to pick up an item you find in the world, [get] it!",
-        "- Try [get sword] if you see one!",
-        "If you want to drop an item in your inventory, [drop] it!",
-        "- Try [drop helmet] if you have one you don't want anymore!",
-        "You can [use], [wear], or [equip] appropriate items in your inventory.",
-        "- Try [use wand], [wear armor], or [equip magic staff]!",
+        "You can [look] at or [inspect] things you find in the world.  Try [look self] to see what happens!  Or just [look] to see what is around you.",
+        "You can [peek] to look inside closed items or try to catch a glimpse through closed doors.  Try [peek door] when you see a [door] and maybe you can see what lies beyond . . .",
+        "If you want to leave a scene, you can [go] through an exit.  Try [go heavy door] to see where you will end up!",
+        "If you want to pick up an item you find in the world, [get] it!  Try [get sword] if you see one!",
+        "If you want to drop an item in your inventory, [drop] it!  Try [drop helmet] if you have one you don't want anymore!",
+        "You can [use], [wear], or [equip] appropriate items in your inventory.  Try [use wand], [wear armor], or [equip magic staff]!",
+        "You can [talk], [fight], or [trade] with people and creatures in the world.  Get creative!",
+        "You can also check the status of your [quests].",
         "",
         "Keep a look out for scene, item, and other desciptions with brackets for hints about what kinds of things you can [do] in the world!"
       ]
     });
     return;
   }
+
+  // handle the user checking their quest status
+  if (handleQuestsCommand(handlerOptions)) return;
 
   // check if there are any character level input options for this character
   if (handleCharacterCommand(handlerOptions)) return;

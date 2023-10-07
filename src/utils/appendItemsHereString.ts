@@ -20,7 +20,7 @@ export function appendItemsHereString(actorText: string[], sceneId: string): voi
   if (itemTitles.length === 0) return;
   
   actorText.push(...itemTitles);
-  actorText.push('You can look more closely with [look scene <item>].');
+  actorText.push('You can look more closely with [look scene (item)].');
 }
 
 export default appendItemsHereString;

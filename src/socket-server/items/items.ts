@@ -11,6 +11,7 @@ export type Item = {
   damageValue?: number;
   hitBonus?: number;
   handleItemCommand?: (handlerOptions: HandlerOptions) => boolean;
+  quest?: boolean;
 };
 
 export const items: Map<string, Item> = new Map<string, Item>();
@@ -33,6 +34,7 @@ export enum ItemIds {
   LOOSE_BLACK_PANTS = "4",
   SOFT_BLACK_BOOTS = "5",
   SIMPLE_DAGGER = "6",
+  AUDRICS_COIN_POUCH = "7",
 }
 
 import('./good-luck-charm').then(item => items.set(item.id, item));
@@ -41,5 +43,6 @@ import('./loose-black-tunic').then(item => items.set(item.id, item));
 import('./loose-black-pants').then(item => items.set(item.id, item));
 import('./soft-black-boots').then(item => items.set(item.id, item));
 import('./simple-dagger').then(item => items.set(item.id, item));
+import('./audrics-coin-pouch').then(item => items.set(item.id, item));
 
 export default items;

@@ -289,7 +289,7 @@ export const writeNewCharacter = (charId: string, userId: string, name: string):
   return {
     statement: db.prepare(`
       INSERT INTO characters (id, user_id, name, scene_id, active, stories, scene_states, money, inventory)
-      VALUES (?, ?, ?, '0', 0, '{\"main\": 0}', '{}', 0, '[]');
+      VALUES (?, ?, ?, '1', 0, '{\"main\": 0}', '{}', 0, '[]');
     `),
     runValues: [charId, userId, name]
   };

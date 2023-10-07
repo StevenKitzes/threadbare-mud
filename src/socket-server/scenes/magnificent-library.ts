@@ -1,8 +1,9 @@
-import { navigateCharacter, writeCharacterStory } from "../../../sqlite/sqlite";
+import { navigateCharacter, writeCharacterData, writeCharacterStory } from "../../../sqlite/sqlite";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
+import { ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
 import { SceneIds, scenes } from "./scenes";
 
@@ -16,6 +17,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
   if (command === 'enter') {
+    emitOthers(`${character.name} enters the library.`);
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
@@ -32,7 +34,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (
       character.stories.main === 1
     ) {
-      actorText.push("Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists and dangles from his neck.  He eyes you expectantly.");
+      actorText.push("Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists, and dangles from his neck.  He eyes you expectantly.");
+    }
+    if (
+      character.stories.main === 2
+    ) {
+      actorText.push(`[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`);
     }
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -41,12 +48,36 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
     return true;
   }
+
+  if (character.stories.main === 1 && command.match(/^talk (?:man|old man|audric)$/)) {
+    if (
+      writeCharacterData(character.id, {
+        stories: { ...character.stories, main: 2 },
+        inventory: [ ...character.inventory, ItemIds.AUDRICS_COIN_POUCH ]
+      })
+      ) {
+      const actorText: string[] = [];
+      character.stories.main = 2;
+      character.inventory.push(ItemIds.AUDRICS_COIN_POUCH);
+      actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home.  You would surely like to know more, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you go to the shop and purchase some traveling supplies?  On my coin, of course!"`);
+      actorText.push(`He hands you a sack of coin and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
+      emitOthers(`${character.name} has a quiet conversation with Audric.`);
+      emitSelf(actorText);
+    }
+    return true;
+  }
+
+  if (character.stories.main === 2 && command.match(/^talk (?:man|old man|audric)$/)) {
+    emitOthers(`${character.name} has a quiet conversation with Audric.`);
+    emitSelf("Audric greets you warmly and continues to wait patiently for you to return with traveling supplies.");
+    return true;
+  }
   
   if (lookSceneItem(command, id, character.name, emitOthers, emitSelf)) return true;
   
   if (command.includes('look bookshelves')) {
     emitOthers(`${name} gazes up at the soaring bookshelves.`);
-    emitSelf("The bookshelves sag with the weight of hundreds, if not thousands, of heavy volumes.  The collection is impressive.  Old books, newer books, books with pages missing and others with extra pages stuffed in.  Books on the magical, the mundane, the medical and the technical, on the artistic, the philosophical, on the mathmatical and even the comedic.  In languages you don't know and have never heard of.");
+    emitSelf("If they weren't crafted from stout and heavy woods themselves, these shelves would sag with the weight of thousands of weighty volumes.  The collection is beyond impressive.  Old books, newer books, books with pages missing and others with extra pages stuffed in.  Books on the magical, the mundane, the medical and the technical, on the artistic, the philosophical, on the mathmatical and even the comedic.  In languages you don't know and have never heard of.");
     return true;
   }
 
@@ -75,7 +106,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   let destination: SceneIds = SceneIds.COLD_BEDROOM;
-  if (command.includes('go heavy door') && navigateCharacter(character.id, destination)) {
+  if (command.match(/^go (?:door|heavy door)/) && navigateCharacter(character.id, destination)) {
     emitOthers(`${name} departs through a heavy wooden door.`);
 
     socket.leave(sceneId);
@@ -89,7 +120,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   destination = SceneIds.CURVING_STONE_STAIRCASE;
-  if (command.includes('go staircase') && navigateCharacter(character.id, destination)) {
+  if (command.match(/^go (?:staircase|stairs)$/) && navigateCharacter(character.id, destination)) {
     emitOthers(`${name} heads down a curving stone staircase.`);
 
     socket.leave(sceneId);

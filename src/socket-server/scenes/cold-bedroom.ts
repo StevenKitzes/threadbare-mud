@@ -12,6 +12,7 @@ const id: SceneIds = SceneIds.COLD_BEDROOM;
 const title: string = "A cold bedroom";
 const publicInventory: string[] = [];
 const initialSceneState: any = {
+  daggerHere: true,
   outfitHere: true
 };
 
@@ -21,6 +22,9 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
   if (command === 'enter') {
+    if (character.stories.main === 0) emitOthers(`${character.name} awakens from a long slumber.`);
+    else emitOthers(`${character.name} steps into the bedroom.`);
+
     if (!character.scene_states.hasOwnProperty(id)) {
       const newSceneState: any = { ...character.scene_states };
       newSceneState[sceneId] = initialSceneState;
@@ -42,13 +46,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       character.stories.main === 0 &&
       writeCharacterStory(character.id, { ...character.stories, main: 1 })
     ) {
-      character.stories.main++;
+      character.stories.main = 1;
       actorText.push("You awaken to the feeling of satin sheets against your skin and a comfortable mattress beneath you.  You hear voices, a whole grandiose chorus of them, singing a song that seems to fall from its crescendo just as you are coming to your senses.  As your thoughts begin to coalesce, you realize that you have no memory of how you came to be where you are.  In fact, you aren't even sure who you are, beyond a name that rings in the corner of your mind:");
       actorText.push(`${name}.`);
     } else if (character.stories.main > 0) {
       actorText.push("This was the room where you awoke on satin sheets.  You recall hearing singing voices and a song that made your skin tingle.");
     }
-    actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural shape, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
+    actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural outline, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
 
@@ -62,7 +66,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.includes('look drawers')) {
     emitOthers(`${name} investigates a chest of drawers.`);
 
-    emitSelf('You see a sturdy, but otherwise ordinary, chest of drawers.');
+    emitSelf('You see a sturdy, but otherwise ordinary, chest of drawers.  You can try to peek inside to see what is inside.  Try [peek drawers].');
 
     return true;
   }
@@ -73,8 +77,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [];
     if (character.scene_states[id].outfitHere)
       actorText.push('An [outfit] made of black cloth and leather rests in a drawer.');
-    else
-      actorText.push('There is nothing in the drawers.');
+    if (character.scene_states[id].daggerHere)
+      actorText.push('You find a [simple dagger] lurking in a drawer.');
+    if (!character.scene_states[id].outfitHere && !character.scene_states[id].daggerHere)
+      actorText.push('The drawers are bare, empty but for some lingering dust.');
 
     emitSelf(actorText);
     return true;
@@ -114,7 +120,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       ItemIds.LOOSE_BLACK_PANTS,
       ItemIds.SOFT_BLACK_BOOTS
     ];
-    const newSceneStates: any = { ...character.scene_states[sceneId], outfitHere: false };
+    const newSceneStates: any = { ...character.scene_states };
+    newSceneStates[id] = { ...newSceneStates[id], outfitHere: false };
     if (writeCharacterData(character.id, {
       inventory: newInventory,
       scene_states: newSceneStates
@@ -123,6 +130,28 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       character.scene_states = newSceneStates;
       emitOthers(`${character.name} digs a black outfit out of the chest of drawers.`);
       emitSelf('You retrieve the outfit from the chest of drawers.');
+      return true;
+    }
+    return false;
+  }
+
+  if (command.match(/^get (?:dagger|simple dagger)$/)) {
+    if (!character.scene_states[id].daggerHere) return false;
+
+    const newInventory: string[] = [
+      ...character.inventory,
+      ItemIds.SIMPLE_DAGGER
+    ];
+    const newSceneStates: any = { ...character.scene_states };
+    newSceneStates[id] = { ...newSceneStates[id], daggerHere: false };
+    if (writeCharacterData(character.id, {
+      inventory: newInventory,
+      scene_states: newSceneStates
+    })) {
+      character.inventory = newInventory;
+      character.scene_states = newSceneStates;
+      emitOthers(`${character.name} pulls a simple dagger out of the chest of drawers.`);
+      emitSelf('You retrieve the simple dagger from the chest of drawers.');
       return true;
     }
     return false;

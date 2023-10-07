@@ -3,6 +3,7 @@ import { getEmitters } from '../../utils/emitHelper';
 import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
+import jStr from '../../utils/jStr';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
@@ -52,15 +53,17 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   if (['look inventory', 'peek inventory', 'inventory', 'inv'].includes(command)) {
     emitOthers(`${character.name} is digging through their belongings.`);
 
+    const actorText: string[] = [`You have ${character.money} coin${character.money === 1 ? '' : 's'} in your pouch.`];
     if (character.inventory.length === 0) {
-      emitSelf("You are not carrying any belongings.");
+      actorText.push("You are not carrying any belongings.");
     } else {
-      emitSelf([
+      actorText.push(...[
         "Among your belongings you find:",
         ...character.inventory.map(i => `${items.get(i).title} (${items.get(i).type})`),
-        "(Try [look inventory <item>] for a closer inspection.)"
+        "(Try [look inventory (item)] for a closer inspection.)"
       ])
     }
+    emitSelf(actorText);
 
     return true;
   }
@@ -75,16 +78,20 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (match.length > 1) {
       const userInput: string = match[1];
       for (let i = 0; i < character.inventory.length; i++) {
-        if (items.get(character.inventory[i]).keywords.includes(userInput)) {
-          const itemId: string = items.get(character.inventory[i]).id;
-          const itemTitle: string = items.get(character.inventory[i]).title;
+        const item: Item = items.get(character.inventory[i]);
+        if (item.keywords.includes(userInput)) {
+          if (item.quest) {
+            emitOthers(`${character.name} drops ${item.title}, but a magical force returns it to their hand!`);
+            emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+            return true;
+          }
           const newInventory: string[] = [...character.inventory];
           newInventory.splice(i, 1);
           if (writeCharacterInventory(character.id, newInventory)) {
             character.inventory = newInventory;
-            scenes.get(character.scene_id).publicInventory.push(itemId);
-            emitSelf(`You dropped ${itemTitle}.`);
-            emitOthers(`${character.name} dropped ${itemTitle}.`);
+            scenes.get(character.scene_id).publicInventory.push(item.id);
+            emitSelf(`You dropped ${item.title}.`);
+            emitOthers(`${character.name} dropped ${item.title}.`);
             return true;
           }
         }

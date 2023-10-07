@@ -16,6 +16,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
   if (command === 'enter') {
+    emitOthers(`${character.name} steps onto the staircase.`);
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
@@ -40,7 +41,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   
   let destination: SceneIds;
   destination = SceneIds.MAGNIFICENT_LIBRARY;
-  if (['magnificent library', 'library', 'up'].includes(command) && navigateCharacter(character.id, destination)) {
+  if (command.match(/^go (?:up|library|magnificent library)$/) && navigateCharacter(character.id, destination)) {
     emitOthers(`${name} wanders up the stairs.`);
 
     socket.leave(sceneId);
@@ -51,6 +52,28 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       ...handlerOptions,
       command: 'enter'
     });
+  }
+
+  destination = SceneIds.MAGNIFICENT_LIBRARY;
+  if (command.match(/^go (?:door|large door|heavy door|large heavy door)$/)) {
+    if (character.stories.main < 2) {
+      emitOthers(`${character.name} fails to open a locked door.`);
+      emitSelf('You try the door, but find it locked; not by key and tumbler, but by some unseen force.');
+      return true;
+    }
+
+    if (navigateCharacter(character.id, destination)) {
+      emitOthers(`${name} wanders up the stairs.`);
+      
+      socket.leave(sceneId);
+      character.scene_id = destination;
+      socket.join(destination);
+      
+      return scenes.get(destination).handleSceneCommand({
+        ...handlerOptions,
+        command: 'enter'
+      });
+    }
   }
 
   return false;
