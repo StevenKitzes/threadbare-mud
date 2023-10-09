@@ -13,6 +13,7 @@ import { handleCharacterCommand } from './character/character';
 
 import { Scene, scenes } from './scenes/scenes';
 import handleQuestsCommand from './quests/quests';
+import items from './items/items';
 
 export type HandlerOptions = {
   io: Server;
@@ -62,6 +63,11 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
 
   // check if there are any character level input options for this character
   if (handleCharacterCommand(handlerOptions)) return;
+
+  // check if any of the character's carried items can handle the command
+  for (let i = 0; i < character.inventory.length; i++) {
+    if ( items.get( character.inventory[i] )?.handleItemCommand(handlerOptions)) return;
+  }
   
   // check if there are any scene level input options for this character's scene
   try {

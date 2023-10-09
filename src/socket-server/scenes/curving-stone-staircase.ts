@@ -28,7 +28,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
     const actorText: string[] = [title, '- - -'];
 
-    actorText.push("The walls of the staircase are made of the same plain, smooth-faced stone as the other rooms you've seen here.  There are tall, narrow tapestries of fine quality hanging there, and there is a lush carpet underfoot to soften your steps.  At the top of the stairs, you can see a [magnificent library], and below is another [large heavy door].");
+    actorText.push("The walls of the staircase are made of plain, smooth-faced stone.  There are long, narrow tapestries of fine quality hanging here, and there is a lush carpet underfoot to soften your steps.  Light filters down t the top of the stairs, you can see a [magnificent library], and below is another [large heavy door].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
 

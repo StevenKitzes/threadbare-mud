@@ -198,7 +198,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   }
 
   // equip an item from your inventory
-  if (command.match(/^(?:equip|wear|use) (.*)$/)) {
+  if (command.match(/^(?:equip|wear) (.*)$/)) {
     const equipPattern = /^(?:equip|wear|use) (.*)$/;
     const match = command.match(equipPattern);
     
