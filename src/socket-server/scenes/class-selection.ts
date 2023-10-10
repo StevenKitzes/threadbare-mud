@@ -50,42 +50,78 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command === 'weaver') {
     if (writeCharacterData(character.id, {
       job: ClassTypes.weaver,
-      scene_id: SceneIds.COLD_BEDROOM
+      scene_id: SceneIds.COLD_BEDROOM,
+      light_attack: 6,
+      heavy_attack: 10,
+      ranged_attack: 14,
+      agility: 12,
+      strength: 8,
+      savvy: 10
     })) {
       emitSelf(`Welcome, Weaver ${character.name}.  May the Lifelight shine upon you along your journey.`);
     }
   } else if (command === 'peacemaker') {
     if (writeCharacterData(character.id, {
       job: ClassTypes.peacemaker,
-      scene_id: SceneIds.COLD_BEDROOM
+      scene_id: SceneIds.COLD_BEDROOM,
+      light_attack: 10,
+      heavy_attack: 8,
+      ranged_attack: 6,
+      agility: 12,
+      strength: 10,
+      savvy: 14
     })) {
       emitSelf(`Welcome, ${character.name}, wise Peacemaker.  May you uplift the downtrodden along your journey.`);
     }
   } else if (command === 'skyguard') {
     if (writeCharacterData(character.id, {
       job: ClassTypes.skyguard,
-      scene_id: SceneIds.COLD_BEDROOM
+      scene_id: SceneIds.COLD_BEDROOM,
+      light_attack: 8,
+      heavy_attack: 14,
+      ranged_attack: 10,
+      agility: 6,
+      strength: 12,
+      savvy: 10
     })) {
       emitSelf(`Welcome, Master ${character.name}.  May you bring honor and glory to the Empire of the Sky!`);
     }
   } else if (command === 'ranger') {
     if (writeCharacterData(character.id, {
       job: ClassTypes.ranger,
-      scene_id: SceneIds.COLD_BEDROOM
+      scene_id: SceneIds.COLD_BEDROOM,
+      light_attack: 14,
+      heavy_attack: 10,
+      ranged_attack: 10,
+      agility: 12,
+      strength: 10,
+      savvy: 6
     })) {
       emitSelf(`Welcome, ${character.name}.  May your hand hold evil at bay.`);
     }
   } else if (command === 'spymaster') {
     if (writeCharacterData(character.id, {
       job: ClassTypes.spymaster,
-      scene_id: SceneIds.COLD_BEDROOM
+      scene_id: SceneIds.COLD_BEDROOM,
+      light_attack: 12,
+      heavy_attack: 8,
+      ranged_attack: 10,
+      agility: 10,
+      strength: 6,
+      savvy: 14
     })) {
       emitSelf(`Welcome, ${character.name}.  May your endeavors go unnoticed.`);
     }
   } else if (command.match(/^(?:rogue|common rogue|common)$/)) {
     if (writeCharacterData(character.id, {
       job: ClassTypes.rogue,
-      scene_id: SceneIds.COLD_BEDROOM
+      scene_id: SceneIds.COLD_BEDROOM,
+      light_attack: 10,
+      heavy_attack: 12,
+      ranged_attack: 8,
+      agility: 10,
+      strength: 14,
+      savvy: 6
     })) {
       emitSelf(`Welcome, ${character.name}.  May you find coin under every stone you turn.`);
     }
