@@ -30,6 +30,9 @@ body {
   .command-hint {
     color: salmon;
   }
+  .emphasize-hint {
+    color: goldenrod;
+  }
   .page-foundation {
     @apply bg-black text-white flex flex-row w-screen h-screen;
   }

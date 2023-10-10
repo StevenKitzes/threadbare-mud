@@ -6,6 +6,7 @@ const title: string = "a pair of soft, black boots";
 const description: string = "A pair of black boots made of soft, supple leather.  They are very comfortable and stride atop soft soles that fall quietly.";
 const keywords: string[] = ['soft black boots', 'black boots', 'soft boots', 'boots'];
 const value: number = 10;
+const weight: number = 2;
 
 // Optional
 const armorValue: number = 1;
@@ -17,5 +18,6 @@ export {
   description,
   keywords,
   value,
+  weight,
   armorValue
 };

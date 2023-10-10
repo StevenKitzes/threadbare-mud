@@ -1,3 +1,4 @@
+import { InventoryDescriptionHelper } from "../types";
 import { Item, items } from "../socket-server/items/items";
 import { Scene, scenes } from "../socket-server/scenes/scenes";
 
@@ -7,20 +8,22 @@ export function appendItemsHereString(actorText: string[], sceneId: string): voi
     return console.error("Could not find scene by id trying to append items to actorText.", sceneId);
   }
 
-  const itemTitles: string[] = [];
+  const itemDescriptions: InventoryDescriptionHelper[] = [];
   
-  for (let i = 0; i < scene.publicInventory.length; i++) {
-    const item: Item | undefined = items.get(scene.publicInventory[i]);
-    if (item === undefined) {
-      return console.error("Could not find item by id trying to append items to actorText.", scene.publicInventory[i]);
-    }
-    itemTitles.push(`There is ${item.title} laying here.`);
-  }
+  scene.publicInventory.forEach(i => {
+    const item: Item | undefined = items.get(i);
+    if (item === undefined) return;
+    const itemDesc: InventoryDescriptionHelper | undefined =
+      itemDescriptions.find(desc => desc.id === item.id);
+    if (itemDesc === undefined)
+      itemDescriptions.push({ id: item.id, desc: item.title, type: item.type, count: 1 });
+    else
+      itemDesc.count++;
+  })
 
-  if (itemTitles.length === 0) return;
-  
-  actorText.push(...itemTitles);
-  actorText.push('You can look more closely with [look scene (item)].');
+  actorText.push(...[
+    ...itemDescriptions.map(i => `There is ${i.desc}${i.count > 1 ? ` {(x${i.count})}` : ''} laying here. (${i.type})`)
+  ])
 }
 
 export default appendItemsHereString;

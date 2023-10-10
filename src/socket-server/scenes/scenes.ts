@@ -13,11 +13,13 @@ export enum SceneIds {
   COLD_BEDROOM = "1",
   MAGNIFICENT_LIBRARY = "2",
   CURVING_STONE_STAIRCASE = "3",
+  CLASS_SELECTION = "4",
 }
 
-import('./cold-bedroom').then(scene => scenes.set(scene.id, scene));
+import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
 import('./magnificent-library').then(scene => scenes.set(scene.id, scene));
 import('./curving-stone-staircase').then(scene => scenes.set(scene.id, scene));
+import('./class-selection').then(scene => scenes.set(scene.id, scene));
 
 export default {
   scenes

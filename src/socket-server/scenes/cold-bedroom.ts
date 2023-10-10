@@ -2,7 +2,6 @@ import { navigateCharacter, writeCharacterData, writeCharacterSceneStates, write
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
-import jStr from '../../utils/jStr';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { ItemIds } from '../items/items';
 import { scenes, SceneIds } from '../scenes/scenes';

@@ -7,8 +7,10 @@ export type Item = {
   description: string;
   keywords: string[];
   value: number;
+  weight: number;
   armorValue?: number;
   damageValue?: number;
+  damageType?: DamageType;
   hitBonus?: number;
   handleItemCommand?: (handlerOptions: HandlerOptions) => boolean;
   quest?: boolean;
@@ -24,8 +26,16 @@ export enum ItemTypes {
   legwear = "legwear",
   footwear = "footwear",
   offhand = "offhand",
-  weapon = "weapon"
+  lightWeapon = "lightWeapon",
+  heavyWeapon = "heavyWeapon",
+  rangedWeapon = "rangedWeapon"
 };
+
+export enum DamageType {
+  slashing,
+  piercing,
+  bashing
+}
 
 export enum ItemIds {
   GOOD_LUCK_CHARM = "1",
@@ -35,6 +45,11 @@ export enum ItemIds {
   SOFT_BLACK_BOOTS = "5",
   SIMPLE_DAGGER = "6",
   AUDRICS_COIN_POUCH = "7",
+  SMALL_ANVIL = "8",
+  MEDIUM_ANVIL = "9",
+  LARGE_ANVIL = "10",
+  HUGE_ANVIL = "11",
+  COLOSSAL_ANVIL = "12",
 }
 
 import('./good-luck-charm').then(item => items.set(item.id, item));
@@ -44,5 +59,10 @@ import('./loose-black-pants').then(item => items.set(item.id, item));
 import('./soft-black-boots').then(item => items.set(item.id, item));
 import('./simple-dagger').then(item => items.set(item.id, item));
 import('./audrics-coin-pouch').then(item => items.set(item.id, item));
+import('./small-anvil').then(item => items.set(item.id, item));
+import('./medium-anvil').then(item => items.set(item.id, item));
+import('./large-anvil').then(item => items.set(item.id, item));
+import('./huge-anvil').then(item => items.set(item.id, item));
+import('./colossal-anvil').then(item => items.set(item.id, item));
 
 export default items;

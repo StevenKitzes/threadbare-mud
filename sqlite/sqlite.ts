@@ -11,7 +11,17 @@ type CharacterDBIntermediary = {
   id: string;
   user_id: string;
   name: string;
+  job: string | null;
+  health: number;
+  health_max: number;
+  light_attack: number;
+  heavy_attack: number;
+  ranged_attack: number;
+  agility: number;
+  strength: number;
+  savvy: number;
   scene_id: string;
+  checkpoint_id: string;
   active: number;
   stories: string;
   scene_states: string;
@@ -48,6 +58,16 @@ export type Database = {
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
   writeCharacterData: (charId: string, opts: {
+    job?: string,
+    health?: number,
+    health_max?: number,
+    light_attack?: number,
+    heavy_attack?: number,
+    ranged_attack?: number,
+    agility?: number,
+    strength?: number,
+    savvy?: number,
+    scene_id?: string,
     stories?: Stories;
     scene_states?: any;
     money?: number;
@@ -202,6 +222,16 @@ export const writeCharacterSceneStates = (charId: string, sceneStates: any) => {
 }
 
 export const writeCharacterData = (charId: string, opts: {
+  job?: string,
+  health?: number,
+  health_max?: number,
+  light_attack?: number,
+  heavy_attack?: number,
+  ranged_attack?: number,
+  agility?: number,
+  strength?: number,
+  savvy?: number,
+  scene_id?: string,
   stories?: Stories;
   scene_states?: any;
   money?: number;
@@ -220,6 +250,46 @@ export const writeCharacterData = (charId: string, opts: {
     const updateSuffix: string = " WHERE id = ?;";
     const values: any[] = [];
 
+    if (opts.job !== undefined) {
+      columnAssignments.push("job = ?");
+      values.push(opts.job);
+    }
+    if (opts.health !== undefined) {
+      columnAssignments.push("health = ?");
+      values.push(opts.health);
+    }
+    if (opts.health_max !== undefined) {
+      columnAssignments.push("health_max = ?");
+      values.push(opts.health_max);
+    }
+    if (opts.light_attack !== undefined) {
+      columnAssignments.push("light_attack = ?");
+      values.push(opts.light_attack);
+    }
+    if (opts.heavy_attack !== undefined) {
+      columnAssignments.push("heavy_attack = ?");
+      values.push(opts.heavy_attack);
+    }
+    if (opts.ranged_attack !== undefined) {
+      columnAssignments.push("ranged_attack = ?");
+      values.push(opts.ranged_attack);
+    }
+    if (opts.agility !== undefined) {
+      columnAssignments.push("agility = ?");
+      values.push(opts.agility);
+    }
+    if (opts.strength !== undefined) {
+      columnAssignments.push("strength = ?");
+      values.push(opts.strength);
+    }
+    if (opts.savvy !== undefined) {
+      columnAssignments.push("savvy = ?");
+      values.push(opts.savvy);
+    }
+    if (opts.scene_id !== undefined) {
+      columnAssignments.push("scene_id = ?");
+      values.push(opts.scene_id);
+    }
     if (opts.stories !== undefined) {
       columnAssignments.push("stories = ?");
       values.push(jStr(opts.stories));
@@ -288,8 +358,8 @@ export const writeCharacterStory = (charId: string, stories: Stories): boolean =
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
     statement: db.prepare(`
-      INSERT INTO characters (id, user_id, name, scene_id, active, stories, scene_states, money, inventory)
-      VALUES (?, ?, ?, '1', 0, '{\"main\": 0}', '{}', 0, '[]');
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory)
+      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '1', '1', 0, '{\"main\": 0}', '{}', 0, '[]');
     `),
     runValues: [charId, userId, name]
   };

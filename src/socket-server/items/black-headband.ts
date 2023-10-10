@@ -6,6 +6,7 @@ const title: string = "a black headband";
 const description: string = "A simple strip of black cloth, tied around the head.";
 const keywords: string[] = ['black headband', 'headband'];
 const value: number = 3;
+const weight: number = 1;
 
 // Optional
 const armorValue: number = 1;
@@ -17,5 +18,6 @@ export {
   description,
   keywords,
   value,
+  weight,
   armorValue
 };

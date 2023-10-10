@@ -6,6 +6,7 @@ const title: string = "Audric's coin pouch";
 const description: string = "A small, canvas pouch, stuffed with a handful of coin.";
 const keywords: string[] = ['pouch', 'coin pouch', 'canvas pouch'];
 const value: number = 50;
+const weight: number = 1;
 const quest: boolean = true;
 
 export {
@@ -15,5 +16,6 @@ export {
   description,
   keywords,
   value,
+  weight,
   quest
 };

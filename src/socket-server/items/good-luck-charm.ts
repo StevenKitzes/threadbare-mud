@@ -6,6 +6,7 @@ const title: string = "a good luck charm";
 const description: string = "A tiny, hand-made good luck charm that fits in the palm of your hand.  Hopefully this little trinket will always bring luck to whoever carries it.";
 const keywords: string[] = ['good luck charm', 'charm'];
 const value: number = 1;
+const weight: number = 1;
 
 export {
   id,
@@ -14,4 +15,5 @@ export {
   description,
   keywords,
   value,
+  weight
 };

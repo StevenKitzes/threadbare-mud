@@ -13,7 +13,9 @@ import { handleCharacterCommand } from './character/character';
 
 import { Scene, scenes } from './scenes/scenes';
 import handleQuestsCommand from './quests/quests';
-import items from './items/items';
+import items, { Item } from './items/items';
+import characterCanMove from '../utils/characterCanMove';
+import getGameTextObject from '../utils/getGameTextObject';
 
 export type HandlerOptions = {
   io: Server;
@@ -66,7 +68,19 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
 
   // check if any of the character's carried items can handle the command
   for (let i = 0; i < character.inventory.length; i++) {
-    if ( items.get( character.inventory[i] )?.handleItemCommand(handlerOptions)) return;
+    const item: Item | undefined = items.get( character.inventory[i] );
+    if (item === undefined) continue;
+    if (item.handleItemCommand && item.handleItemCommand(handlerOptions)) return;
+  }
+
+  // before letting the character try to move, check encumbrance
+  if (command.match(/^go /) && !characterCanMove(character)) {
+    // others
+    socket.to(character.scene_id).emit('game-text', getGameTextObject(`${character.name} is carrying so much that they are unable to move, however hard they may try.`));
+    // self
+    socket.emit('game-text', getGameTextObject( "You are carrying so much that you cannot take another step." ));
+
+    return;
   }
   
   // check if there are any scene level input options for this character's scene

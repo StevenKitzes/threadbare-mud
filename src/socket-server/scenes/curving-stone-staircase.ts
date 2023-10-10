@@ -41,7 +41,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   
   let destination: SceneIds;
   destination = SceneIds.MAGNIFICENT_LIBRARY;
-  if (command.match(/^go (?:up|library|magnificent library)$/) && navigateCharacter(character.id, destination)) {
+  if (command.match(/^go (?:up|library)$/) && navigateCharacter(character.id, destination)) {
     emitOthers(`${name} wanders up the stairs.`);
 
     socket.leave(sceneId);
