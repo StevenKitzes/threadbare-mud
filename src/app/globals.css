@@ -30,6 +30,12 @@ body {
   .command-hint {
     color: salmon;
   }
+  .good-hint {
+    color: greenyellow;
+  }
+  .bad-hint {
+    color: red;
+  }
   .emphasize-hint {
     color: goldenrod;
   }

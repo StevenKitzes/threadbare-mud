@@ -3,6 +3,7 @@ import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
+import { NPC, NpcIds, npcFactories } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
 import { SceneIds, scenes } from "./scenes";
 
@@ -10,27 +11,47 @@ const id: SceneIds = SceneIds.CURVING_STONE_STAIRCASE;
 const title: string = "A curving stone staircase";
 const publicInventory: string[] = [];
 
+const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
+
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
-
+  
   if (command === 'enter') {
     emitOthers(`${character.name} steps onto the staircase.`);
+
+    if (!characterNpcs.has(character.id)) {
+      // Populate NPCs
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.SMALL_RAT)() ]);
+    } else {
+      // Respawn logic
+      characterNpcs.get(character.id).forEach(c => {
+        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
+      })
+    }
+
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     })
   }
 
+  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
+  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
+
   if (command === 'look') {
     emitOthers(`${name} looks around the confined space of the stair well.`);
 
     const actorText: string[] = [title, '- - -'];
 
-    actorText.push("The walls of the staircase are made of plain, smooth-faced stone.  There are long, narrow tapestries of fine quality hanging here, and there is a lush carpet underfoot to soften your steps.  Light filters down t the top of the stairs, you can see a [magnificent library], and below is another [large heavy door].");
+    actorText.push("The walls of the staircase are made of plain, smooth-faced stone.  There are long, narrow tapestries of fine quality hanging here, and there is a lush carpet underfoot to soften your steps.  Light filters down from the top of the stairs, where you can see a [magnificent library], and below is another [large heavy door].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
+    characterNpcs.get(character.id).forEach(npc => {
+      if (npc.health > 0) actorText.push(npc.description);
+      else actorText.push(`The corpse of ${npc.name} lies here.`);
+    });
 
     emitSelf(actorText);
 

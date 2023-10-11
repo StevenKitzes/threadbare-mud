@@ -92,7 +92,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
     }
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {
-    console.error('failed loading scene id', character.scene_id)
+    console.error('failed loading scene id', character.scene_id, ":", err.toString());
     console.error('scene ids', scenes.keys())
   }
   
