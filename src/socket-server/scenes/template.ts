@@ -33,7 +33,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.SMALL_RAT)() ]);
+      characterNpcs.set(character.id, [ npcFactories.get()() ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
@@ -69,6 +69,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural shape, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
+    characterNpcs.get(character.id).forEach(npc => {
+      if (npc.health > 0) actorText.push(npc.getDescription(character));
+      else actorText.push(`The corpse of ${npc.name} lies here.`);
+    });
 
     emitSelf(actorText);
 

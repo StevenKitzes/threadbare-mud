@@ -4,12 +4,15 @@ import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { ItemIds } from "../items/items";
+import { NPC, NpcIds, npcFactories } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
 import { SceneIds, scenes } from "./scenes";
 
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
 const publicInventory: string[] = [];
+
+const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -18,11 +21,25 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (command === 'enter') {
     emitOthers(`${character.name} enters the library.`);
+
+    if (!characterNpcs.has(character.id)) {
+      // Populate NPCs
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.AUDRIC)() ]);
+    } else {
+      // Respawn logic
+      characterNpcs.get(character.id).forEach(c => {
+        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
+      })
+    }
+
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     })
   }
+
+  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
+  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command === 'look') {
     emitOthers(`${name} looks around the library.`);
@@ -31,48 +48,18 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     
     actorText.push("The arched ceiling soars high overhead, obscured in darkness.  The [bookshelves] lining the walls of this circular room rise into those same shadows.  Light of every color streams into the main part of the library through stained glass windows, and motes of dust hang in the air, sparkling and shimmering.  Luxurious pillows and upholstery line the elaborate furnishings - though the vivacity of the scene is dulled a bit by a thin layer of dust that lies over everything.  The number and variety of the library's many [books] and [scrolls] is also impressive.  They are stacked on tables and desks in piles, disorderly but not quite discarded.");
     actorText.push("Aside from the [heavy door] you first used to enter this room, there are a few others, but for now they are all locked.  You can also go down a curving stone [staircase].");
-    if (
-      character.stories.main === 1
-    ) {
-      actorText.push("Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists, and dangles from his neck.  He eyes you expectantly.");
-    }
-    if (
-      character.stories.main === 2
-    ) {
-      actorText.push(`[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`);
-    }
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
+    characterNpcs.get(character.id).forEach(npc => {
+      if (npc.health > 0) actorText.push(npc.getDescription(character));
+      else actorText.push(`The corpse of ${npc.name} lies here.`);
+    });
     
     emitSelf(actorText);
 
     return true;
   }
 
-  if (character.stories.main === 1 && command.match(/^talk (?:man|old man|audric)$/)) {
-    if (
-      writeCharacterData(character.id, {
-        stories: { ...character.stories, main: 2 },
-        inventory: [ ...character.inventory, ItemIds.AUDRICS_COIN_POUCH ]
-      })
-      ) {
-      const actorText: string[] = [];
-      character.stories.main = 2;
-      character.inventory.push(ItemIds.AUDRICS_COIN_POUCH);
-      actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home.  You would surely like to know more, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you go to the shop and purchase some traveling supplies?  On my coin, of course!"`);
-      actorText.push(`He hands you a coin pouch and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
-      emitOthers(`${character.name} has a quiet conversation with Audric.`);
-      emitSelf(actorText);
-    }
-    return true;
-  }
-
-  if (character.stories.main === 2 && command.match(/^talk (?:man|old man|audric)$/)) {
-    emitOthers(`${character.name} has a quiet conversation with Audric.`);
-    emitSelf("Audric greets you warmly and continues to wait patiently for you to return with traveling supplies.");
-    return true;
-  }
-  
   if (lookSceneItem(command, id, character.name, emitOthers, emitSelf)) return true;
   
   if (command.includes('look bookshelves')) {

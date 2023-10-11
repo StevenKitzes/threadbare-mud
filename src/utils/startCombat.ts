@@ -161,52 +161,54 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
       defenseWithDodge: ${defenseWithDodge}
       damage: ${damage}`);
 
-    // Handle result and output
+      // Handle result and output
+    const item: Item | undefined = items.get(character.weapon || '');
+    const weaponName: string = item === undefined ? 'an unarmed strike' : item.title;
     if (attack > defenseWithDodge) {
       // handle hit
       npc.setHealth(npc.health - damage);
       if (damage < npc.healthMax * 0.1) {
-        actorText.push(`+Your attack hits+, but only does negligible damage.`);
-        emitOthers(`${character.name} does negligible damage to ${npc.name}.`);
+        actorText.push(`+Your attack hits+, but ${weaponName} only does negligible damage.`);
+        emitOthers(`${character.name} does negligible damage to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.2) {
-        actorText.push(`+Your attack hits+, inflicting light damage.`);
-        emitOthers(`${character.name} does light damage to ${npc.name}.`);
+        actorText.push(`+Your attack hits+, inflicting light damage with ${weaponName}.`);
+        emitOthers(`${character.name} does light damage to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.3) {
-        actorText.push(`+Your attack hits+, doing noticeable harm.`);
-        emitOthers(`${character.name} does noticeable harm to ${npc.name}.`);
+        actorText.push(`+Your attack hits+, doing noticeable harm with ${weaponName}.`);
+        emitOthers(`${character.name} does noticeable harm to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.4) {
-        actorText.push(`+Your attack hits+, causing significant damage.`);
-        emitOthers(`${character.name} causes significant damage to ${npc.name}.`);
+        actorText.push(`+Your attack hits+, causing significant damage with ${weaponName}.`);
+        emitOthers(`${character.name} causes significant damage to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.5) {
-        actorText.push(`+Your attack hits+ well enough to cause lasting injury.`);
-        emitOthers(`${character.name} causes lasting injury to ${npc.name}.`);
+        actorText.push(`+Your attack hits+ well enough to cause lasting injury with ${weaponName}.`);
+        emitOthers(`${character.name} causes lasting injury to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.6) {
-        actorText.push(`+Your attack hits+ hard enough to put ${npc.name} off balance.`);
-        emitOthers(`${character.name} hits hard enough to put ${npc.name} off balance.`);
+        actorText.push(`+Your attack hits+ hard enough with ${weaponName} to put ${npc.name} off balance.`);
+        emitOthers(`${character.name} hits hard enough with ${weaponName} to put ${npc.name} off balance.`);
       } else if (damage < npc.healthMax * 0.7) {
-        actorText.push(`+Your attack hits+, doing substantial damage.`);
-        emitOthers(`${character.name} does substantial damage to ${npc.name}.`);
+        actorText.push(`+Your attack hits+, doing substantial damage with ${weaponName}.`);
+        emitOthers(`${character.name} does substantial damage to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.8) {
-        actorText.push(`+Your attack hits+, doing heavy damage and staggering ${npc.name}.`);
-        emitOthers(`${character.name} does heavy damage and staggers ${npc.name}.`);
+        actorText.push(`+Your attack hits+, doing heavy damage and staggering ${npc.name} with ${weaponName}.`);
+        emitOthers(`${character.name} does heavy damage and staggers ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax * 0.9) {
-        actorText.push(`+Your attack hits+, causing massive damage.`);
-        emitOthers(`${character.name} causes massive damage to ${npc.name}.`);
+        actorText.push(`+Your attack hits+, causing massive damage with ${weaponName}.`);
+        emitOthers(`${character.name} causes massive damage to ${npc.name} with ${weaponName}.`);
       } else if (damage < npc.healthMax) {
-        actorText.push(`+Your attack hits+ almost hard enough to kill ${npc.name} with a single strike.`);
-        emitOthers(`${character.name} hits almost hard enough to kill ${npc.name} in one strike.`);
+        actorText.push(`+Your attack hits+ almost hard enough with ${weaponName} to kill ${npc.name} with a single strike.`);
+        emitOthers(`${character.name} hits almost hard enough with ${weaponName} to kill ${npc.name} in one strike.`);
       } else {
-        actorText.push(`+Your attack hits+ with enough force to kill ${npc.name} in a single strike!`);
-        emitOthers(`${character.name} hits with enough force to kill ${npc.name} in a single strike!`);
+        actorText.push(`+Your attack hits+ with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
+        emitOthers(`${character.name} hits with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
       }
     } else if (attack > defense) {
       // handle dodge
-      actorText.push(`Your attack goes wide as {${npc.name} evades}.`);
-      emitOthers(`${character.name} attacks but ${npc.name} evades.`);
+      actorText.push(`Your attack with ${weaponName} goes wide as {${npc.name} evades}.`);
+      emitOthers(`${character.name} attacks with ${weaponName} but ${npc.name} evades.`);
     } else {
       // handle miss
-      actorText.push(`Your attack {misses}.`);
-      emitOthers(`${character.name} attacks ${npc.name} but misses the mark.`);
+      actorText.push(`Your attack with ${weaponName} {misses}.`);
+      emitOthers(`${character.name} attacks ${npc.name} with ${weaponName} but misses the mark.`);
     }
     emitSelf(actorText);
   }
@@ -249,47 +251,47 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
       // handle hit
       character.health -= damage;
       if (damage < character.health_max * 0.1) {
-        actorText.push(`=You are hit= by ${npc.name}, but only endure negligible damage.`);
-        emitOthers(`${character.name} endures negligible damage from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, but only endure negligible damage.`);
+        emitOthers(`${character.name} endures negligible damage from ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.2) {
-        actorText.push(`=You are hit= by ${npc.name}, enduring light damage.`);
-        emitOthers(`${character.name} endures light damage from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring light damage.`);
+        emitOthers(`${character.name} endures light damage from ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.3) {
-        actorText.push(`=You are hit= by ${npc.name}, enduring noticeable harm.`);
-        emitOthers(`${character.name} endures noticeable harm from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring noticeable harm.`);
+        emitOthers(`${character.name} endures noticeable harm from ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.4) {
-        actorText.push(`=You are hit= by ${npc.name}, enduring significant damage.`);
-        emitOthers(`${character.name} endures significant damage from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring significant damage.`);
+        emitOthers(`${character.name} endures significant damage from ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.5) {
-        actorText.push(`=You are hit= by ${npc.name} hard enough to endure lasting injury.`);
-        emitOthers(`${character.name} endures lasting injury from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription} hard enough to endure lasting injury.`);
+        emitOthers(`${character.name} endures lasting injury from ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.6) {
-        actorText.push(`=You are hit= by ${npc.name} hard enough to be thrown off balance.`);
-        emitOthers(`${character.name} is thrown off balance by ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription} hard enough to be thrown off balance.`);
+        emitOthers(`${character.name} is thrown off balance by ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.7) {
-        actorText.push(`=You are hit= by ${npc.name}, enduring substantial damage.`);
-        emitOthers(`${character.name} endures substantial damage from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring substantial damage.`);
+        emitOthers(`${character.name} endures substantial damage from ${npc.attackDescription}.`);
       } else if (damage < character.health_max * 0.8) {
-        actorText.push(`=You are hit= by ${npc.name}, enduring heavy enough damage that your are staggered.`);
-        emitOthers(`${character.name} endures heavy enough damage to be staggered by ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring heavy enough damage that your are staggered.`);
+        emitOthers(`${character.name} endures heavy enough damage to be staggered by ${npc.attackDescription}.`);
       } else if (damage < npc.healthMax * 0.9) {
-        actorText.push(`=You are hit= by ${npc.name}, enduring massive damage.`);
-        emitOthers(`${character.name} endures massive damage from ${npc.name}'s attack.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring massive damage.`);
+        emitOthers(`${character.name} endures massive damage from ${npc.attackDescription}.`);
       } else if (damage < npc.healthMax) {
-        actorText.push(`=You are hit= by ${npc.name} almost hard enough to be killed with a single strike.`);
-        emitOthers(`${character.name} is hit by ${npc.name} almost hard enough to be killed in one strike.`);
+        actorText.push(`=You are hit= by ${npc.attackDescription} almost hard enough to be killed with a single strike.`);
+        emitOthers(`${character.name} is hit by ${npc.attackDescription} almost hard enough to be killed in one strike.`);
       } else {
-        actorText.push(`=You are hit= by ${npc.name} with enough force to kill you in a single strike!`);
-        emitOthers(`${character.name} is hit by ${npc.name} with enough force to be killed in a single strike!`);
+        actorText.push(`=You are hit= by ${npc.attackDescription} with enough force to kill you in a single strike!`);
+        emitOthers(`${character.name} is hit by ${npc.attackDescription} with enough force to be killed in a single strike!`);
       }
     } else if (attack > defense) {
       // handle dodge
-      actorText.push(`You are nearly struck by ${npc.name} but {you are able to evade} the attack.`);
-      emitOthers(`${character.name} dodges ${npc.name}'s attack.`);
+      actorText.push(`You are nearly struck by ${npc.attackDescription} but {you are able to evade} the attack.`);
+      emitOthers(`${character.name} dodges ${npc.attackDescription}.`);
     } else {
       // handle miss
-      actorText.push(`You needn't worry as ${npc.name} {misses you} with their attack.`);
-      emitOthers(`${character.name} hardly seems worried as ${npc.name} misses the mark.`);
+      actorText.push(`An attack by ${npc.attackDescription} {misses you}.`);
+      emitOthers(`${character.name} hardly seems worried as an attack by ${npc.attackDescription} misses the mark.`);
     }
     emitSelf(actorText);
   }

@@ -1,3 +1,4 @@
+import { Character } from "../../types";
 import items from "../items/items";
 import { HandlerOptions } from "../server";
 
@@ -6,6 +7,7 @@ export type NPC = {
   name: string;
   description: string;
   keywords: string[];
+  attackDescription: string;
 
   cashLoot: number;
   itemLoot: string[];
@@ -24,6 +26,8 @@ export type NPC = {
   setHealth: (amount: number) => void;
   setDeathTime: (d: number) => void;
   setCombatInterval: (c: NodeJS.Timeout | null) => void;
+
+  getDescription: (character: Character) => string;
 
   handleNpcCommand: (handlerOptions: HandlerOptions) => boolean;
 };
@@ -45,7 +49,7 @@ export enum NpcIds {
   STOUT_RAT = "3",
 }
 
-// import('./audric').then(npc => npcs.set(npc.id, npc));
+import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
 import('./small-rat').then(npc => npcFactories.set(NpcIds.SMALL_RAT, npc.make));
 import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
 

@@ -49,7 +49,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     characterNpcs.get(character.id).forEach(npc => {
-      if (npc.health > 0) actorText.push(npc.description);
+      if (npc.health > 0) actorText.push(npc.getDescription(character));
       else actorText.push(`The corpse of ${npc.name} lies here.`);
     });
 

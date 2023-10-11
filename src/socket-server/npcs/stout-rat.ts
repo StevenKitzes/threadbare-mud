@@ -10,6 +10,7 @@ export function make(): NPC {
     name: "a stout rat",
     description: "This [stout rat] looks a little more resiliant than your average rodent, but may have paid for it in intelligence.",
     keywords: ['rat', 'stout rat'],
+    attackDescription: "stout little teeth",
 
     cashLoot: 0,
     itemLoot: [],
@@ -29,12 +30,16 @@ export function make(): NPC {
     setDeathTime: (d: number) => {},
     setCombatInterval: (c: NodeJS.Timeout | null) => {},
 
+    getDescription: () => '',
+
     handleNpcCommand: (handlerOptions: HandlerOptions) => { console.error("handleNpcCommand needs implementation."); return false; },
   }
 
-  npc.setHealth = function (h: number): void { npc.health = h; }
-  npc.setDeathTime = function (d: number): void { npc.deathTime = d; }
-  npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; }
+  npc.setHealth = function (h: number): void { npc.health = h; };
+  npc.setDeathTime = function (d: number): void { npc.deathTime = d; };
+  npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
+
+  npc.getDescription = function (): string { return npc.description; };
 
   npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;
