@@ -5,7 +5,7 @@ import { firstCharToUpper } from '../../utils/firstCharToUpper';
 import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
-import { InventoryDescriptionHelper, XpAmounts } from '../../types';
+import { ClassTypes, InventoryDescriptionHelper, XpAmounts } from '../../types';
 import { levelRequirementString, xpAmountString } from '../../utils/levelingStrings';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
@@ -22,7 +22,28 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     emitOthers(`${character.name} is admiring themselves.`);
 
     const job: string = firstCharToUpper(character.job);
-    const actorText: string[] = [`You are ${character.name}, ${job}.`];
+    const actorText: string[] = [];
+
+    switch (character.job) {
+      case ClassTypes.peacemaker:
+        actorText.push(`You are ${character.name}, ${job}.  Your skin is ashen gray, your hair inky black.  Your muscles are toned to perfection.`);
+        break;
+      case ClassTypes.ranger:
+        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human.`);
+        break;
+      case ClassTypes.rogue:
+        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human.`);
+        break;
+      case ClassTypes.skyguard:
+        actorText.push(`You are ${character.name}, ${job}.  Patches of brightly colored fur bristle over your shoulders, forearms, and calves.  Your muscles are mighty and intimidating.`);
+        break;
+      case ClassTypes.spymaster:
+        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human`);
+        break;
+      case ClassTypes.weaver:
+        actorText.push(`You are ${character.name}, ${job}.  Your skin shimmers with animated, iridescent patterns of color.`);
+        break;
+    }
 
     // health
     actorText.push(characterHealthText(character));

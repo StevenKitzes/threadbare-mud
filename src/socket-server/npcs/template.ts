@@ -1,7 +1,7 @@
 /* Use this template to create new NPCs
  *
  * for reference:
- * small rat    xp 
+ * small rat    cashLoot 0    xp 1    healthMax 5     agility 14  strength 2  savvy 6   damageValue 3   armor 1
 
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";

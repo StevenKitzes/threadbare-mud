@@ -7,6 +7,7 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
+import { NPC } from '../npcs/npcs';
 
 const id: SceneIds = SceneIds.;
 const title: string = ;
@@ -57,6 +58,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     })
   }
 
+  // Only relevant to scenes with npcs, delete otherwise
   const sceneNpcs: NPC[] = characterNpcs.get(character.id);
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
@@ -75,10 +77,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       character.stories.++;
       actorText.push(-);
     }
+
     // This will be pushed to actor text independent of story
-    actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural shape, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
+    actorText.push;
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
+    // Only relevant to scenes with npcs, delete otherwise
     characterNpcs.get(character.id).forEach(npc => {
       if (npc.health > 0) actorText.push(npc.getDescription(character));
       else actorText.push(`The corpse of ${npc.name} lies here.`);
@@ -91,7 +95,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, SceneIds.COLD_BEDROOM, character.name, emitOthers, emitSelf)) return true;
   
-  if (command.includes()) {
+  if (command.match(/^$/)) {
     emitOthers();
 
     emitSelf();

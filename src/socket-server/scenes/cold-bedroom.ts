@@ -100,7 +100,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (command.includes('look window')) {
     emitOthers(`${name} peeks out the window.`);
-    emitSelf("The view out the window is dizzying.  A bustling town lies below, far below . . . so far below that it is difficult to make out individual people through the clouds.  Rooftops sprawl away in all directions.  An expanse of farmlands lays beyond, and in the farther distance, mountains and an ocean are visible.");
+    emitSelf("The view out the window is dizzying.  A bustling town lies below, far below . . . so far below that it is difficult to make out individual people through the clouds.  Rooftops sprawl away in all directions.  An expanse of farmlands lays beyond, and in the farther distance, mountains and an ocean are visible.  In the near distance, four other towers (like the one you must be standing in now) rise like spires into the sky.");
     return true;
   }
 

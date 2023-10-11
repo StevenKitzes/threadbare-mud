@@ -21,47 +21,20 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command === 'enter') {
     emitOthers(`${character.name} steps onto the staircase.`);
 
-    if (!characterNpcs.has(character.id)) {
-      // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.STOUT_RAT)(), npcFactories.get(NpcIds.SMALL_RAT)(), npcFactories.get(NpcIds.RABID_RAT)() ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
-    }
-
-    // Aggro enemies attack!
-    characterNpcs.get(character.id).forEach(c => {
-      if (c.health > 0 && c.aggro) {
-        c.handleNpcCommand({
-          ...handlerOptions,
-          command: `fight ${c.keywords[0]}`
-        });
-      }
-    });
-
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     })
   }
 
-  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
-  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
-
   if (command === 'look') {
     emitOthers(`${name} looks around the confined space of the stair well.`);
 
     const actorText: string[] = [title, '- - -'];
 
-    actorText.push("The walls of the staircase are made of plain, smooth-faced stone.  There are long, narrow tapestries of fine quality hanging here, and there is a lush carpet underfoot to soften your steps.  Light filters down from the top of the stairs, where you can see a [magnificent library], and below is another [large heavy door].");
+    actorText.push("The walls of the staircase are made of plain, smooth-faced stone.  There are long, narrow tapestries of fine quality hanging here, and there is a lush carpet underfoot to soften your steps.  Light filters down from the top of the stairs, where you can see a [magnificent library], and below is a [large heavy door].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
-    characterNpcs.get(character.id).forEach(npc => {
-      if (npc.health > 0) actorText.push(npc.getDescription(character));
-      else actorText.push(`The corpse of ${npc.name} lies here.`);
-    });
 
     emitSelf(actorText);
 
@@ -85,7 +58,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     });
   }
 
-  destination = SceneIds.MAGNIFICENT_LIBRARY;
+  destination = SceneIds.OUTSIDE_AUDRICS_TOWER;
   if (command.match(/^go (?:door|large door|heavy door|large heavy door)$/)) {
     if (character.stories.main < 2) {
       emitOthers(`${character.name} fails to open a locked door.`);
@@ -94,7 +67,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     }
 
     if (navigateCharacter(character.id, destination)) {
-      emitOthers(`${name} wanders up the stairs.`);
+      emitOthers(`${name} exits through the heavy, wooden door.`);
       
       socket.leave(sceneId);
       character.scene_id = destination;
