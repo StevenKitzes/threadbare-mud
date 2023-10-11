@@ -9,11 +9,12 @@ export function make(): NPC {
     id: NpcIds.STOUT_RAT,
     name: "a stout rat",
     description: "This [stout rat] looks a little more resiliant than your average rodent, but may have paid for it in intelligence.",
-    keywords: ['rat', 'stout rat'],
+    keywords: ['stout rat', 'rat'],
     attackDescription: "stout little teeth",
 
     cashLoot: 0,
     itemLoot: [],
+    xp: 2,
     healthMax: 100,
     agility: 4,
     strength: 2,
@@ -21,6 +22,7 @@ export function make(): NPC {
     damageValue: 3,
     armor: 1,
     armorType: [],
+    aggro: false,
     
     health: 100,
     deathTime: 0,

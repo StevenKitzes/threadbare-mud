@@ -11,6 +11,7 @@ export type NPC = {
 
   cashLoot: number;
   itemLoot: string[];
+  xp: number;
   healthMax: number;
   agility: number;
   strength: number;
@@ -18,6 +19,7 @@ export type NPC = {
   damageValue: number;
   armor: number;
   armorType: ArmorType[];
+  aggro: boolean;
   
   health: number;
   deathTime: number;
@@ -47,10 +49,12 @@ export enum NpcIds {
   AUDRIC = "1",
   SMALL_RAT = "2",
   STOUT_RAT = "3",
+  RABID_RAT = "4",
 }
 
 import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
 import('./small-rat').then(npc => npcFactories.set(NpcIds.SMALL_RAT, npc.make));
 import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
+import('./rabid-rat').then(npc => npcFactories.set(NpcIds.RABID_RAT, npc.make));
 
 export default items;

@@ -151,7 +151,7 @@ io.on('connection', (socket) => {
           socket,
           character: connectedCharacter,
           characterList: characters,
-          command: payload.gameAction
+          command: payload.gameAction.toLowerCase()
         });
       });    
 

@@ -31,6 +31,7 @@ export type Character = {
   footwear: string | null;
   weapon: string | null;
   offhand: string | null;
+  xp: number;
 };
 
 export type User = {
@@ -51,7 +52,26 @@ export enum ClassTypes {
   ranger = 'ranger',
   spymaster = 'spymaster',
   rogue = 'rogue'
-}
+};
+
+export enum XpAmounts {
+  insignificant = 10,
+  tiny = 25,
+  small = 50,
+  fair = 100,
+  good = 200,
+  great = 400,
+  massive = 1000
+};
+
+export enum LevelingThresholds {
+  lowest = 8,
+  lower = 10,
+  low = 13,
+  high = 16,
+  higher = 20,
+  highest = 25
+};
 
 // App type definitions
 

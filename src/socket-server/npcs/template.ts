@@ -1,4 +1,7 @@
 /* Use this template to create new NPCs
+ *
+ * for reference:
+ * small rat    xp 
 
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
@@ -16,6 +19,7 @@ export function make(): NPC {
 
     cashLoot: ,
     itemLoot: ,
+    xp: ,
     healthMax: ,
     agility: ,
     strength: ,
@@ -23,6 +27,7 @@ export function make(): NPC {
     damageValue: ,
     armor: ,
     armorType: ,
+    aggro: false,
     
     health: ,
     deathTime: 0,
@@ -32,7 +37,7 @@ export function make(): NPC {
     setDeathTime: (d: number) => {},
     setCombatInterval: (c: NodeJS.Timeout | null) => {},
 
-    getDescription: () => ;
+    getDescription: () => ,
 
     handleNpcCommand: (handlerOptions: HandlerOptions) => { console.error("handleNpcCommand needs implementation."); return false; },
   }
@@ -41,7 +46,7 @@ export function make(): NPC {
   npc.setDeathTime = function (d: number): void { npc.deathTime = d; };
   npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
 
-  npc.getDescription = function (): string { return ; };
+  npc.getDescription = function (): string { return 0; };
 
   npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;

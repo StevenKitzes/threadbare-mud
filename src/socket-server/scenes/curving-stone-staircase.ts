@@ -23,13 +23,23 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.STOUT_RAT)(), npcFactories.get(NpcIds.SMALL_RAT)() ]);
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.STOUT_RAT)(), npcFactories.get(NpcIds.SMALL_RAT)(), npcFactories.get(NpcIds.RABID_RAT)() ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
         if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
       })
     }
+
+    // Aggro enemies attack!
+    characterNpcs.get(character.id).forEach(c => {
+      if (c.health > 0 && c.aggro) {
+        c.handleNpcCommand({
+          ...handlerOptions,
+          command: `fight ${c.keywords[0]}`
+        });
+      }
+    });
 
     return handleSceneCommand({
       ...handlerOptions,

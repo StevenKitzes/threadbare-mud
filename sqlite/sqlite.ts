@@ -27,6 +27,7 @@ type CharacterDBIntermediary = {
   scene_states: string;
   money: number;
   inventory: string;
+  xp: number;
   // worn items
   headgear: string | null;
   armor: string | null;
@@ -79,6 +80,7 @@ export type Database = {
     footwear?: string;
     weapon?: string;
     offhand?: string;
+    xp?: number;
   }) => boolean;
   writeCharacterInventory: (charId: string, inventory: string[]) => boolean;
   writeCharacterSceneStates: (charId: string, sceneStates: any) => boolean;
@@ -243,6 +245,7 @@ export const writeCharacterData = (charId: string, opts: {
   footwear?: string;
   weapon?: string;
   offhand?: string;
+  xp?: number;
 }): boolean => {
   try {
     const updatePrefix: string = "UPDATE characters SET ";
@@ -334,6 +337,10 @@ export const writeCharacterData = (charId: string, opts: {
       columnAssignments.push("offhand = ?");
       values.push(opts.offhand);
     }
+    if (opts.xp !== undefined) {
+      columnAssignments.push("xp = ?");
+      values.push(opts.xp);
+    }
 
     db.prepare(`${updatePrefix}${columnAssignments.join(', ')}${updateSuffix}`)
       .run(...values, charId);
@@ -358,8 +365,8 @@ export const writeCharacterStory = (charId: string, stories: Stories): boolean =
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
     statement: db.prepare(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory)
-      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '1', '1', 0, '{\"main\": 0}', '{}', 0, '[]');
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp)
+      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '1', '1', 0, '{\"main\": 0}', '{}', 0, '[]', 0);
     `),
     runValues: [charId, userId, name]
   };

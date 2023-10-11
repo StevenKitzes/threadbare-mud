@@ -41,6 +41,16 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
+    // Aggro enemies attack!
+    characterNpcs.get(character.id).forEach(c => {
+      if (c.health > 0 && c.aggro) {
+        c.handleNpcCommand({
+          ...handlerOptions,
+          command: `fight ${c.keywords[0]}`
+        });
+      }
+    });
+
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'

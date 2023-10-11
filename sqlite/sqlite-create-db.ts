@@ -46,6 +46,8 @@ statements.push(db.prepare(`CREATE TABLE IF NOT EXISTS characters (
   footwear TEXT,
   weapon TEXT,
   offhand TEXT,
+  xp INTEGER NOT NULL,
+  
   FOREIGN KEY (user_id) REFERENCES users (id)
 );`));
 

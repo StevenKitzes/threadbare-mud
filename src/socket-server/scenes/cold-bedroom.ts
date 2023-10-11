@@ -51,12 +51,19 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     } else if (character.stories.main > 0) {
       actorText.push("This was the room where you awoke on satin sheets.  You recall hearing singing voices and a song that made your skin tingle.");
     }
-    actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural outline, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to the bed.  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
+    actorText.push('The cold, stone walls of this bedroom are plain and unadorned.  The uneven blocks were clearly cut and polished to form a smooth surface, but retain their natural outline, forming a strange mosaic with many mortar-filled gaps.  A simple table stands next to a bed, where you can [rest].  A chest of [drawers] rests against the far wall.  A [window] set into the stone across from the bed has been left cracked open, and a gentle breeze rustles the thin curtains hanging there.  A needlessly large [door], made of dark, iron-bound wood, appears to be the only exit from the room.');
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
 
     emitSelf(actorText);
 
+    return true;
+  }
+
+  if (command.match(/^rest$/) && writeCharacterData(character.id, { health: character.health_max })) {
+    character.health = character.health_max;
+    emitOthers(`${character.name} rests for a while on a bed with satin sheets.`);
+    emitSelf(`You rest a while on a bed with satin sheets, and feel rejuvenated.`);
     return true;
   }
 

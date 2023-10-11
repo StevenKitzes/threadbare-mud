@@ -5,7 +5,8 @@ import { firstCharToUpper } from '../../utils/firstCharToUpper';
 import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
-import { InventoryDescriptionHelper } from '../../types';
+import { InventoryDescriptionHelper, XpAmounts } from '../../types';
+import { levelRequirementString, xpAmountString } from '../../utils/levelingStrings';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
@@ -25,6 +26,71 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     // health
     actorText.push(characterHealthText(character));
+
+    // equipment
+    let naked: boolean = true;
+    if (character.headgear) {
+      actorText.push(`Upon your head, you wear ${items.get(character.headgear).title}.`);
+      naked = false;
+    }
+    if (character.armor) {
+      actorText.push(`On your body, you have donned ${items.get(character.armor).title}.`);
+      naked = false;
+    }
+    if (character.gloves) {
+      actorText.push(`Covering your hands: ${items.get(character.gloves).title}.`);
+      naked = false;
+    }
+    if (character.legwear) {
+      actorText.push(`Your legs are covered by ${items.get(character.legwear).title}.`);
+      naked = false;
+    }
+    if (character.footwear) {
+      actorText.push(`Your feet are protected by ${items.get(character.footwear).title}.`);
+      naked = false;
+    }
+    if (character.weapon) {
+      actorText.push(`In case of trouble, you carry ${items.get(character.weapon).title}.`);
+    }
+    if (character.offhand) {
+      actorText.push(`You carry ${items.get(character.offhand).title} at the ready in your off-hand.`);
+    }
+
+    if (naked) actorText.push('You wear only a modest set of undergarments.');
+
+    // encumbrance
+    let carried: number =
+      character.inventory.reduce( (runningTotal, itemId) => runningTotal + items.get(itemId).weight, 0 );
+    if (character.headgear) carried += items.get(character.headgear).weight;
+    if (character.armor) carried += items.get(character.armor).weight;
+    if (character.gloves) carried += items.get(character.gloves).weight;
+    if (character.legwear) carried += items.get(character.legwear).weight;
+    if (character.footwear) carried += items.get(character.footwear).weight;
+    if (character.weapon) carried += items.get(character.weapon).weight;
+    if (character.offhand) carried += items.get(character.offhand).weight;
+    const maxCarry: number = character.strength * 10;
+    if (carried < maxCarry * 0.25) {
+      actorText.push("You barely notice the weight of the things you are carrying.");
+    } else if (carried < maxCarry * 0.5) {
+      actorText.push("You are carrying enough that you notice the weight.");
+    } else if (carried < maxCarry * 0.75) {
+      actorText.push("You sweat a little under the load of all you're carrying.");
+    } else if (carried <= maxCarry) {
+      actorText.push("You can barely carry all the things you've accumulated.");
+    } else {
+      actorText.push("You are carrying so much that you can't take another step.");
+    }
+
+    actorText.push("Try [evaluate skills] to check on your skills and abilities.");
+
+    emitSelf(actorText);
+
+    return true;
+  }
+
+  // evaluate your skills
+  if (command.match(/^(?:eval|eval self|evaluate|evaluate self|skills|eval skills|evaluate skills)$/)) {
+    const actorText: string[] = [];
 
     // light weapons
     if (character.light_attack < 7) {
@@ -116,59 +182,26 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       actorText.push("Your savvy has grown to be otherworldly.");
     }
 
-    // equipment
-    let naked: boolean = true;
-    if (character.headgear) {
-      actorText.push(`Upon your head, you wear ${items.get(character.headgear).title}.`);
-      naked = false;
-    }
-    if (character.armor) {
-      actorText.push(`On your body, you have donned ${items.get(character.armor).title}.`);
-      naked = false;
-    }
-    if (character.gloves) {
-      actorText.push(`Covering your hands: ${items.get(character.gloves).title}.`);
-      naked = false;
-    }
-    if (character.legwear) {
-      actorText.push(`Your legs are covered by ${items.get(character.legwear).title}.`);
-      naked = false;
-    }
-    if (character.footwear) {
-      actorText.push(`Your feet are protected by ${items.get(character.footwear).title}.`);
-      naked = false;
-    }
-    if (character.weapon) {
-      actorText.push(`In case of trouble, you carry ${items.get(character.weapon).title}.`);
-    }
-    if (character.offhand) {
-      actorText.push(`You carry ${items.get(character.offhand).title} at the ready in your off-hand.`);
-    }
+    actorText.push("Try [level] for guidance on using Lifelight energy to boost your skills and abilities.");
 
-    if (naked) actorText.push('You wear only a modest set of undergarments.');
+    emitSelf(actorText);
 
-    // encumbrance
-    let carried: number =
-      character.inventory.reduce( (runningTotal, itemId) => runningTotal + items.get(itemId).weight, 0 );
-    if (character.headgear) carried += items.get(character.headgear).weight;
-    if (character.armor) carried += items.get(character.armor).weight;
-    if (character.gloves) carried += items.get(character.gloves).weight;
-    if (character.legwear) carried += items.get(character.legwear).weight;
-    if (character.footwear) carried += items.get(character.footwear).weight;
-    if (character.weapon) carried += items.get(character.weapon).weight;
-    if (character.offhand) carried += items.get(character.offhand).weight;
-    const maxCarry: number = character.strength * 10;
-    if (carried < maxCarry * 0.25) {
-      actorText.push("You barely notice the weight of the things you are carrying.");
-    } else if (carried < maxCarry * 0.5) {
-      actorText.push("You are carrying enough that you notice the weight.");
-    } else if (carried < maxCarry * 0.75) {
-      actorText.push("You sweat a little under the load of all you're carrying.");
-    } else if (carried <= maxCarry) {
-      actorText.push("You can barely carry all the things you've accumulated.");
-    } else {
-      actorText.push("You are carrying so much that you can't take another step.");
-    }
+    return true;
+  }
+
+  // level up and such
+  if (command.match(/^level$/)) {
+    const actorText: string[] = [
+      `The Lifelight has, so far, blessed you with ${xpAmountString(character.xp)} of its warmth.`,
+      `You can use the energy bestowed by the Lifelight to empower your skills and abilities and grow stronger.`,
+      `The stronger one of your skills or abilities already is, the more energy it will take to improve it.`,
+      `To [level agility] will cost you ${levelRequirementString(character.agility)} of energy.`,
+      `To [level strength] will cost you ${levelRequirementString(character.strength)} of energy.`,
+      `To [level savvy] will cost you ${levelRequirementString(character.savvy)} of energy.`,
+      `To [level light weapon fighting] will cost you ${levelRequirementString(character.light_attack)} of energy.`,
+      `To [level heavy weapon fighting] will cost you ${levelRequirementString(character.heavy_attack)} of energy.`,
+      `To [level ranged weapon fighting] will cost you ${levelRequirementString(character.ranged_attack)} of energy.`
+    ];
 
     emitSelf(actorText);
 

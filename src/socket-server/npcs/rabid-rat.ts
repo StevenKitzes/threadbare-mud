@@ -6,25 +6,25 @@ import startCombat from '../../utils/startCombat';
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.SMALL_RAT,
-    name: "a small rat",
-    description: "A [small rat] with grey-brown fur and beady little eyes scurries about.",
-    keywords: ['small rat', 'rat'],
-    attackDescription: "tiny teeth",
+    id: NpcIds.RABID_RAT,
+    name: "a rabid rat",
+    description: "A [rabid rat], chaotic and mad with rage, seethes and thrashes!",
+    keywords: ['rabid rat', 'rat'],
+    attackDescription: "rabid teeth",
 
     cashLoot: 0,
     itemLoot: [],
-    xp: 1,
-    healthMax: 5,
-    agility: 14,
-    strength: 2,
-    savvy: 6,
+    xp: 2,
+    healthMax: 10,
+    agility: 15,
+    strength: 3,
+    savvy: 2,
     damageValue: 3,
     armor: 1,
     armorType: [],
-    aggro: false,
+    aggro: true,
     
-    health: 5,
+    health: 10,
     deathTime: 0,
     combatInterval: null,
 
@@ -47,29 +47,29 @@ export function make(): NPC {
     const { character, command, socket } = handlerOptions;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   
-    if (command.match(/^look (?:rat|small rat)$/)) {
-      emitOthers(`${character.name} eyes ${npc.name} suspiciously.`);
+    if (command.match(/^look (?:rat|rabid rat)$/)) {
+      emitOthers(`${character.name} looks tentatively at ${npc.name}.`);
   
       const actorText: string[] = [];
-      if (npc.health > 0) actorText.push(npc.description);
+      if (npc.health > 0) actorText.push(npc.getDescription(character));
       actorText.push(npcHealthText(npc.name, npc.health, npc.healthMax));
       emitSelf(actorText);
       
       return true;
     }
   
-    if (command.match(/^talk (?:rat|small rat)$/)) {
+    if (command.match(/^talk (?:rat|rabid rat)$/)) {
       if (npc.health < 1) {
         emitOthers(`${character.name} is talking to a corpse.`);
         emitSelf(`You find that ${npc.name} is not very talkative when they are dead.`);
         return true;
       }
-      emitOthers(`${character.name} is trying to have a conversation with a rat.`);
-      emitSelf("After several tries, you determine that rats can't talk.  At least, this one can't.");
+      emitOthers(`${character.name} is trying to chat with ${npc.name}.`);
+      emitSelf(`All that ${npc.name} wants to share is its disease.`);
       return true;
     }
   
-    if (command.match(/^(?:fight|attack|hit) (?:rat|small rat)$/)) {
+    if (command.match(/^(?:fight|attack|hit) (?:rat|rabid rat)$/)) {
       if (npc.health < 1) {
         emitOthers(`${character.name} is beating the corpse of ${npc.name}.`);
         emitSelf(`It's easy to hit ${npc.name} when they are already dead.`);

@@ -6,6 +6,7 @@ import { writeCharacterData } from "../../sqlite/sqlite";
 import { SceneIds, scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
 import characterHealthText from "./characterHealthText";
+import { xpAmountString } from "./levelingStrings";
 
 const COMBAT_TIMER: number = 2000;
 
@@ -32,8 +33,13 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
       emitOthers(`${character.name} has defeated ${npc.name}.`);
       if (writeCharacterData(character.id, {
         money: character.money + npc.cashLoot,
-        inventory: [ ...character.inventory, ...npc.itemLoot ]
+        inventory: [ ...character.inventory, ...npc.itemLoot ],
+        xp: character.xp + npc.xp
       })) {
+        character.money += npc.cashLoot;
+        character.inventory = [ ...character.inventory, ...npc.itemLoot ];
+        character.xp += npc.xp;
+        actorText.push(`You feel ${xpAmountString(npc.xp)} of the Lifelight's energy coursing through you.`);
         if (npc.cashLoot > 0) actorText.push(`You collect ${npc.cashLoot} coins from ${npc.name}'s body.`);
         else actorText.push(`There are no coins to collect from ${npc.name}.`);
         npc.itemLoot.forEach(item => {
