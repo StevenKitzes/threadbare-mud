@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local'});
 dotenv.config({ override: true });
 
-import { readActiveCharacterBySession } from '../../sqlite/sqlite';
+import { accountHasActiveCharacter, readActiveCharacterBySession } from '../../sqlite/sqlite';
 import { handleCharacterCommand } from './character/character';
 
 import { Scene, scenes } from './scenes/scenes';
@@ -139,6 +139,13 @@ io.on('connection', (socket) => {
 
     // valid token confirmed
     try {
+      if (!accountHasActiveCharacter(payload.token)) {
+        return socket.emit('game-text', {
+          gameText: "You don't have a character activated yet.  Make sure you have created and activated a character on the Select Character screen.",
+          opts: { error: true }
+        });
+      }
+
       const connectedCharacter: Character | undefined = readActiveCharacterBySession(payload.token);
       if (connectedCharacter === undefined) throw new Error("Got empty character from database.");
 

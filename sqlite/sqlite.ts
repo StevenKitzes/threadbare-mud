@@ -49,6 +49,7 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
 }
 
 export type Database = {
+  accountHasActiveCharacter: (token: string) => boolean;
   navigateCharacter: (charId: string, sceneIdEnum: SceneIds) => boolean;
   readActiveCharacterBySession: (token: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
@@ -95,6 +96,22 @@ export type TransactBundle = {
   runValues: any[]
 };
 
+export const accountHasActiveCharacter = (token: string): boolean => {
+  try {
+    const count: number = db.prepare(`
+      SELECT COUNT(*) as count FROM characters
+      JOIN users ON characters.user_id = users.id
+      WHERE users.session = ? AND characters.active = 1;
+    `).get(token).count;
+    console.log('count', count);
+    if (count === 0) return false;
+    return true;
+  } catch (err: any) {
+    console.error("Error counting active characters from database by session token . . .", err.toString() || "could not parse error description");
+    return false;
+  }
+}
+
 export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolean => {
   const sceneId: string = sceneIdEnum.toString();
   try {
@@ -117,7 +134,7 @@ export const readActiveCharacterBySession = (token: string): Character | undefin
     if (intermediary === undefined) throw new Error("Got undefined character.");
     return dbToChar(intermediary);
   } catch (err: any) {
-    console.error("Error retrieving active character from database by user id . . .", err.toString() || "count not parse error description");
+    console.error("Error retrieving active character from database by user id . . .", err.toString() || "could not parse error description");
     return undefined;
   }
 };
@@ -366,7 +383,7 @@ export const writeNewCharacter = (charId: string, userId: string, name: string):
   return {
     statement: db.prepare(`
     INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp)
-      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '1', '1', 0, '{\"main\": 0}', '{}', 0, '[]', 0);
+      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', '{\"main\": 0}', '{}', 0, '[]', 0);
     `),
     runValues: [charId, userId, name]
   };
@@ -386,11 +403,12 @@ export const writeSessionToUser = (userId: string, token: string | null): boolea
 export const writeUser = (id: string, username: string, password: string, email: string): TransactBundle => {
   return {
     statement: db.prepare("INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?);"),
-    runValues: [id, username, password, email]
+    runValues: [id, username, password, email === '' ? null : email]
   };
 };
 
 const database: Database = {
+  accountHasActiveCharacter,
   navigateCharacter,
   readActiveCharacterBySession,
   readCharacter,

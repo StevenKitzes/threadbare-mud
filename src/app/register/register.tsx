@@ -46,10 +46,12 @@ const Login = (): JSX.Element => {
         Password and repeated password must match.
       </span>);
     }
-    if (!emailRegex.test(email)) {
-      errors.push(<span className={spanClassName + ' text-red-500'} key="pass-match">
-        Please use a valid email address.
-      </span>)
+    if (email.trim() !== '') {
+      if (!emailRegex.test(email)) {
+        errors.push(<span className={spanClassName + ' text-red-500'} key="pass-match">
+          Please use a valid email address.
+        </span>)
+      }
     }
     setErrorElements(errors);
     if (errors.length < 1) {
@@ -61,6 +63,9 @@ const Login = (): JSX.Element => {
       };
       postData('api/register', registrationPayload)
         .then((res: ApiResponse) => {
+          if (res.status === 200) {
+            window.location.href = '/login?registered=true';
+          }
           alert(`status ${res.status}: ${res.message}`);
         });
     }
