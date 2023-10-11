@@ -1,4 +1,5 @@
 import { navigateCharacter, writeCharacterData, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
+import { SceneSentiment } from '../../types';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
@@ -9,6 +10,7 @@ import { HandlerOptions } from '../server';
 
 const id: SceneIds = SceneIds.COLD_BEDROOM;
 const title: string = "A cold bedroom";
+const sentiment: SceneSentiment = SceneSentiment.remote;
 const publicInventory: string[] = [];
 const initialSceneState: any = {
   daggerHere: true,
@@ -183,6 +185,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 export {
   id,
   title,
+  sentiment,
   publicInventory,
   handleSceneCommand
 };

@@ -2,10 +2,11 @@ import { writeCharacterData } from '../../../sqlite/sqlite';
 import getEmitters from '../../utils/emitHelper';
 import { scenes, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { ClassTypes } from '../../types';
+import { ClassTypes, SceneSentiment } from '../../types';
 
 const id: SceneIds = SceneIds.CLASS_SELECTION;
 const title: string = "Select your character class";
+const sentiment: SceneSentiment = SceneSentiment.remote;
 const publicInventory: string[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -184,6 +185,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 export {
   id,
   title,
+  sentiment,
   publicInventory,
   handleSceneCommand
 };

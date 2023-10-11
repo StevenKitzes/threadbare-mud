@@ -3,6 +3,7 @@
 import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
+import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, SceneIds } from './scenes';
@@ -11,6 +12,7 @@ import { NPC } from '../npcs/npcs';
 
 const id: SceneIds = SceneIds.;
 const title: string = ;
+const sentiment: SceneSentiment = SceneSentiment.;
 const publicInventory: string[] = [];
 
 const initialSceneState: any = {};
@@ -80,6 +82,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
     // This will be pushed to actor text independent of story
     actorText.push;
+    appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
@@ -125,6 +128,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 export {
   id,
   title,
+  sentiment,
   publicInventory,
   handleSceneCommand
 };

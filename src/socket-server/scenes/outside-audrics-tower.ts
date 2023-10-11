@@ -5,11 +5,11 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC } from '../npcs/npcs';
-import { ClassTypes } from '../../types';
+import { ClassTypes, SceneSentiment } from '../../types';
 
 const id: SceneIds = SceneIds.OUTSIDE_AUDRICS_TOWER;
 const title: string = "Outside Audric's Tower";
+const sentiment: SceneSentiment = SceneSentiment.neutral;
 const publicInventory: string[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -49,6 +49,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         break;
     }
     actorText.push(`From here, you can return to Audric's [tower], head deeper into the [market], or head round the tower to the [north] or [south].`);
+
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
 
@@ -89,6 +90,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 export {
   id,
   title,
+  sentiment,
   publicInventory,
   handleSceneCommand
 };

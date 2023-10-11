@@ -1,14 +1,16 @@
 import { navigateCharacter } from "../../../sqlite/sqlite";
+import { SceneSentiment } from "../../types";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
-import { NPC, NpcIds, npcFactories } from "../npcs/npcs";
+import { NPC } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
 import { SceneIds, scenes } from "./scenes";
 
 const id: SceneIds = SceneIds.CURVING_STONE_STAIRCASE;
 const title: string = "A curving stone staircase";
+const sentiment: SceneSentiment = SceneSentiment.remote;
 const publicInventory: string[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -86,6 +88,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 export {
   id,
   title,
+  sentiment,
   publicInventory,
   handleSceneCommand
 }

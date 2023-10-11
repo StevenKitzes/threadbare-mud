@@ -1,8 +1,10 @@
+import { SceneSentiment } from '../../types';
 import { HandlerOptions } from '../server';
 
 export type Scene = {
   id: string;
   title: string;
+  sentiment: SceneSentiment;
   publicInventory: string[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
 };

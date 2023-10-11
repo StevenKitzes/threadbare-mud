@@ -73,6 +73,17 @@ export enum LevelingThresholds {
   highest = 25
 };
 
+export enum SceneSentiment {
+  remote,
+  neutral,
+  favorPeacemakers,
+  favorRangers,
+  favorRogues,
+  favorSkyguard,
+  favorSpymasters,
+  favorWeavers
+}
+
 // App type definitions
 
 export type ApiResponse = {

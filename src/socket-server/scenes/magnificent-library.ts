@@ -1,4 +1,5 @@
 import { navigateCharacter, writeCharacterData, writeCharacterStory } from "../../../sqlite/sqlite";
+import { SceneSentiment } from "../../types";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
@@ -10,6 +11,7 @@ import { SceneIds, scenes } from "./scenes";
 
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
+const sentiment: SceneSentiment = SceneSentiment.remote;
 const publicInventory: string[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -126,6 +128,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 export {
   id,
   title,
+  sentiment,
   publicInventory,
   handleSceneCommand
 };
