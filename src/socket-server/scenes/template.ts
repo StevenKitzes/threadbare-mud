@@ -11,7 +11,9 @@ import { HandlerOptions } from '../server';
 const id: SceneIds = SceneIds.;
 const title: string = ;
 const publicInventory: string[] = [];
+
 const initialSceneState: any = {};
+const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -28,11 +30,25 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       }
     }
 
+    // Only relevant to scenes with npcs, to set up npc state
+    if (!characterNpcs.has(character.id)) {
+      // Populate NPCs
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.SMALL_RAT)() ]);
+    } else {
+      // Respawn logic
+      characterNpcs.get(character.id).forEach(c => {
+        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
+      })
+    }
+
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     })
   }
+
+  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
+  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command === 'look') {
     emitOthers();

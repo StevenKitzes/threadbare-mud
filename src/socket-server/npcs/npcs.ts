@@ -41,10 +41,12 @@ export enum ArmorType {
 
 export enum NpcIds {
   AUDRIC = "1",
-  SMALL_RAT = "2"
+  SMALL_RAT = "2",
+  STOUT_RAT = "3",
 }
 
 // import('./audric').then(npc => npcs.set(npc.id, npc));
 import('./small-rat').then(npc => npcFactories.set(NpcIds.SMALL_RAT, npc.make));
+import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
 
 export default items;

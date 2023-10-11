@@ -5,6 +5,7 @@ import getEmitters from "./emitHelper";
 import { writeCharacterData } from "../../sqlite/sqlite";
 import { SceneIds, scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
+import characterHealthText from "./characterHealthText";
 
 const COMBAT_TIMER: number = 2000;
 
@@ -51,6 +52,8 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
       emitOthers(`${character.name} was killed by ${npc.name}!  You see their body fade away into the Lifelight.`);
       emitSelf(`You fall to ${npc.name}.  You hear a chorus of singing voices and see the Lifelight bleeding into your vision...`);
       if (writeCharacterData(character.id, { health: character.health_max, scene_id: SceneIds.COLD_BEDROOM })) {
+        character.health = character.health_max;
+
         socket.leave(combatScene);
         character.scene_id = SceneIds.COLD_BEDROOM;
         socket.join(SceneIds.COLD_BEDROOM);
@@ -304,7 +307,11 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
       characterAttack();
       if (isCombatOver()) return;
     }
-    emitSelf(npcHealthText(npc.name, npc.health, npc.healthMax));
+    emitSelf([
+      npcHealthText(npc.name, npc.health, npc.healthMax),
+      characterHealthText(character),
+      `/ \\ / \\ / \\`
+    ]);
   }, COMBAT_TIMER));
 }
 

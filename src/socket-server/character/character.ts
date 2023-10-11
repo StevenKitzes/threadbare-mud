@@ -1,5 +1,7 @@
 import { HandlerOptions } from '../server';
+import { characterHealthText } from '../../utils/characterHealthText';
 import { getEmitters } from '../../utils/emitHelper';
+import { firstCharToUpper } from '../../utils/firstCharToUpper';
 import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
@@ -18,19 +20,11 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   
     emitOthers(`${character.name} is admiring themselves.`);
 
-    const job: string = [character.job.charAt(0).toUpperCase(), character.job.substring(1)].join('');
+    const job: string = firstCharToUpper(character.job);
     const actorText: string[] = [`You are ${character.name}, ${job}.`];
 
     // health
-    if (character.health < character.health_max * 0.25) {
-      actorText.push("You feel as though you are on the edge of death.");
-    } else if (character.health < character.health_max * 0.5) {
-      actorText.push("You are seriously injured and in significant pain.");
-    } else if (character.health < character.health_max * 0.75) {
-      actorText.push("You notice some aches and pains in your body.");
-    } else {
-      actorText.push("You feel well and are in good health.");
-    }
+    actorText.push(characterHealthText(character));
 
     // light weapons
     if (character.light_attack < 7) {
