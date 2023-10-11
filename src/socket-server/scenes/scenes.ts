@@ -17,6 +17,9 @@ export enum SceneIds {
   CURVING_STONE_STAIRCASE = "3",
   CLASS_SELECTION = "4",
   OUTSIDE_AUDRICS_TOWER = "5",
+  NORTH_OF_AUDRICS_TOWER = "6",
+  SOUTH_OF_AUDRICS_TOWER = "7",
+  WEST_OF_AUDRICS_TOWER = "8",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
@@ -24,6 +27,9 @@ import('./magnificent-library').then(scene => scenes.set(scene.id, scene));
 import('./curving-stone-staircase').then(scene => scenes.set(scene.id, scene));
 import('./class-selection').then(scene => scenes.set(scene.id, scene));
 import('./outside-audrics-tower').then(scene => scenes.set(scene.id, scene));
+import('./north-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
+import('./south-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
+import('./west-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
 
 export default {
   scenes

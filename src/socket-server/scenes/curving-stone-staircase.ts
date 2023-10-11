@@ -43,7 +43,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (lookSceneItem(command, id, character.name, emitOthers, emitSelf)) return true;
+  if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
   let destination: SceneIds;
   destination = SceneIds.MAGNIFICENT_LIBRARY;

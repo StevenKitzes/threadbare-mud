@@ -46,7 +46,9 @@ export function make(): NPC {
   npc.setDeathTime = function (d: number): void { npc.deathTime = d; };
   npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
 
-  npc.getDescription = function (): string { return 0; };
+  npc.getDescription = function (): string {
+    return npc.health < 1 ?  : ;
+  };
 
   npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;

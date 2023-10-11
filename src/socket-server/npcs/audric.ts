@@ -45,16 +45,9 @@ export function make(): NPC {
   npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; }
 
   npc.getDescription = function (character: Character): string {
-    if (
-      character.stories.main === 1
-    ) {
-      return "Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists, and dangles from his neck.  He eyes you expectantly.";
-    }
-    if (
-      character.stories.main === 2
-    ) {
-      return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`;
-    }
+    if ( npc.health < 1 ) return `Audric's lifeless body lies here.`;
+    if ( character.stories.main === 1 ) return "Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists, and dangles from his neck.  He eyes you expectantly.";
+    if ( character.stories.main === 2 ) return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`;
     return npc.description;
   }
 

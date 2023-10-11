@@ -48,7 +48,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         actorText.push("When folk catch a glimpse of you, they seem to pause, mesmerized by the shifting colors that glide across your Weaver skin.  You notice there are none like yourself among the crowd.");
         break;
     }
-    actorText.push(`From here, you can return to Audric's [tower], head deeper into the [market], or head round the tower to the [north] or [south].`);
+    actorText.push(`From here, you can return to Audric's [tower], head deeper into the [market], or head round the tower.  You can follow a small road to the [north] or a larger road to the [south].`);
 
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -58,7 +58,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (lookSceneItem(command, SceneIds.COLD_BEDROOM, character.name, emitOthers, emitSelf)) return true;
+  if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
   if (command.match(/^look tower$/)) {
     emitOthers(`${character.name} gazes up at the dizzying heights of the tower.`);
@@ -68,11 +68,63 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
+  if (command.match(/^look shoppers$/)) {
+    emitOthers(`${character.name} looks around at all the bustling shoppers.`);
+
+    emitSelf(`As you eye the folk bustling about outside Audric's tower, you get an idea for what kind of people live in this city - at least in Audric's district.  By and large, they are well-to-do, elegantly dressed in vibrant colors.  Some have servants in tow.  The odd glance aside, they have little time to spare for you.`);
+
+    return true;
+  }
+
+  if (command.match(/^look merchants$/)) {
+    emitOthers(`${character.name} looks at the busy merchants.`);
+
+    emitSelf(`The merchants here are selling all sorts of things.  It's hard to discern too many details from a distance without going deeper into the marketplace, but you see stalls offering food, clothing, trinkets, raw materials, printed publications, just about anything you could imagine.`);
+
+    return true;
+  }
+
+  if (command.match(/^look (?:city|cityscape|buildings)$/)) {
+    emitOthers(`${character.name} looks around at the city.`);
+
+    emitSelf(`The buildings here are varied, though they follow a cohesive style.  They are built on wooden frames, so the beams are proudly displayed, and in some cases painted with bright, colorful patterns.  The walls between the beams are plastered white, and host generously sized windows.  Most are two to three stories tall, and they are separated by a grid of roads and narrow alleys.  The city is remarkably well-kept, a testament to the money of which this place reeks.`);
+
+    return true;
+  }
+
   let destination: SceneIds;
 
   destination = SceneIds.CURVING_STONE_STAIRCASE;
   if (command.match(/^go (?:tower|stairs|staircase|inside)$/) && navigateCharacter(character.id, destination)) {
     emitOthers(`${character.name} disappears into Audric's tower.`);
+
+    socket.leave(sceneId);
+    character.scene_id = destination;
+    socket.join(destination);
+
+    return scenes.get(destination).handleSceneCommand({
+      ...handlerOptions,
+      command: 'enter'
+    });
+  }
+
+  destination = SceneIds.NORTH_OF_AUDRICS_TOWER;
+  if (command.match(/^go north$/) && navigateCharacter(character.id, destination)) {
+    emitOthers(`${character.name} around Audric's tower to the north.`);
+
+    socket.leave(sceneId);
+    character.scene_id = destination;
+    socket.join(destination);
+
+    return scenes.get(destination).handleSceneCommand({
+      ...handlerOptions,
+      command: 'enter'
+    });
+  }
+
+  destination = SceneIds.SOUTH_OF_AUDRICS_TOWER;
+  if (command.match(/^go south$/) && navigateCharacter(character.id, destination)) {
+    emitOthers(`${character.name} around Audric's tower to the south.`);
 
     socket.leave(sceneId);
     character.scene_id = destination;

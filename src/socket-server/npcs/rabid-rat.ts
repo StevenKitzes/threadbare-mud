@@ -41,7 +41,9 @@ export function make(): NPC {
   npc.setDeathTime = function (d: number): void { npc.deathTime = d; };
   npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
 
-  npc.getDescription = function (): string { return npc.description; };
+  npc.getDescription = function (): string {
+    return npc.health < 1 ? "A dead rat lies here, white foam still spilling from its mouth." : npc.description;
+  };
 
   npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;
