@@ -17,25 +17,7 @@ export function make(): NPC {
     regexAliases: 'baker',
     attackDescription: 'loaf toss',
 
-    cashLoot: 0,
-    itemLoot: [],
-    xp: 0,
-    healthMax: 100,
-    agility: 10,
-    strength: 10,
-    savvy: 10,
-    damageValue: 0,
-    armor: 0,
-    armorType: [],
-    aggro: false,
-    
-    health: 100,
-    deathTime: 0,
-    combatInterval: null,
-
-    setHealth: (h: number) => {},
-    setDeathTime: (d: number) => {},
-    setCombatInterval: (c: NodeJS.Timeout | null) => {},
+    saleItems: [items.get(ItemIds.SWEETROLL), items.get(ItemIds.BREAD_LOAF), items.get(ItemIds.CAKE)],
 
     getDescription: () => '',
 
@@ -71,7 +53,8 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        `${firstCharToUpper(npc.name)} beams at you, eager to share the labor of her work.  "Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  You can [buy bread] for 5 coins, [buy sweetroll] for 3 coins, or [buy cake] for 8 coins."`,
+        `${firstCharToUpper(npc.name)} beams at you, eager to share the labor of her work.  "Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  Here is what I have for sale."`,
+        ...npc.saleItems.map(item => `- ${item.title} (${item.type}) ${item.value} coins`),
         `You currently have ${character.money} coins.`
       ]);
       return true;
@@ -80,15 +63,10 @@ export function make(): NPC {
     // purchase from this npc
     const buyMatch: string | null = captureFrom(command, REGEX_BUY_ALIASES);
     if (buyMatch !== null) {
-      if (['sweetroll', 'bread', 'cake'].includes(buyMatch)) {
-        let itemId: string;
-        switch (buyMatch) {
-          case 'sweetroll': itemId = ItemIds.SWEETROLL; break;
-          case 'bread': itemId = ItemIds.BREAD_LOAF; break;
-          case 'cake': itemId = ItemIds.CAKE; break;
-        }
-        const item: Item = items.get(itemId);
+      const item: Item | undefined =
+        npc.saleItems.find((saleItem: Item) => buyMatch.match(makeMatcher(saleItem.keywords.join('|'))));
 
+      if (item !== undefined) {
         if (character.money >= item.value) {
           const newInventory: string[] = [ ...character.inventory, item.id ];
           if (writeCharacterData(character.id, {

@@ -17,35 +17,17 @@ export function make(): NPC {
     regexAliases: 'fruit vendor|fruit seller|fruit merchant',
     attackDescription: 'drive-by fruiting',
 
-    // these defaults shouldn't need to be changed since merchants won't engage in combat
-    cashLoot: 0,
-    itemLoot: [],
-    xp: 0,
-    healthMax: 100,
-    agility: 10,
-    strength: 10,
-    savvy: 10,
-    damageValue: 0,
-    armor: 0,
-    armorType: [],
-    aggro: false,
-    
-    health: 100,
-    deathTime: 0,
-    combatInterval: null,
-
-    setHealth: (h: number) => {},
-    setDeathTime: (d: number) => {},
-    setCombatInterval: (c: NodeJS.Timeout | null) => {},
+    saleItems: [
+      items.get(ItemIds.APPLE),
+      items.get(ItemIds.ORANGE),
+      items.get(ItemIds.PLUM),
+      items.get(ItemIds.AVOCADO),
+    ],
 
     getDescription: () => '',
 
     handleNpcCommand: (handlerOptions: HandlerOptions) => { console.error("handleNpcCommand needs implementation."); return false; },
   }
-
-  npc.setHealth = function (h: number): void { npc.health = h; };
-  npc.setDeathTime = function (d: number): void { npc.deathTime = d; };
-  npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
 
   npc.getDescription = function (): string {
     return npc.description;
@@ -61,8 +43,7 @@ export function make(): NPC {
       emitOthers(`${name} is checking out ${npc.name}'s goods.`);
   
       const actorText: string[] = [];
-      if (npc.health > 0) actorText.push(npc.getDescription(character));
-      actorText.push(npcHealthText(npc.name, npc.health, npc.healthMax));
+      actorText.push(npc.getDescription(character));
       emitSelf(actorText);
       
       return true;
@@ -72,7 +53,8 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        `${firstCharToUpper(npc.name)} is almost bouncing with joy over his little produce cart.  He holds up one fruit, then another, eager for you to try them all.  "Try an [apple], just 3 coins!  Or how about an [orange], only 4 coins!  Maybe you'd prefer a [plum] for a steal at 3 coins?  Or even..."  He whispers conspiratorily.  "An [avocado]?  I can let them go for 8 coins!"`,
+        `${firstCharToUpper(npc.name)} is almost bouncing with joy over his little produce cart.  He holds up one fruit, then another, eager for you to try them all.  "The freshest fruit in town!"`,
+        ...npc.saleItems.map(item => `- ${item.title} (${item.type}) ${item.value} coins`),
         `You currently have ${character.money} coins.`
       ]);
       return true;
@@ -81,16 +63,10 @@ export function make(): NPC {
     // purchase from this npc
     const buyMatch: string | null = captureFrom(command, REGEX_BUY_ALIASES);
     if (buyMatch !== null) {
-      if (['apple', 'orange', 'plum', 'avocado'].includes(buyMatch)) {
-        let itemId: string;
-        switch (buyMatch) {
-          case 'apple': itemId = ItemIds.APPLE; break;
-          case 'orange': itemId = ItemIds.ORANGE; break;
-          case 'plum': itemId = ItemIds.PLUM; break;
-          case 'avocado': itemId = ItemIds.AVOCADO; break;
-        }
-        const item: Item = items.get(itemId);
+      const item: Item | undefined =
+        npc.saleItems.find((saleItem: Item) => buyMatch.match(makeMatcher(saleItem.keywords.join('|'))));
 
+      if (item !== undefined) {
         if (character.money >= item.value) {
           const newInventory: string[] = [ ...character.inventory, item.id ];
           if (writeCharacterData(character.id, {
@@ -99,12 +75,12 @@ export function make(): NPC {
           })) {
             character.money -= item.value;
             character.inventory.push(item.id);
-            emitOthers(`${name} buys ${item.title} from ${npc.name}.`);
-            emitSelf(`You buy ${item.title} from ${npc.name}`);
+            emitOthers(`${name} buys ${item.title} from ${npc.name}, it looks delicious.`);
+            emitSelf(`You buy ${item.title} from ${npc.name}.`);
           }
         } else {
-          emitOthers(`${name} tries to buy ${item.title} from ${npc.name}, but can't afford it.`);
-          emitSelf(`You can't afford to buy ${item.title}.`);
+          emitOthers(`${name} tries to buy ${item.title} from ${npc.name} but can't afford it.`);
+          emitSelf(`You cannot afford to buy ${item.title}.`);
           return true;
         }
       }

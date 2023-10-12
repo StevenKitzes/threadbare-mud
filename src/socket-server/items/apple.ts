@@ -8,7 +8,7 @@ import { ItemIds, ItemTypes } from "./items";
 const id: ItemIds = ItemIds.APPLE;
 const type: ItemTypes = ItemTypes.consumable;
 const title: string = "an apple";
-const description: string = "A shiny, juicy, delicious red apple, with a little stem sticking out the top with a leaf.";
+const description: string = "A shiny, juicy, delicious [red apple], with a little stem sticking out the top with a leaf.";
 const keywords: string[] = ['apple', 'red apple', 'shiny apple', 'shiny red apple', 'red shiny apple'];
 const value: number = 3;
 const weight: number = 1;

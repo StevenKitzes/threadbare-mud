@@ -1,5 +1,5 @@
 import { Character } from "../../types";
-import items from "../items/items";
+import { Item } from "../items/items";
 import { HandlerOptions } from "../server";
 
 export type NPC = {
@@ -8,27 +8,28 @@ export type NPC = {
   description: string;
   keywords: string[];
   regexAliases: string;
-  attackDescription: string;
-
-  cashLoot: number;
-  itemLoot: string[];
-  xp: number;
-  healthMax: number;
-  agility: number;
-  strength: number;
-  savvy: number;
-  damageValue: number;
-  armor: number;
-  armorType: ArmorType[];
-  aggro: boolean;
   
-  health: number;
-  deathTime: number;
-  combatInterval: NodeJS.Timeout | null;
+  attackDescription?: string;
+  cashLoot?: number;
+  itemLoot?: string[];
+  saleItems?: Item[];
+  xp?: number;
+  healthMax?: number;
+  agility?: number;
+  strength?: number;
+  savvy?: number;
+  damageValue?: number;
+  armor?: number;
+  armorType?: ArmorType[];
+  aggro?: boolean;
+  
+  health?: number;
+  deathTime?: number;
+  combatInterval?: NodeJS.Timeout | null;
 
-  setHealth: (amount: number) => void;
-  setDeathTime: (d: number) => void;
-  setCombatInterval: (c: NodeJS.Timeout | null) => void;
+  setHealth?: (amount: number) => void;
+  setDeathTime?: (d: number) => void;
+  setCombatInterval?: (c: NodeJS.Timeout | null) => void;
 
   getDescription: (character: Character) => string;
 
@@ -61,5 +62,3 @@ import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
 import('./rabid-rat').then(npc => npcFactories.set(NpcIds.RABID_RAT, npc.make));
 import('./baker').then(npc => npcFactories.set(NpcIds.BAKER, npc.make));
 import('./fruit-vendor').then(npc => npcFactories.set(NpcIds.FRUIT_VENDOR, npc.make));
-
-export default items;

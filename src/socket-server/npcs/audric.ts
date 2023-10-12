@@ -16,36 +16,11 @@ export function make(): NPC {
     description: "[Audric] wears elaborate robes in colored brocade, jewelry of all kinds, and an embroidered cap.  He has long white hair, a long white beard, shining eyes and a quick smile.",
     keywords: ['audric', 'man', 'old man'],
     regexAliases: 'audric|man|old man|wizard|mage',
-    attackDescription: "a torrent of magical energy",
-
-    cashLoot: 0,
-    itemLoot: [],
-    xp: 0,
-    healthMax: 999999,
-    agility: 999,
-    strength: 999,
-    savvy: 999,
-    damageValue: 999,
-    armor: 999,
-    armorType: [ArmorType.strongVsBashing, ArmorType.strongVsPiercing, ArmorType.strongVsSlashing],
-    aggro: false,
-    
-    health: 999999,
-    deathTime: 0,
-    combatInterval: null,
-
-    setHealth: (h: number) => {},
-    setDeathTime: (d: number) => {},
-    setCombatInterval: (c: NodeJS.Timeout | null) => {},
 
     getDescription: () => '',
 
     handleNpcCommand: (handlerOptions: HandlerOptions) => { console.error("handleNpcCommand needs implementation."); return false; },
   }
-
-  npc.setHealth = function (h: number): void { npc.health = h; }
-  npc.setDeathTime = function (d: number): void { npc.deathTime = d; }
-  npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; }
 
   npc.getDescription = function (character: Character): string {
     if ( npc.health < 1 ) return `Audric's lifeless body lies here.`;
@@ -63,8 +38,7 @@ export function make(): NPC {
       emitOthers(`${character.name} gazes at ${npc.name}.`);
   
       const actorText: string[] = [];
-      if (npc.health > 0) actorText.push(npc.getDescription(character));
-      actorText.push(npcHealthText(npc.name, npc.health, npc.healthMax));
+      actorText.push(npc.getDescription(character));
       emitSelf(actorText);
       
       return true;
@@ -104,11 +78,6 @@ export function make(): NPC {
     
     // talk to this npc
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
-      if (npc.health < 1) {
-        emitOthers(`${character.name} is talking to a corpse.`);
-        emitSelf(`You find that ${npc.name} is not very talkative when they are dead.`);
-        return true;
-      }
       emitOthers(`${character.name} talks with ${npc.name}.`);
       emitSelf(`${npc.name} engages you in lively (but vapid) conversation.  His smile suggests he is more intelligent than he lets on, but also that he expects - maybe even desires for you to see through him.`);
       return true;
@@ -116,16 +85,8 @@ export function make(): NPC {
   
     // fight this npc
     if (command.match(makeMatcher(REGEX_FIGHT_ALIASES, npc.regexAliases))) {
-      if (npc.health < 1) {
-        emitOthers(`${character.name} is beating the corpse of ${npc.name}.`);
-        emitSelf(`It's easy to hit ${npc.name} when they are already dead.`);
-        return true;
-      }
-      if (npc.combatInterval !== null) {
-        emitSelf(`You are already fighting ${npc.name}!`);
-        return true;
-      }
-      startCombat(npc, handlerOptions);
+      emitOthers(`${character.name} looks about to try and fight ${npc.name}, but thinks better of it.`);
+      emitSelf(`You get a very strong feeling it would be a bad idea to try and fight ${npc.name}.`);
       return true;
     }
   

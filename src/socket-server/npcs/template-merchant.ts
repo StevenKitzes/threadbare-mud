@@ -18,37 +18,13 @@ export function make(): NPC {
     description: ,
     keywords: ,
     regexAliases: ,
-    attackDescription: ,
 
-    // these defaults shouldn't need to be changed since merchants won't engage in combat
-    cashLoot: 0,
-    itemLoot: [],
-    xp: 0,
-    healthMax: 100,
-    agility: 10,
-    strength: 10,
-    savvy: 10,
-    damageValue: 0,
-    armor: 0,
-    armorType: [],
-    aggro: false,
-    
-    health: 100,
-    deathTime: 0,
-    combatInterval: null,
-
-    setHealth: (h: number) => {},
-    setDeathTime: (d: number) => {},
-    setCombatInterval: (c: NodeJS.Timeout | null) => {},
+    saleItems: ,
 
     getDescription: () => '',
 
     handleNpcCommand: (handlerOptions: HandlerOptions) => { console.error("handleNpcCommand needs implementation."); return false; },
   }
-
-  npc.setHealth = function (h: number): void { npc.health = h; };
-  npc.setDeathTime = function (d: number): void { npc.deathTime = d; };
-  npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
 
   npc.getDescription = function (): string {
     return npc.description;
@@ -64,8 +40,7 @@ export function make(): NPC {
       emitOthers(`${name} is checking out ${npc.name}'s goods.`);
   
       const actorText: string[] = [];
-      if (npc.health > 0) actorText.push(npc.getDescription(character));
-      actorText.push(npcHealthText(npc.name, npc.health, npc.healthMax));
+      actorText.push(npc.getDescription(character));
       emitSelf(actorText);
       
       return true;
@@ -76,6 +51,7 @@ export function make(): NPC {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
         -,
+        ...npc.saleItems.map(item => `- ${item.title} (${item.type}) ${item.value} coins`),
         `You currently have ${character.money} coins.`
       ]);
       return true;
@@ -84,28 +60,24 @@ export function make(): NPC {
     // purchase from this npc
     const buyMatch: string | null = captureFrom(command, REGEX_BUY_ALIASES);
     if (buyMatch !== null) {
-      if (.includes(buyMatch)) {
-        let price: number;
-        let itemId: string;
-        if (buyMatch === ) {
-          price = ;
-          itemId = ItemIds.;
-        }
+      const item: Item | undefined =
+        npc.saleItems.find((saleItem: Item) => buyMatch.match(makeMatcher(saleItem.keywords.join('|'))));
 
-        if (character.money >= price) {
-          const newInventory: string[] = [ ...character.inventory, itemId ];
+      if (item !== undefined) {
+        if (character.money >= item.value) {
+          const newInventory: string[] = [ ...character.inventory, item.id ];
           if (writeCharacterData(character.id, {
-            money: character.money - price,
+            money: character.money - item.value,
             inventory: newInventory
           })) {
-            character.money -= price;
-            character.inventory.push(itemId);
-            emitOthers(-);
-            emitSelf(-);
+            character.money -= item.value;
+            character.inventory.push(item.id);
+            emitOthers(`${name} buys ${item.title} from ${npc.name}, it looks delicious.`);
+            emitSelf(`You buy ${item.title} from ${npc.name}.`);
           }
         } else {
-          emitOthers(-);
-          emitSelf(-);
+          emitOthers(`${name} tries to buy ${item.title} from ${npc.name} but can't afford it.`);
+          emitSelf(`You cannot afford to buy ${item.title}.`);
           return true;
         }
       }

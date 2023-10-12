@@ -18,8 +18,8 @@ export function make(): NPC {
     description: ,
     keywords: ,
     regexAliases: ,
+    
     attackDescription: ,
-
     cashLoot: ,
     itemLoot: ,
     xp: ,
