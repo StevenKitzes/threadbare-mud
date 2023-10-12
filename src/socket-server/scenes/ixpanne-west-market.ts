@@ -27,7 +27,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.BAKER)() ]);
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.BAKER)(), npcFactories.get(NpcIds.FRUIT_VENDOR)() ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {

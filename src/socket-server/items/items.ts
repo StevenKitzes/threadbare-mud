@@ -54,6 +54,10 @@ export enum ItemIds {
   SWEETROLL = "13",
   BREAD_LOAF = "14",
   CAKE = "15",
+  APPLE = "16",
+  ORANGE = "17",
+  PLUM = "18",
+  AVOCADO = "19",
 }
 
 import('./good-luck-charm').then(item => items.set(item.id, item));
@@ -71,5 +75,9 @@ import('./colossal-anvil').then(item => items.set(item.id, item));
 import('./sweetroll').then(item => items.set(item.id, item));
 import('./bread-loaf').then(item => items.set(item.id, item));
 import('./cake').then(item => items.set(item.id, item));
+import('./apple').then(item => items.set(item.id, item));
+import('./orange').then(item => items.set(item.id, item));
+import('./plum').then(item => items.set(item.id, item));
+import('./avocado').then(item => items.set(item.id, item));
 
 export default items;

@@ -3,20 +3,21 @@ import { HandlerOptions } from "../server";
 import { NpcIds, NPC } from "./npcs";
 import { npcHealthText } from '../../utils/npcHealthText';
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
-import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { firstCharToUpper } from "../../utils/firstCharToUpper";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import items, { Item, ItemIds } from "../items/items";
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.BAKER,
-    name: "a baker",
-    description: "A [baker] displays her goods, with a smile as warm as her freshly baked breads, sweetrolls, and cakes.",
-    keywords: ['baker'],
-    regexAliases: 'baker',
-    attackDescription: 'loaf toss',
+    id: NpcIds.FRUIT_VENDOR,
+    name: "a fruit vendor",
+    description: "A gentle fellow with a kind demeanor, this [fruit vendor] has quite an assortment, ready for you to enjoy!",
+    keywords: ['fruit vendor', 'fruit seller', 'fruit merchant'],
+    regexAliases: 'fruit vendor|fruit seller|fruit merchant',
+    attackDescription: 'drive-by fruiting',
 
+    // these defaults shouldn't need to be changed since merchants won't engage in combat
     cashLoot: 0,
     itemLoot: [],
     xp: 0,
@@ -71,7 +72,7 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        `${firstCharToUpper(npc.name)} beams at you, eager to share the labor of her work.  "Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  You can [buy bread] for 5 coins, [buy sweetroll] for 3 coins, or [buy cake] for 8 coins."`,
+        `${firstCharToUpper(npc.name)} is almost bouncing with joy over his little produce cart.  He holds up one fruit, then another, eager for you to try them all.  "Try an [apple], just 3 coins!  Or how about an [orange], only 4 coins!  Maybe you'd prefer a [plum] for a steal at 3 coins?  Or even..."  He whispers conspiratorily.  "An [avocado]?  I can let them go for 8 coins!"`,
         `You currently have ${character.money} coins.`
       ]);
       return true;
@@ -80,12 +81,13 @@ export function make(): NPC {
     // purchase from this npc
     const buyMatch: string | null = captureFrom(command, REGEX_BUY_ALIASES);
     if (buyMatch !== null) {
-      if (['sweetroll', 'bread', 'cake'].includes(buyMatch)) {
+      if (['apple', 'orange', 'plum', 'avocado'].includes(buyMatch)) {
         let itemId: string;
         switch (buyMatch) {
-          case 'sweetroll': itemId = ItemIds.SWEETROLL; break;
-          case 'bread': itemId = ItemIds.BREAD_LOAF; break;
-          case 'cake': itemId = ItemIds.CAKE; break;
+          case 'apple': itemId = ItemIds.APPLE; break;
+          case 'orange': itemId = ItemIds.ORANGE; break;
+          case 'plum': itemId = ItemIds.PLUM; break;
+          case 'avocado': itemId = ItemIds.AVOCADO; break;
         }
         const item: Item = items.get(itemId);
 
@@ -97,12 +99,12 @@ export function make(): NPC {
           })) {
             character.money -= item.value;
             character.inventory.push(item.id);
-            emitOthers(`${name} buys ${item.title} from ${npc.name}, it looks delicious.`);
-            emitSelf(`You buy ${item.title} from ${npc.name}.`);
+            emitOthers(`${name} buys ${item.title} from ${npc.name}.`);
+            emitSelf(`You buy ${item.title} from ${npc.name}`);
           }
         } else {
-          emitOthers(`${name} tries to buy ${item.title} from ${npc.name} but can't afford it.`);
-          emitSelf(`You cannot afford to buy ${item.title}.`);
+          emitOthers(`${name} tries to buy ${item.title} from ${npc.name}, but can't afford it.`);
+          emitSelf(`You can't afford to buy ${item.title}.`);
           return true;
         }
       }

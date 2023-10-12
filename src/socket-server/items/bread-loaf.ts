@@ -33,7 +33,7 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
       character.health = newHealth;
       character.inventory = newInventory;
       emitOthers(`${name} eats ${title}.`);
-      emitSelf(`You enjoy ${title} and feel a little rejuvenated.`);
+      emitSelf(`You enjoy ${title} and feel rejuvenated.`);
       return true;
     }
   }
