@@ -6,6 +6,8 @@ import startCombat from '../../utils/startCombat';
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { ItemIds } from "../items/items";
 import { Character } from "../../types";
+import { makeMatcher } from "../../utils/makeMatcher";
+import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 
 export function make(): NPC {
   const npc: NPC = {
@@ -13,6 +15,7 @@ export function make(): NPC {
     name: "Audric",
     description: "[Audric] wears elaborate robes in colored brocade, jewelry of all kinds, and an embroidered cap.  He has long white hair, a long white beard, shining eyes and a quick smile.",
     keywords: ['audric', 'man', 'old man'],
+    regexAliases: 'audric|man|old man|wizard|mage',
     attackDescription: "a torrent of magical energy",
 
     cashLoot: 0,
@@ -55,7 +58,8 @@ export function make(): NPC {
     const { character, command, socket } = handlerOptions;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   
-    if (command.match(/^look (?:audric|man|old man)$/)) {
+    // look at this npc
+    if (command.match(makeMatcher(REGEX_LOOK_ALIASES, npc.regexAliases))) {
       emitOthers(`${character.name} gazes at ${npc.name}.`);
   
       const actorText: string[] = [];
@@ -66,7 +70,11 @@ export function make(): NPC {
       return true;
     }
   
-    if (character.stories.main === 1 && command.match(/^talk (?:man|old man|audric)$/)) {
+    // talk to this npc with story
+    if (
+      character.stories.main === 1 &&
+      command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))
+    ) {
       if (
         writeCharacterData(character.id, {
           stories: { ...character.stories, main: 2 },
@@ -84,13 +92,18 @@ export function make(): NPC {
       return true;
     }
   
-    if (character.stories.main === 2 && command.match(/^talk (?:man|old man|audric)$/)) {
+    // talk to this npc with story
+    if (
+      character.stories.main === 2 &&
+      command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))
+    ) {
       emitOthers(`${character.name} has a quiet conversation with Audric.`);
       emitSelf("Audric greets you warmly and continues to wait patiently for you to return with traveling supplies.");
       return true;
     }
     
-    if (command.match(/^talk (?:audric|man|old man)$/)) {
+    // talk to this npc
+    if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       if (npc.health < 1) {
         emitOthers(`${character.name} is talking to a corpse.`);
         emitSelf(`You find that ${npc.name} is not very talkative when they are dead.`);
@@ -101,7 +114,8 @@ export function make(): NPC {
       return true;
     }
   
-    if (command.match(/^(?:fight|attack|hit) (?:audric|man|old man)$/)) {
+    // fight this npc
+    if (command.match(makeMatcher(REGEX_FIGHT_ALIASES, npc.regexAliases))) {
       if (npc.health < 1) {
         emitOthers(`${character.name} is beating the corpse of ${npc.name}.`);
         emitSelf(`It's easy to hit ${npc.name} when they are already dead.`);

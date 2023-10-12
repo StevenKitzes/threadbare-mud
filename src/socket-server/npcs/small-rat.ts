@@ -3,6 +3,8 @@ import { HandlerOptions } from "../server";
 import { ArmorType, NpcIds, NPC } from "./npcs";
 import { npcHealthText } from '../../utils/npcHealthText';
 import startCombat from '../../utils/startCombat';
+import { makeMatcher } from "../../utils/makeMatcher";
+import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 
 export function make(): NPC {
   const npc: NPC = {
@@ -10,6 +12,7 @@ export function make(): NPC {
     name: "a small rat",
     description: "A [small rat] with grey-brown fur and beady little eyes scurries about.",
     keywords: ['small rat', 'rat'],
+    regexAliases: 'small rat|rat|rodent',
     attackDescription: "tiny teeth",
 
     cashLoot: 0,
@@ -49,7 +52,8 @@ export function make(): NPC {
     const { character, command, socket } = handlerOptions;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   
-    if (command.match(/^look (?:rat|small rat)$/)) {
+    // look at this npc
+    if (command.match(makeMatcher(REGEX_LOOK_ALIASES, npc.regexAliases))) {
       emitOthers(`${character.name} eyes ${npc.name} suspiciously.`);
   
       const actorText: string[] = [];
@@ -60,7 +64,8 @@ export function make(): NPC {
       return true;
     }
   
-    if (command.match(/^talk (?:rat|small rat)$/)) {
+    // talk to this npc
+    if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       if (npc.health < 1) {
         emitOthers(`${character.name} is talking to a corpse.`);
         emitSelf(`You find that ${npc.name} is not very talkative when they are dead.`);
@@ -71,7 +76,8 @@ export function make(): NPC {
       return true;
     }
   
-    if (command.match(/^(?:fight|attack|hit) (?:rat|small rat)$/)) {
+    // fight with this npc
+    if (command.match(makeMatcher(REGEX_FIGHT_ALIASES, npc.regexAliases))) {
       if (npc.health < 1) {
         emitOthers(`${character.name} is beating the corpse of ${npc.name}.`);
         emitSelf(`It's easy to hit ${npc.name} when they are already dead.`);

@@ -10,6 +10,8 @@ import { scenes, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
+import { makeMatcher } from '../../utils/makeMatcher';
+import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 
 const id: SceneIds = SceneIds.;
 const title: string = ;
@@ -65,7 +67,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const sceneNpcs: NPC[] = characterNpcs.get(character.id);
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
-  if (command === 'look') {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers();
 
     const actorText: string[] = [title, '- - -'];
@@ -96,7 +98,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (command.match(/^$/)) {
+  if (command.match(makeMatcher())) {
     emitOthers();
 
     emitSelf();
@@ -107,7 +109,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   let destination: SceneIds;
 
   destination = ;
-  if (command.match(/^$/) && navigateCharacter(character.id, destination)) {
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, )) &&
+    navigateCharacter(character.id, destination)
+  ) {
     emitOthers();
 
     socket.leave(sceneId);

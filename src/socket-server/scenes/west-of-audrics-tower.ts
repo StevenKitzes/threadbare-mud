@@ -8,6 +8,8 @@ import { scenes, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
+import { makeMatcher } from '../../utils/makeMatcher';
+import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 
 const id: SceneIds = SceneIds.WEST_OF_AUDRICS_TOWER;
 const title: string = "A Quiet Alley West of Audric's Tower";
@@ -56,7 +58,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const sceneNpcs: NPC[] = characterNpcs.get(character.id);
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
-  if (command === 'look') {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} snoops around the alley.`);
 
     const actorText: string[] = [title, '- - -'];
@@ -78,7 +80,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   let destination: SceneIds;
 
   destination = SceneIds.NORTH_OF_AUDRICS_TOWER;
-  if (command.match(/^go north$/) && navigateCharacter(character.id, destination)) {
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, 'north')) &&
+    navigateCharacter(character.id, destination)
+  ) {
     emitOthers(`${name} leaves the alley to the north.`);
 
     socket.leave(sceneId);
@@ -92,7 +97,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   destination = SceneIds.SOUTH_OF_AUDRICS_TOWER;
-  if (command.match(/^go south$/) && navigateCharacter(character.id, destination)) {
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, 'south')) &&
+    navigateCharacter(character.id, destination)
+  ) {
     emitOthers(`${name} leaves the alley to the south.`);
 
     socket.leave(sceneId);

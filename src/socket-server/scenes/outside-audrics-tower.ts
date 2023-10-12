@@ -6,6 +6,8 @@ import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
+import { makeMatcher } from '../../utils/makeMatcher';
+import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 
 const id: SceneIds = SceneIds.OUTSIDE_AUDRICS_TOWER;
 const title: string = "Outside Audric's Tower";
@@ -24,7 +26,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     })
   }
 
-  if (command === 'look') {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${character.name} gazes about outside the tower.`);
 
     const actorText: string[] = [title, '- - -'];
@@ -60,7 +62,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (command.match(/^look tower$/)) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, 'tower'))) {
     emitOthers(`${character.name} gazes up at the dizzying heights of the tower.`);
 
     emitSelf(`You experience a sense of vertigo, so tall is the tower.  Its zenith is lost in the clouds, high above.  The blocks that constitute the walls are of irregular shapes; though their outer surface and the mortar that binds them together have been smoothed so that the tower has a sleek demeanor.  There are windows and accents of dark wood and silvery metal, but these are so high above you that they are hard to make out.`);
@@ -68,7 +70,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (command.match(/^look shoppers$/)) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, 'shoppers|crowd|people|folk|folks'))) {
     emitOthers(`${character.name} looks around at all the bustling shoppers.`);
 
     emitSelf(`As you eye the folk bustling about outside Audric's tower, you get an idea for what kind of people live in this city - at least in Audric's district.  By and large, they are well-to-do, elegantly dressed in vibrant colors.  Some have servants in tow.  The odd glance aside, they have little time to spare for you.`);
@@ -76,7 +78,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (command.match(/^look merchants$/)) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, 'merchants|sellers|shopkeepers'))) {
     emitOthers(`${character.name} looks at the busy merchants.`);
 
     emitSelf(`The merchants here are selling all sorts of things.  It's hard to discern too many details from a distance without going deeper into the marketplace, but you see stalls offering food, clothing, trinkets, raw materials, printed publications, just about anything you could imagine.`);
@@ -84,7 +86,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (command.match(/^look (?:city|cityscape|buildings)$/)) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, 'city|cityscape|buildings'))) {
     emitOthers(`${character.name} looks around at the city.`);
 
     emitSelf(`The buildings here are varied, though they follow a cohesive style.  They are built on wooden frames, so the beams are proudly displayed, and in some cases painted with bright, colorful patterns.  The walls between the beams are plastered white, and host generously sized windows.  Most are two to three stories tall, and they are separated by a grid of roads and narrow alleys.  The city is remarkably well-kept, a testament to the money of which this place reeks.`);
@@ -95,7 +97,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   let destination: SceneIds;
 
   destination = SceneIds.CURVING_STONE_STAIRCASE;
-  if (command.match(/^go (?:tower|stairs|staircase|inside)$/) && navigateCharacter(character.id, destination)) {
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, 'tower|stairs|staircase|inside')) &&
+    navigateCharacter(character.id, destination)
+  ) {
     emitOthers(`${character.name} disappears into Audric's tower.`);
 
     socket.leave(sceneId);
@@ -109,7 +114,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   destination = SceneIds.NORTH_OF_AUDRICS_TOWER;
-  if (command.match(/^go north$/) && navigateCharacter(character.id, destination)) {
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, 'north')) &&
+    navigateCharacter(character.id, destination)
+  ) {
     emitOthers(`${character.name} around Audric's tower to the north.`);
 
     socket.leave(sceneId);
@@ -123,7 +131,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   destination = SceneIds.SOUTH_OF_AUDRICS_TOWER;
-  if (command.match(/^go south$/) && navigateCharacter(character.id, destination)) {
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, 'south')) &&
+    navigateCharacter(character.id, destination)
+  ) {
     emitOthers(`${character.name} around Audric's tower to the south.`);
 
     socket.leave(sceneId);

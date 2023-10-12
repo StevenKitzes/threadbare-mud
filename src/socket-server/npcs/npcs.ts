@@ -7,6 +7,7 @@ export type NPC = {
   name: string;
   description: string;
   keywords: string[];
+  regexAliases: string;
   attackDescription: string;
 
   cashLoot: number;
