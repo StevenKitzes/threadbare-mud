@@ -1,4 +1,4 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
+import { navigateCharacter } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';

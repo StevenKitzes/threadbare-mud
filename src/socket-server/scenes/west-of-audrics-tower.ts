@@ -1,7 +1,6 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
+import { navigateCharacter } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
-import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, SceneIds } from './scenes';

@@ -1,8 +1,7 @@
 import { OptsType } from "./getGameTextObject";
 import { Item, items } from '../socket-server/items/items';
-import { Scene, scenes } from '../socket-server/scenes/scenes';
 import { captureFrom } from "./makeMatcher";
-import { REGEX_LOOK_ALIASES } from "@/constants";
+import { REGEX_LOOK_ALIASES } from "../constants";
 
 export function lookSceneItem(
   command: string,

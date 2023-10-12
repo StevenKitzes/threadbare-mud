@@ -6,7 +6,6 @@ import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
-import { NPC } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
 import { SceneIds, scenes } from "./scenes";
 

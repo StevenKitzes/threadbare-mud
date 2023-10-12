@@ -5,7 +5,7 @@ import { firstCharToUpper } from '../../utils/firstCharToUpper';
 import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
-import { ClassTypes, InventoryDescriptionHelper, XpAmounts } from '../../types';
+import { ClassTypes, InventoryDescriptionHelper } from '../../types';
 import { levelRequirementString, xpAmountString } from '../../utils/levelingStrings';
 import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';

@@ -1,6 +1,6 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { ArmorType, NpcIds, NPC } from "./npcs";
+import { NpcIds, NPC } from "./npcs";
 import { npcHealthText } from '../../utils/npcHealthText';
 import startCombat from '../../utils/startCombat';
 import { makeMatcher } from "../../utils/makeMatcher";
