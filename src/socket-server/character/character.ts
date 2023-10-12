@@ -550,12 +550,6 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             return true;
           }
         }
-
-        else {
-          emitOthers(`${character.name} tries to wear ${item.title}.  It doesn't work.`);
-          emitSelf(`${firstCharToUpper(item.title)} cannot be equipped like that.`);
-          return true;
-        }
       }
     };
   }

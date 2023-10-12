@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         actorText.push("When folk catch a glimpse of you, they seem to pause, mesmerized by the shifting colors that glide across your Weaver skin.  You notice there are none like yourself among the crowd.");
         break;
     }
-    actorText.push(`From here, you can return to Audric's [tower], head deeper into the [market], or head round the tower.  You can follow a small road to the [north] or a larger road to the [south].`);
+    actorText.push(`From here, you can return to Audric's [tower], head east, deeper into the [market], or head round the tower.  You can follow a small road to the [north] or a larger road to the [south].`);
 
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -118,7 +118,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     command.match(makeMatcher(REGEX_GO_ALIASES, 'north')) &&
     navigateCharacter(character.id, destination)
   ) {
-    emitOthers(`${character.name} around Audric's tower to the north.`);
+    emitOthers(`${character.name} heads around Audric's tower to the north.`);
 
     socket.leave(sceneId);
     character.scene_id = destination;
@@ -135,7 +135,24 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     command.match(makeMatcher(REGEX_GO_ALIASES, 'south')) &&
     navigateCharacter(character.id, destination)
   ) {
-    emitOthers(`${character.name} around Audric's tower to the south.`);
+    emitOthers(`${character.name} heads around Audric's tower to the south.`);
+
+    socket.leave(sceneId);
+    character.scene_id = destination;
+    socket.join(destination);
+
+    return scenes.get(destination).handleSceneCommand({
+      ...handlerOptions,
+      command: 'enter'
+    });
+  }
+
+  destination = SceneIds.IXPANNE_WEST_MARKET;
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, 'east|market|marketplace')) &&
+    navigateCharacter(character.id, destination)
+  ) {
+    emitOthers(`${character.name} heads east and disappears into the marketplace crowd.`);
 
     socket.leave(sceneId);
     character.scene_id = destination;

@@ -51,11 +51,13 @@ export enum NpcIds {
   SMALL_RAT = "2",
   STOUT_RAT = "3",
   RABID_RAT = "4",
+  BAKER = "5",
 }
 
 import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
 import('./small-rat').then(npc => npcFactories.set(NpcIds.SMALL_RAT, npc.make));
 import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
 import('./rabid-rat').then(npc => npcFactories.set(NpcIds.RABID_RAT, npc.make));
+import('./baker').then(npc => npcFactories.set(NpcIds.BAKER, npc.make));
 
 export default items;

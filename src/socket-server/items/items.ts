@@ -28,7 +28,8 @@ export enum ItemTypes {
   offhand = "offhand",
   lightWeapon = "lightWeapon",
   heavyWeapon = "heavyWeapon",
-  rangedWeapon = "rangedWeapon"
+  rangedWeapon = "rangedWeapon",
+  consumable = "consumable"
 };
 
 export enum DamageType {
@@ -50,6 +51,9 @@ export enum ItemIds {
   LARGE_ANVIL = "10",
   HUGE_ANVIL = "11",
   COLOSSAL_ANVIL = "12",
+  SWEETROLL = "13",
+  BREAD_LOAF = "14",
+  CAKE = "15",
 }
 
 import('./good-luck-charm').then(item => items.set(item.id, item));
@@ -64,5 +68,8 @@ import('./medium-anvil').then(item => items.set(item.id, item));
 import('./large-anvil').then(item => items.set(item.id, item));
 import('./huge-anvil').then(item => items.set(item.id, item));
 import('./colossal-anvil').then(item => items.set(item.id, item));
+import('./sweetroll').then(item => items.set(item.id, item));
+import('./bread-loaf').then(item => items.set(item.id, item));
+import('./cake').then(item => items.set(item.id, item));
 
 export default items;

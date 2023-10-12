@@ -1,6 +1,9 @@
 export const SESSION_TIMEOUT: number = 60 * 60 * 24 * 30;  // 30 days
 
+export const REGEX_BUY_ALIASES: string = 'buy|purchase|shop';
+export const REGEX_DRINK_ALIASES: string = 'use|consume|drink|quaff|gulp';
 export const REGEX_DROP_ALIASES: string = 'drop|leave|discard|huck|eject|jettison|abandon|dump|unload';
+export const REGEX_EAT_ALIASES: string = 'use|consume|eat';
 export const REGEX_EQUIP_ALIASES: string = 'use|wear|equip|wield';
 export const REGEX_EVAL_ALIASES: string = 'eval|eval self|evaluate|evaluate self|skills|eval skills|evaluate skills';
 export const REGEX_FIGHT_ALIASES: string = 'fight|battle|hit|attack|strike';
