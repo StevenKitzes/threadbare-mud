@@ -74,7 +74,10 @@ export function make(): NPC {
     // talk to this npc
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
-      emitSelf(-);
+      emitSelf([
+        -,
+        `You currently have ${character.money} coins.`
+      ]);
       return true;
     }
   

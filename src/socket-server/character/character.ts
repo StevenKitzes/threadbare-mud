@@ -6,12 +6,13 @@ import { Item, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
 import { ClassTypes, InventoryDescriptionHelper } from '../../types';
-import { levelRequirementString, xpAmountString } from '../../utils/levelingStrings';
+import { getCost, levelRequirementString, xpAmountString } from '../../utils/leveling';
 import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
+  const { name } = character;
   const { emitSelf, emitOthers } = getEmitters(socket, character.scene_id);
 
   // look at yourself
@@ -231,14 +232,120 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       `To [level agility] will cost you ${levelRequirementString(character.agility)} of energy.`,
       `To [level strength] will cost you ${levelRequirementString(character.strength)} of energy.`,
       `To [level savvy] will cost you ${levelRequirementString(character.savvy)} of energy.`,
-      `To [level light weapon fighting] will cost you ${levelRequirementString(character.light_attack)} of energy.`,
-      `To [level heavy weapon fighting] will cost you ${levelRequirementString(character.heavy_attack)} of energy.`,
-      `To [level ranged weapon fighting] will cost you ${levelRequirementString(character.ranged_attack)} of energy.`
+      `To [level light] weapon fighting will cost you ${levelRequirementString(character.light_attack)} of energy.`,
+      `To [level heavy] weapon fighting will cost you ${levelRequirementString(character.heavy_attack)} of energy.`,
+      `To [level ranged] weapon fighting will cost you ${levelRequirementString(character.ranged_attack)} of energy.`
     ];
 
     emitSelf(actorText);
 
     return true;
+  }
+
+  // level up skills and abilities
+  const levelMatch: string | null = captureFrom(command, 'level');
+  if (levelMatch !== null) {
+    if (levelMatch === 'agility') {
+      const cost: number = getCost(character.agility);
+      if (
+        character.xp >= cost &&
+        writeCharacterData(character.id, {
+          agility: character.agility + 1,
+          xp: character.xp - cost
+        })
+      ) {
+        character.agility += 1;
+        character.xp -= cost;
+        emitOthers(`The Lifelight surges through ${name}!`);
+        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little quicker than before.`);
+        return true;
+      }
+    }
+
+    if (levelMatch === 'strength') {
+      const cost: number = getCost(character.strength);
+      if (
+        character.xp >= cost &&
+        writeCharacterData(character.id, {
+          strength: character.strength + 1,
+          xp: character.xp - cost
+        })
+      ) {
+        character.strength += 1;
+        character.xp -= cost;
+        emitOthers(`The Lifelight surges through ${name}!`);
+        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little stronger than before.`);
+        return true;
+      }
+    }
+
+    if (levelMatch === 'savvy') {
+      const cost: number = getCost(character.savvy);
+      if (
+        character.xp >= cost &&
+        writeCharacterData(character.id, {
+          savvy: character.savvy + 1,
+          xp: character.xp - cost
+        })
+      ) {
+        character.savvy += 1;
+        character.xp -= cost;
+        emitOthers(`The Lifelight surges through ${name}!`);
+        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel your mind is a little sharper than before.`);
+        return true;
+      }
+    }
+
+    if (levelMatch === 'light') {
+      const cost: number = getCost(character.light_attack);
+      if (
+        character.xp >= cost &&
+        writeCharacterData(character.id, {
+          light_attack: character.light_attack + 1,
+          xp: character.xp - cost
+        })
+      ) {
+        character.light_attack += 1;
+        character.xp -= cost;
+        emitOthers(`The Lifelight surges through ${name}!`);
+        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using light weapons than before.`);
+        return true;
+      }
+    }
+
+    if (levelMatch === 'heavy') {
+      const cost: number = getCost(character.heavy_attack);
+      if (
+        character.xp >= cost &&
+        writeCharacterData(character.id, {
+          heavy_attack: character.heavy_attack + 1,
+          xp: character.xp - cost
+        })
+      ) {
+        character.heavy_attack += 1;
+        character.xp -= cost;
+        emitOthers(`The Lifelight surges through ${name}!`);
+        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using heavy weapons than before.`);
+        return true;
+      }
+    }
+
+    if (levelMatch === 'ranged') {
+      const cost: number = getCost(character.ranged_attack);
+      if (
+        character.xp >= cost &&
+        writeCharacterData(character.id, {
+          ranged_attack: character.ranged_attack + 1,
+          xp: character.xp - cost
+        })
+      ) {
+        character.ranged_attack += 1;
+        character.xp -= cost;
+        emitOthers(`The Lifelight surges through ${name}!`);
+        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using ranged weapons than before.`);
+        return true;
+      }
+    }
   }
 
   // look at your stuff

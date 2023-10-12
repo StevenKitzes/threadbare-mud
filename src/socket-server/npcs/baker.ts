@@ -71,7 +71,10 @@ export function make(): NPC {
     // talk to this npc
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
-      emitSelf(`${firstCharToUpper(npc.name)} beams at you, eager to share the labor of her work.  "Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  You can [buy bread] for 5 coins, [buy sweetroll] for 3 coins, or [buy cake] for 8 coins."`);
+      emitSelf([
+        `${firstCharToUpper(npc.name)} beams at you, eager to share the labor of her work.  "Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  You can [buy bread] for 5 coins, [buy sweetroll] for 3 coins, or [buy cake] for 8 coins."`,
+        `You currently have ${character.money} coins.`
+      ]);
       return true;
     }
   

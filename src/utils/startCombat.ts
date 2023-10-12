@@ -6,7 +6,7 @@ import { writeCharacterData } from "../../sqlite/sqlite";
 import { SceneIds, scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
 import characterHealthText from "./characterHealthText";
-import { xpAmountString } from "./levelingStrings";
+import { xpAmountString } from "./leveling";
 
 const COMBAT_TIMER: number = 2000;
 
