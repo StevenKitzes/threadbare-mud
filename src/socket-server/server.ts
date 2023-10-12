@@ -16,6 +16,8 @@ import handleQuestsCommand from './quests/quests';
 import items, { Item } from './items/items';
 import characterCanMove from '../utils/characterCanMove';
 import getGameTextObject from '../utils/getGameTextObject';
+import { makeMatcher } from '../utils/makeMatcher';
+import { REGEX_GO_ALIASES } from '../constants';
 
 export type HandlerOptions = {
   io: Server;
@@ -74,7 +76,10 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   }
 
   // before letting the character try to move, check encumbrance
-  if (command.match(/^go /) && !characterCanMove(character)) {
+  if (
+    command.match(makeMatcher(`^(?:${REGEX_GO_ALIASES}) `)) &&
+    !characterCanMove(character)
+  ) {
     // others
     socket.to(character.scene_id).emit('game-text', getGameTextObject(`${character.name} is carrying so much that they are unable to move, however hard they may try.`));
     // self
