@@ -16,3 +16,4 @@ export const REGEX_REST_ALIASES: string = 'rest|sleep|heal|nap|lie down|lay down
 export const REGEX_SELF_ALIASES: string = 'self|me|myself';
 export const REGEX_TALK_ALIASES: string = 'talk|speak|chat|talk to|speak with|chat with';
 export const REGEX_UNEQUIP_ALIASES: string = 'remove|unequip|take off|unwield';
+export const REGEX_USE_ALIASES: string = 'use|activate';

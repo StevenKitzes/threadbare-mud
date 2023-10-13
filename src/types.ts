@@ -92,6 +92,31 @@ export type ApiResponse = {
   username?: string;
 };
 
+export type CharacterUpdateOpts = {
+  job?: string,
+  health?: number,
+  health_max?: number,
+  light_attack?: number,
+  heavy_attack?: number,
+  ranged_attack?: number,
+  agility?: number,
+  strength?: number,
+  savvy?: number,
+  scene_id?: string,
+  stories?: Stories;
+  scene_states?: any;
+  money?: number;
+  inventory?: string[];
+  headgear?: string;
+  armor?: string;
+  gloves?: string;
+  legwear?: string;
+  footwear?: string;
+  weapon?: string;
+  offhand?: string;
+  xp?: number;
+};
+
 export type CookieKillerBody = {
   headers: { 'Set-Cookie': string };
   status: number;

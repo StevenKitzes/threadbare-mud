@@ -2,7 +2,7 @@ import { Statement } from 'better-sqlite3';
 
 const db = require('./sqlite-get-db.ts');
 
-import { Character, Stories, User } from '../src/types';
+import { Character, CharacterUpdateOpts, Stories, User } from '../src/types';
 import { SceneIds } from '../src/socket-server/scenes/scenes';
 
 import jStr from '../src/utils/jStr';
@@ -240,30 +240,7 @@ export const writeCharacterSceneStates = (charId: string, sceneStates: any) => {
   }
 }
 
-export const writeCharacterData = (charId: string, opts: {
-  job?: string,
-  health?: number,
-  health_max?: number,
-  light_attack?: number,
-  heavy_attack?: number,
-  ranged_attack?: number,
-  agility?: number,
-  strength?: number,
-  savvy?: number,
-  scene_id?: string,
-  stories?: Stories;
-  scene_states?: any;
-  money?: number;
-  inventory?: string[];
-  headgear?: string;
-  armor?: string;
-  gloves?: string;
-  legwear?: string;
-  footwear?: string;
-  weapon?: string;
-  offhand?: string;
-  xp?: number;
-}): boolean => {
+export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): boolean => {
   try {
     const updatePrefix: string = "UPDATE characters SET ";
     const columnAssignments: string[] = [];

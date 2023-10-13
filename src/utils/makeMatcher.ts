@@ -3,6 +3,10 @@ export function makeMatcher (actionAliases: string, targetAliases?: string): Reg
   return new RegExp(`^(?:${actionAliases}) (?:${targetAliases})$`);
 }
 
+export function startMatcher (actionAliases: string): RegExp {
+  return new RegExp(`^(?:${actionAliases}) `);
+}
+
 export function captureFrom (subject: string, actionAliases: string): string | null {
   const matches: string[] | null = subject.match(new RegExp(`^(?:${actionAliases}) (.+)$`));
   if (matches === null) return null;

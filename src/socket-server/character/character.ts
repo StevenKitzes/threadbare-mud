@@ -357,7 +357,8 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   
     emitOthers(`${character.name} is digging through their belongings.`);
 
-    const actorText: string[] = [`You have ${character.money} coin${character.money === 1 ? '' : 's'} in your pouch.`];
+    const actorText: string[] = [];
+    let weight: number = 0;
 
     if (character.inventory.length === 0) {
       actorText.push("You are not carrying any belongings.");
@@ -370,6 +371,8 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           itemDescriptions.find(desc => desc.id === item.id);
         if (!itemDesc) itemDescriptions.push({ id: item.id, desc: item.title, type: item.type, count: 1 });
         else itemDesc.count++;
+        
+        weight += item.weight;
       })
 
       actorText.push(...[
@@ -378,6 +381,21 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         "(Try [inspect (item)] for a closer inspection.)"
       ])
     }
+
+    let wornWeight: number = 0;
+    wornWeight += items.get(character.headgear)?.weight || 0;
+    wornWeight += items.get(character.armor)?.weight || 0;
+    wornWeight += items.get(character.gloves)?.weight || 0;
+    wornWeight += items.get(character.legwear)?.weight || 0;
+    wornWeight += items.get(character.footwear)?.weight || 0;
+    wornWeight += items.get(character.weapon)?.weight || 0;
+    wornWeight += items.get(character.offhand)?.weight || 0;
+
+    weight += wornWeight;
+
+    actorText.push(`The weight of all your carried items is ${weight} (including ${wornWeight} from items you have equipped).`);
+    actorText.push(`You have ${character.money} coin${character.money === 1 ? '' : 's'} in your pouch.`);
+
     emitSelf(actorText);
 
     return true;
@@ -652,8 +670,8 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           })) {
             character.offhand = item.id;
             character.inventory = newInventory;
-            emitOthers(`${character.name}${removedItemTitle ? ` puts away ${removedItemTitle} and` : ''} holds ${item.title} in their hand.`);
-            emitSelf(`You${removedItemTitle ? ` put away ${removedItemTitle} and` : ''} hold onto ${item.title}.`);
+            emitOthers(`${character.name}${removedItemTitle ? ` puts away ${removedItemTitle} and` : ''} equips ${item.title} in their hand.`);
+            emitSelf(`You${removedItemTitle ? ` put away ${removedItemTitle} and` : ''} equip ${item.title}.`);
             return true;
           }
         }

@@ -51,12 +51,13 @@ dbToHydrate.transaction(() => {
     anotherUserId, anotherUserUsername, anotherUserPassword, anotherUserEmail
   ]);      
 
-  // Characters table stuff
+  // Characters table stuff for admin
+  const startingInventory: string[] = []; for (let i = 1; i < 20; i++) startingInventory.push(i.toString());
   hydrate(`
     INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `, [
-    adminCharacterId, adminId, adminCharacterName, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, testScene1Id, '1', '{"main":0}', '{}', '0', '["1"]', "0"
+    adminCharacterId, adminId, adminCharacterName, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, testScene1Id, '1', '{"main":0}', '{}', '0', JSON.stringify(startingInventory), "0"
   ]);
 })();
 

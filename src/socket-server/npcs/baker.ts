@@ -42,8 +42,7 @@ export function make(): NPC {
       emitOthers(`${name} is checking out ${npc.name}'s goods.`);
   
       const actorText: string[] = [];
-      if (npc.health > 0) actorText.push(npc.getDescription(character));
-      actorText.push(npcHealthText(npc.name, npc.health, npc.healthMax));
+      actorText.push(npc.getDescription(character));
       emitSelf(actorText);
       
       return true;

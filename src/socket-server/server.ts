@@ -16,8 +16,9 @@ import handleQuestsCommand from './quests/quests';
 import items, { Item } from './items/items';
 import characterCanMove from '../utils/characterCanMove';
 import getGameTextObject from '../utils/getGameTextObject';
-import { makeMatcher } from '../utils/makeMatcher';
-import { REGEX_GO_ALIASES } from '../constants';
+import { captureFrom, makeMatcher, startMatcher } from '../utils/makeMatcher';
+import { REGEX_BUY_ALIASES, REGEX_DRINK_ALIASES, REGEX_DROP_ALIASES, REGEX_EAT_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_FIGHT_ALIASES, REGEX_GET_ALIASES, REGEX_GO_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_QUEST_ALIASES, REGEX_REST_ALIASES, REGEX_SELF_ALIASES, REGEX_TALK_ALIASES, REGEX_UNEQUIP_ALIASES, REGEX_USE_ALIASES } from '../constants';
+import { firstCharToUpper } from '../utils/firstCharToUpper';
 
 export type HandlerOptions = {
   io: Server;
@@ -69,6 +70,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   if (handleCharacterCommand(handlerOptions)) return;
 
   // check if any of the character's carried items can handle the command
+  if (items.get(character.offhand)?.handleItemCommand?.(handlerOptions)) return;
   for (let i = 0; i < character.inventory.length; i++) {
     const item: Item | undefined = items.get( character.inventory[i] );
     if (item === undefined) continue;
@@ -101,10 +103,26 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
     console.error('scene ids', scenes.keys())
   }
   
-  
   // if the action was not recognized
+  let output: string;
+  let targetName: string | null;
+  if (targetName = captureFrom(command, REGEX_BUY_ALIASES)) output = `There is no {${targetName}} available for purchase.`;
+  else if (targetName = captureFrom(command, REGEX_DRINK_ALIASES)) output = `You don't have any {${targetName}} to drink.`;
+  else if (targetName = captureFrom(command, REGEX_DROP_ALIASES)) output = `You aren't carrying any {${targetName}}.`;
+  else if (targetName = captureFrom(command, REGEX_EAT_ALIASES)) output = `You don't have any {${targetName}} to eat.`;
+  else if (targetName = captureFrom(command, REGEX_EQUIP_ALIASES)) output = `You don't have any {${targetName}} to equip.`;
+  else if (targetName = captureFrom(command, REGEX_EVAL_ALIASES)) output = `There is no {${targetName}} to look inspect.`;
+  else if (targetName = captureFrom(command, REGEX_FIGHT_ALIASES)) output = `There is no {${targetName}} to fight.`;
+  else if (targetName = captureFrom(command, REGEX_GET_ALIASES)) output = `You don't see any {${targetName}} to pick up.`;
+  else if (targetName = captureFrom(command, REGEX_GO_ALIASES)) output = `You don't see a way to reach {${targetName}} from here.`;
+  else if (targetName = captureFrom(command, REGEX_LOOK_ALIASES)) output = `There is no {${targetName}} to look at here.`;
+  else if (targetName = captureFrom(command, REGEX_TALK_ALIASES)) output = `You do not see {${targetName}} here to talk to.`;
+  else if (targetName = captureFrom(command, REGEX_UNEQUIP_ALIASES)) output = `You don't have any {${targetName}} equipped.`;
+  else if (targetName = captureFrom(command, REGEX_USE_ALIASES)) output = `You are not carrying any {${targetName}} you can use.`;
+  else output = `We know here no magic by the name of {${command}} . . .`;
+
   socket.emit('game-text', {
-    gameText: `We know here no magic by the name of [${command}] . . .`,
+    gameText: output,
     options: {
       error: true
     }

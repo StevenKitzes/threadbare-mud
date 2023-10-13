@@ -1,3 +1,7 @@
+import { writeCharacterData } from "../../../sqlite/sqlite";
+import { CharacterUpdateOpts } from "../../types";
+import getEmitters from "../../utils/emitHelper";
+import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 
 export type Item = {
@@ -60,24 +64,70 @@ export enum ItemIds {
   AVOCADO = "19",
 }
 
-import('./good-luck-charm').then(item => items.set(item.id, item));
-import('./black-headband').then(item => items.set(item.id, item));
-import('./loose-black-tunic').then(item => items.set(item.id, item));
-import('./loose-black-pants').then(item => items.set(item.id, item));
-import('./soft-black-boots').then(item => items.set(item.id, item));
-import('./simple-dagger').then(item => items.set(item.id, item));
-import('./audrics-coin-pouch').then(item => items.set(item.id, item));
-import('./small-anvil').then(item => items.set(item.id, item));
-import('./medium-anvil').then(item => items.set(item.id, item));
-import('./large-anvil').then(item => items.set(item.id, item));
-import('./huge-anvil').then(item => items.set(item.id, item));
-import('./colossal-anvil').then(item => items.set(item.id, item));
-import('./sweetroll').then(item => items.set(item.id, item));
-import('./bread-loaf').then(item => items.set(item.id, item));
-import('./cake').then(item => items.set(item.id, item));
-import('./apple').then(item => items.set(item.id, item));
-import('./orange').then(item => items.set(item.id, item));
-import('./plum').then(item => items.set(item.id, item));
-import('./avocado').then(item => items.set(item.id, item));
+{ // imports
+  import('./good-luck-charm').then(item => items.set(item.id, item));
+  import('./black-headband').then(item => items.set(item.id, item));
+  import('./loose-black-tunic').then(item => items.set(item.id, item));
+  import('./loose-black-pants').then(item => items.set(item.id, item));
+  import('./soft-black-boots').then(item => items.set(item.id, item));
+  import('./simple-dagger').then(item => items.set(item.id, item));
+  import('./audrics-coin-pouch').then(item => items.set(item.id, item));
+  import('./small-anvil').then(item => items.set(item.id, item));
+  import('./medium-anvil').then(item => items.set(item.id, item));
+  import('./large-anvil').then(item => items.set(item.id, item));
+  import('./huge-anvil').then(item => items.set(item.id, item));
+  import('./colossal-anvil').then(item => items.set(item.id, item));
+  import('./sweetroll').then(item => items.set(item.id, item));
+  import('./bread-loaf').then(item => items.set(item.id, item));
+  import('./cake').then(item => items.set(item.id, item));
+  import('./apple').then(item => items.set(item.id, item));
+  import('./orange').then(item => items.set(item.id, item));
+  import('./plum').then(item => items.set(item.id, item));
+  import('./avocado').then(item => items.set(item.id, item));
+}
+
+export type ConsumeItemOpts = {
+  handlerOptions: HandlerOptions;
+  actionAliases: string;
+  targetAliases: string;
+  itemId: string;
+  itemTitle: string;
+  extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
+  extraEffectsOpts?: any;
+}
+
+export function consumeItem({
+  handlerOptions,
+  actionAliases,
+  targetAliases,
+  itemId,
+  itemTitle,
+  extraEffects,
+  extraEffectsOpts,
+}: ConsumeItemOpts): boolean {
+  const { character, character: {name}, command, socket} = handlerOptions;
+  const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+
+  if (
+    command.match(makeMatcher(actionAliases, targetAliases)) &&
+    character.inventory.includes(itemId)
+  ) {
+    let characterUpdate: CharacterUpdateOpts = {};
+    characterUpdate.health = Math.max(character.health_max, character.health + 10);
+    characterUpdate.inventory = [ ...character.inventory ];
+    characterUpdate.inventory.splice(character.inventory.indexOf(itemId), 1);
+
+    if (extraEffects) {
+      characterUpdate = extraEffects(handlerOptions, extraEffectsOpts);
+    }
+
+    if (writeCharacterData(character.id, characterUpdate)) {
+      Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
+      emitOthers(`${name} eats ${itemTitle}.`);
+      emitSelf(`You enjoy ${itemTitle} and feel a little rejuvenated.`);
+      return true;
+    }
+  }
+}
 
 export default items;
