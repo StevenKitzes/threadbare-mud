@@ -1,0 +1,20 @@
+title;type;value;weight;armorValue;damageValue;damageType;hitBonus
+a good luck charm;trinket;1;1;;;;
+a black headband;headgear;3;1;1;;;
+a loose black tunic;armor;10;2;1;;;
+a pair of loose, black pants;legwear;10;2;1;;;
+a pair of soft, black boots;footwear;10;2;1;;;
+a simple dagger;lightWeapon;25;2;;5;1;
+Audric's coin pouch;trinket;50;1;;;;
+a small anvil;trinket;0;15;;;;
+a medium anvil;trinket;0;35;;;;
+a large anvil;trinket;0;65;;;;
+a huge anvil;trinket;0;85;;;;
+a colossal anvil;trinket;0;115;;;;
+a tasty sweetroll;consumable;3;1;;;;
+a fresh loaf of bread;consumable;5;1;;;;
+a tasty cake;consumable;8;1;;;;
+an apple;consumable;3;1;;;;
+an orange;consumable;4;1;;;;
+a plum;consumable;3;1;;;;
+an avocado;consumable;8;1;;;;

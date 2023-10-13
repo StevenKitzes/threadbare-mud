@@ -1,8 +1,8 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { NpcIds, NPC, look } from "./npcs";
+import { NpcIds, NPC, look, ArmorType } from "./npcs";
 import { npcHealthText } from '../../utils/npcHealthText';
-import startCombat from '../../utils/startCombat';
+import startCombat from '../../utils/combat';
 import { makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 

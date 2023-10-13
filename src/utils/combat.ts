@@ -7,15 +7,53 @@ import { SceneIds, scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
 import characterHealthText from "./characterHealthText";
 import { xpAmountString } from "./leveling";
+import { OptsType } from "./getGameTextObject";
 
 const COMBAT_TIMER: number = 2000;
 
-export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
+function npcReady(
+  npc: NPC,
+  emitSelf: (text: string | string[], opts?: OptsType | undefined) => void
+): boolean {
+  let ready: boolean = true;
+  if ( npc.agility === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing agility stat for combat.`); }
+  if ( npc.armor === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing armor stat for combat.`); }
+  if ( npc.armorType === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing armorType list for combat.`); }
+  if ( npc.attackDescription === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing attackDescription for combat.`); }
+  if ( npc.cashLoot === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing cashLoot for combat.`); }
+  if ( npc.combatInterval === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing combatInterval for combat.`); }
+  if ( npc.damageValue === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing damageValue stat for combat.`); }
+  if ( npc.deathTime === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing deathTime tracker for combat.`); }
+  if ( npc.health === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing health stat for combat.`); }
+  if ( npc.healthMax === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing healthMax stat for combat.`); }
+  if ( npc.itemLoot === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing itemLoot list for combat.`); }
+  if ( npc.savvy === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing savvy stat for combat.`); }
+  if ( npc.setCombatInterval === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing setCombatInterval setter for combat.`); }
+  if ( npc.setDeathTime === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing setDeathTime setter for combat.`); }
+  if ( npc.setHealth === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing setHealth setter for combat.`); }
+  if ( npc.strength === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing strength stat for combat.`); }
+  if ( npc.xp === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing xp stat for combat.`); }
+
+  if (!ready) {
+    emitSelf(`You are ready to fight, but ${npc.name} is not.`);
+    return false;
+  }
+
+  return true;
+}
+
+export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   const { character, socket } = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   const combatScene: string = character.scene_id;
-
+  
+  // make sure this NPC has all the requisite stats to even enter combat
+  if (!npcReady(npc, emitSelf)) return;
+  
   function isCombatOver(): boolean {
+    // this line needed for ts linting
+    if (!(npc.setCombatInterval !== undefined && npc.health !== undefined && npc.setDeathTime !== undefined && npc.cashLoot !== undefined && npc.itemLoot !== undefined && npc.xp !== undefined)) return true;
+
     // If character has fled
     if (character.scene_id !== combatScene) {
       if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
@@ -76,6 +114,9 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
   }
 
   function characterAttack() {
+    // this line needed for ts linting
+    if (!(npc.armorType !== undefined && npc.armor !== undefined && npc.agility !== undefined && npc.savvy !== undefined && npc.setHealth !== undefined && npc.health !== undefined && npc.healthMax !== undefined)) return true;
+
     // Initialize
     let attack = 0;
     let defense = 0;
@@ -161,13 +202,13 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
     defense = Math.random() * defense;
     defenseWithDodge = Math.random() * defenseWithDodge;
     damage = Math.ceil(Math.random() * damage);
-    console.info(`Final combat round values in Character attack:
-      attack: ${attack}
-      defense: ${defense}
-      defenseWithDodge: ${defenseWithDodge}
-      damage: ${damage}`);
+    // console.info(`Final combat round values in Character attack:
+    //   attack: ${attack}
+    //   defense: ${defense}
+    //   defenseWithDodge: ${defenseWithDodge}
+    //   damage: ${damage}`);
 
-      // Handle result and output
+    // Handle result and output
     const item: Item | undefined = items.get(character.weapon || '');
     const weaponName: string = item === undefined ? 'an unarmed strike' : item.title;
     if (attack > defenseWithDodge) {
@@ -220,13 +261,15 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
   }
 
   function npcAttack() {
+    // this line needed for ts linting
+    if (!(npc.agility !== undefined && npc.strength !== undefined && npc.savvy !== undefined && npc.damageValue !== undefined && npc.healthMax !== undefined)) return true;
+
     // Initialize
     let attack = 0;
     let defense = 0;
     let defenseWithDodge = 0;
     let damage = 0;
     const actorText: string[] = [];
-
     
     // Calculate attack
     attack += Math.random() * ((npc.agility + npc.strength + npc.savvy) / 3);
@@ -246,11 +289,11 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
     // Final values
     defenseWithDodge = Math.random() * defenseWithDodge;
     damage = Math.ceil(Math.random() * damage);
-    console.info(`Final combat round values in NPC attack:
-      attack: ${attack}
-      defense: ${defense}
-      defenseWithDodge: ${defenseWithDodge}
-      damage: ${damage}`);
+    // console.info(`Final combat round values in NPC attack:
+    //   attack: ${attack}
+    //   defense: ${defense}
+    //   defenseWithDodge: ${defenseWithDodge}
+    //   damage: ${damage}`);
 
     // Handle result and output
     if (attack > defenseWithDodge && writeCharacterData(character.id, { health: character.health - damage})) {
@@ -302,7 +345,13 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
     emitSelf(actorText);
   }
 
+  if (npc.setCombatInterval === undefined) return;
   npc.setCombatInterval(setInterval(() => {
+    // this garbage needed to satisfy ts linting
+    if (!(npc.agility !== undefined && npc.health !== undefined && npc.healthMax !== undefined)) {
+      if (npc.combatInterval) clearInterval(npc.combatInterval);
+      return;
+    }
     // determine who hits first
     if (Math.random() * character.agility > Math.random() * npc.agility) {
       characterAttack();
@@ -318,7 +367,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions) => {
     emitSelf([
       npcHealthText(npc.name, npc.health, npc.healthMax),
       characterHealthText(character),
-      `/ \\ / \\ / \\`
+      `= - = - = - = - = - =`
     ]);
   }, COMBAT_TIMER));
 }

@@ -43,12 +43,12 @@ export type NPC = {
 export const npcFactories: Map<string, () => NPC> = new Map<string, () => NPC>();
 
 export enum ArmorType {
-  strongVsSlashing,
-  strongVsPiercing,
-  strongVsBashing,
-  weakVsSlashing,
-  weakVsPiercing,
-  weakVsBashing
+  strongVsSlashing = "strongVsSlashing",
+  strongVsPiercing = "strongVsPiercing",
+  strongVsBashing = "strongVsBashing",
+  weakVsSlashing = "weakVsSlashing",
+  weakVsPiercing = "weakVsPiercing",
+  weakVsBashing = "weakVsBashing"
 };
 
 export enum NpcIds {

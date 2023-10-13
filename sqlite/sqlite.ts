@@ -103,7 +103,6 @@ export const accountHasActiveCharacter = (token: string): boolean => {
       JOIN users ON characters.user_id = users.id
       WHERE users.session = ? AND characters.active = 1;
     `).get(token).count;
-    console.log('count', count);
     if (count === 0) return false;
     return true;
   } catch (err: any) {
