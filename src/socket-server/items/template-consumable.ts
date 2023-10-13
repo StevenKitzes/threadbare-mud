@@ -11,6 +11,7 @@ const description: string = ;
 const keywords: string[] = ;
 const value: number = ;
 const weight: number = ;
+const healAmount: number = ;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -18,7 +19,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     actionAliases: ,
     targetAliases: keywords.join('|'),
     itemId: id,
-    itemTitle: title
+    itemTitle: title,
+    healAmount
   })) return true;
 
   return false;

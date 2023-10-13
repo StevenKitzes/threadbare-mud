@@ -9,6 +9,7 @@ const description: string = "A rare delicacy, this avocado is ripe and just the 
 const keywords: string[] = ['avocado', 'ripe avocado'];
 const value: number = 8;
 const weight: number = 1;
+const healAmount: number = 15;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -16,7 +17,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     actionAliases: REGEX_EAT_ALIASES,
     targetAliases: keywords.join('|'),
     itemId: id,
-    itemTitle: title
+    itemTitle: title,
+    healAmount
   })) return true;
 
   return false;

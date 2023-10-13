@@ -9,6 +9,7 @@ const description: string = "A freshly baked loaf of bread, just firm enough and
 const keywords: string[] = ['bread', 'bread loaf', 'loaf of bread'];
 const value: number = 5;
 const weight: number = 1;
+const healAmount: number = 15;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -16,7 +17,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     actionAliases: REGEX_EAT_ALIASES,
     targetAliases: keywords.join('|'),
     itemId: id,
-    itemTitle: title
+    itemTitle: title,
+    healAmount
   })) return true;
 
   return false;

@@ -1,4 +1,5 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
+import { REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
 import { CharacterUpdateOpts } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
@@ -18,6 +19,7 @@ export type Item = {
   hitBonus?: number;
   handleItemCommand?: (handlerOptions: HandlerOptions) => boolean;
   quest?: boolean;
+  healAmount?: number;
 };
 
 export const items: Map<string, Item> = new Map<string, Item>();
@@ -62,7 +64,7 @@ export enum ItemIds {
   ORANGE = "17",
   PLUM = "18",
   AVOCADO = "19",
-  
+
 }
 
 { // imports
@@ -95,6 +97,7 @@ export type ConsumeItemOpts = {
   itemTitle: string;
   extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
   extraEffectsOpts?: any;
+  healAmount?: number;
 }
 
 export function consumeItem({
@@ -105,6 +108,7 @@ export function consumeItem({
   itemTitle,
   extraEffects,
   extraEffectsOpts,
+  healAmount,
 }: ConsumeItemOpts): boolean {
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
@@ -114,7 +118,7 @@ export function consumeItem({
     character.inventory.includes(itemId)
   ) {
     let characterUpdate: CharacterUpdateOpts = {};
-    characterUpdate.health = Math.max(character.health_max, character.health + 10);
+    characterUpdate.health = Math.min(character.health_max, character.health + healAmount);
     characterUpdate.inventory = [ ...character.inventory ];
     characterUpdate.inventory.splice(character.inventory.indexOf(itemId), 1);
 
@@ -125,7 +129,26 @@ export function consumeItem({
     if (writeCharacterData(character.id, characterUpdate)) {
       Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
       emitOthers(`${name} eats ${itemTitle}.`);
-      emitSelf(`You enjoy ${itemTitle} and feel a little rejuvenated.`);
+
+      let actionString: string;
+      if (actionAliases === REGEX_DRINK_ALIASES) actionString = 'drink';
+      if (actionAliases === REGEX_EAT_ALIASES) actionString = 'eat';
+      if (actionAliases === REGEX_USE_ALIASES) actionString = 'use';
+
+      let healString: string;
+      if (healAmount < character.health_max * 0.1) healString = 'a little rejuvenated';
+      else if (healAmount < character.health_max * 0.2) healString = 'quite rejuvenated';
+      else if (healAmount < character.health_max * 0.3) healString = 'refreshed';
+      else if (healAmount < character.health_max * 0.4) healString = 'very refreshed';
+      else if (healAmount < character.health_max * 0.5) healString = 'revitalized';
+      else if (healAmount < character.health_max * 0.6) healString = 'a healing effect';
+      else if (healAmount < character.health_max * 0.7) healString = 'a strong healing effect';
+      else if (healAmount < character.health_max * 0.8) healString = 'a powerful healing effect';
+      else if (healAmount < character.health_max * 0.9) healString = 'your health almost completely restored';
+      else if (healAmount < character.health_max) healString = 'fully reinvigorated';
+      else healString = 'the Lifelight rushing into you, repairing all damage to your body';
+
+      emitSelf(`You ${actionString} ${itemTitle} and feel ${healString}.`);
       return true;
     }
   }

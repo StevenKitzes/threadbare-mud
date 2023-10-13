@@ -9,6 +9,7 @@ const description: string = "A nice, round, juicy, delicious orange, ready to pe
 const keywords: string[] = ['orange', 'juicy orange', 'delicious orange', 'citrus'];
 const value: number = 4;
 const weight: number = 1;
+const healAmount: number = 10;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -16,7 +17,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     actionAliases: REGEX_EAT_ALIASES,
     targetAliases: keywords.join('|'),
     itemId: id,
-    itemTitle: title
+    itemTitle: title,
+    healAmount
   })) return true;
 
   return false;

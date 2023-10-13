@@ -9,6 +9,7 @@ const description: string = "A purple plum, just ripe enough, just juicy enough,
 const keywords: string[] = ['plum', 'purple plum', 'ripe plum', 'juicy plum'];
 const value: number = 3;
 const weight: number = 1;
+const healAmount: number = 8;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -16,7 +17,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     actionAliases: REGEX_EAT_ALIASES,
     targetAliases: keywords.join('|'),
     itemId: id,
-    itemTitle: title
+    itemTitle: title,
+    healAmount
   })) return true;
 
   return false;

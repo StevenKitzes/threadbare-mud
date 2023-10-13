@@ -11,6 +11,7 @@ const description: string = ;
 const keywords: string[] = ;
 const value: number = ;
 const weight: number = ;
+const healAmount: number = ;
 
 const armorValue: number = ;
 const damageValue: number = ;
@@ -35,6 +36,8 @@ export {
   damageType,
   hitBonus,
   handleItemCommand
+  quest,
+  healAmount
 };
 
 */

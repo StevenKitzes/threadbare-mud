@@ -9,6 +9,8 @@ import characterHealthText from "./characterHealthText";
 import { xpAmountString } from "./leveling";
 import { OptsType } from "./getGameTextObject";
 
+import research from "./research";
+
 const COMBAT_TIMER: number = 2000;
 
 function npcReady(
@@ -202,11 +204,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     defense = Math.random() * defense;
     defenseWithDodge = Math.random() * defenseWithDodge;
     damage = Math.ceil(Math.random() * damage);
-    // console.info(`Final combat round values in Character attack:
-    //   attack: ${attack}
-    //   defense: ${defense}
-    //   defenseWithDodge: ${defenseWithDodge}
-    //   damage: ${damage}`);
+    research.playerAttack.push([attack, damage, defense, defenseWithDodge].join(';'));
 
     // Handle result and output
     const item: Item | undefined = items.get(character.weapon || '');
@@ -289,11 +287,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     // Final values
     defenseWithDodge = Math.random() * defenseWithDodge;
     damage = Math.ceil(Math.random() * damage);
-    // console.info(`Final combat round values in NPC attack:
-    //   attack: ${attack}
-    //   defense: ${defense}
-    //   defenseWithDodge: ${defenseWithDodge}
-    //   damage: ${damage}`);
+    research.npcAttack.push([npc.name, attack, damage, defense, defenseWithDodge].join(';'));
 
     // Handle result and output
     if (attack > defenseWithDodge && writeCharacterData(character.id, { health: character.health - damage})) {
