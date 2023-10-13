@@ -79,7 +79,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
 
   // before letting the character try to move, check encumbrance
   if (
-    command.match(makeMatcher(`^(?:${REGEX_GO_ALIASES}) `)) &&
+    command.match(startMatcher(REGEX_GO_ALIASES)) &&
     !characterCanMove(character)
   ) {
     // others

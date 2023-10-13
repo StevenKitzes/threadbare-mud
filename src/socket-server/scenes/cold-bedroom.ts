@@ -7,7 +7,7 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { makeMatcher } from '../../utils/makeMatcher';
 import items, { ItemIds } from '../items/items';
-import { scenes, SceneIds } from '../scenes/scenes';
+import { scenes, SceneIds, navigate } from '../scenes/scenes';
 import { HandlerOptions } from '../server';
 
 const id: SceneIds = SceneIds.COLD_BEDROOM;
@@ -131,7 +131,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         character.inventory = newInventory;
         character.scene_states = newSceneStates;
         emitOthers(`${character.name} digs a black outfit out of the chest of drawers.`);
-        emitSelf('You retrieve the outfit from the chest of drawers.');
+        emitSelf([
+          'You retrieve the outfit from the chest of drawers.',
+          'Check your [inventory] to see what you have picked up.'
+        ]);
         return true;
       }
     }
@@ -158,22 +161,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     }
   }
 
-  let destination: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'door|heavy door|wooden door|heavy wooden door')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${name} departs through a heavy wooden door.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
+  if (navigate(
+    handlerOptions,
+    SceneIds.MAGNIFICENT_LIBRARY,
+    'door|heavy door|wooden door|heavy wooden door',
+    emitOthers,
+    `${name} departs through a heavy wooden door.`
+  )) return true;
 
   return false;
 }

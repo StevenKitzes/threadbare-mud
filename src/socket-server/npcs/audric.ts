@@ -1,13 +1,12 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { ArmorType, NpcIds, NPC } from "./npcs";
-import { npcHealthText } from '../../utils/npcHealthText';
-import startCombat from '../../utils/startCombat';
+import { NpcIds, NPC, look } from "./npcs";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { ItemIds } from "../items/items";
-import { Character } from "../../types";
+import { Character, CharacterUpdateOpts } from "../../types";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { SceneIds } from "../scenes/scenes";
 
 export function make(): NPC {
   const npc: NPC = {
@@ -23,8 +22,10 @@ export function make(): NPC {
   }
 
   npc.getDescription = function (character: Character): string {
-    if ( character.stories.main === 1 ) return "Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists, and dangles from his neck.  He eyes you expectantly.";
-    if ( character.stories.main === 2 ) return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`;
+    if ( character.stories.main === 1 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY )
+      return "Sitting in the library with a mischievous smirk on his face is an [old man] with long white hair and a full, white beard.  He is wearing elaborate robes of fine brocade, and a delicately embroidered cap.  Rich-looking jewelry studs his fingers, adorns his wrists, and dangles from his neck.  He looks like he wants to talk.";
+    if ( character.stories.main === 2 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY )
+      return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`;
     return npc.description;
   }
 
@@ -34,49 +35,33 @@ export function make(): NPC {
   
     // look at this npc
     if (command.match(makeMatcher(REGEX_LOOK_ALIASES, npc.regexAliases))) {
-      emitOthers(`${character.name} gazes at ${npc.name}.`);
-  
-      const actorText: string[] = [];
-      actorText.push(npc.getDescription(character));
-      emitSelf(actorText);
-      
-      return true;
+      return look(emitOthers, emitSelf, npc.getDescription, character, npc.name);
     }
   
-    // talk to this npc with story
-    if (
-      character.stories.main === 1 &&
-      command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))
-    ) {
-      if (
-        writeCharacterData(character.id, {
-          stories: { ...character.stories, main: 2 },
-          inventory: [ ...character.inventory, ItemIds.AUDRICS_COIN_POUCH ]
-        })
-        ) {
-        const actorText: string[] = [];
-        character.stories.main = 2;
-        character.inventory.push(ItemIds.AUDRICS_COIN_POUCH);
-        actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home.  You would surely like to know more, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you go to the shop and purchase some traveling supplies?  On my coin, of course!"`);
-        actorText.push(`He hands you a coin pouch and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
-        emitOthers(`${character.name} has a quiet conversation with Audric.`);
-        emitSelf(actorText);
-      }
-      return true;
-    }
-  
-    // talk to this npc with story
-    if (
-      character.stories.main === 2 &&
-      command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))
-    ) {
-      emitOthers(`${character.name} has a quiet conversation with Audric.`);
-      emitSelf("Audric greets you warmly and continues to wait patiently for you to return with traveling supplies.");
-      return true;
-    }
-    
     // talk to this npc
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
+      if (character.stories.main === 1 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
+        let characterUpdate: CharacterUpdateOpts = {};
+        characterUpdate.stories = { ...character.stories, main: 2 };
+        characterUpdate.inventory = [ ...character.inventory, ItemIds.AUDRICS_COIN_POUCH ];
+    
+        if (writeCharacterData(character.id, characterUpdate)) {
+          Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
+          const actorText: string[] = [];
+          actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home.  You would surely like to know more, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you go to the shop and purchase some traveling supplies?  On my coin, of course!"`);
+          actorText.push(`He hands you a coin pouch and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
+          emitOthers(`${character.name} has a quiet conversation with Audric.`);
+          emitSelf(actorText);
+          return true;
+        }
+      }
+
+      if (character.stories.main === 2 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
+        emitOthers(`${character.name} has a quiet conversation with Audric.`);
+        emitSelf("Audric greets you warmly and continues to wait patiently for you to return with traveling supplies.");
+        return true;
+      }
+
       emitOthers(`${character.name} talks with ${npc.name}.`);
       emitSelf(`${npc.name} engages you in lively (but vapid) conversation.  His smile suggests he is more intelligent than he lets on, but also that he expects - maybe even desires for you to see through him.`);
       return true;

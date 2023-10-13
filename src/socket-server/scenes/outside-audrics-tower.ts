@@ -3,7 +3,7 @@ import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, SceneIds } from './scenes';
+import { scenes, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         actorText.push("When folk catch a glimpse of you, they seem to pause, mesmerized by the shifting colors that glide across your Weaver skin.  You notice there are none like yourself among the crowd.");
         break;
     }
-    actorText.push(`From here, you can return to Audric's [tower], head east, deeper into the [market], or head round the tower.  You can follow a small road to the [north] or a larger road to the [south].`);
+    actorText.push(`From here, you can return west into Audric's [tower], head east, deeper into the [market], or head round the tower.  You can follow a small lane to the [north] or a larger road to the [south].`);
 
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -94,75 +94,37 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  let destination: SceneIds;
+  if (navigate(
+    handlerOptions,
+    SceneIds.CURVING_STONE_STAIRCASE,
+    'tower|stairs|staircase|inside|west',
+    emitOthers,
+    `${character.name} disappears into Audric's tower.`,
+  )) return true;
 
-  destination = SceneIds.CURVING_STONE_STAIRCASE;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'tower|stairs|staircase|inside')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${character.name} disappears into Audric's tower.`);
+  if (navigate(
+    handlerOptions,
+    SceneIds.NORTH_OF_AUDRICS_TOWER,
+    'north|lane|small lane',
+    emitOthers,
+    `${character.name} heads around Audric's tower via a small lane.`,
+  )) return true;
 
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
+  if (navigate(
+    handlerOptions,
+    SceneIds.SOUTH_OF_AUDRICS_TOWER,
+    'south|road|larger road',
+    emitOthers,
+    `${character.name} takes the larger road south of Audric's tower.`,
+  )) return true;
 
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.NORTH_OF_AUDRICS_TOWER;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'north')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${character.name} heads around Audric's tower to the north.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.SOUTH_OF_AUDRICS_TOWER;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'south')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${character.name} heads around Audric's tower to the south.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.IXPANNE_WEST_MARKET;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'east|market|marketplace')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${character.name} heads east and disappears into the marketplace crowd.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
+  if (navigate(
+    handlerOptions,
+    SceneIds.IXPANNE_WEST_MARKET,
+    'east|market|marketplace',
+    emitOthers,
+    `${character.name} heads east and disappears into the marketplace crowd.`,
+  )) return true;
 
   return false;
 }

@@ -4,7 +4,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, SceneIds } from './scenes';
+import { scenes, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -51,7 +51,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("The crowd thins a bit here, north of Audric's tower.  The front of Audric's tower lies [east] of here, and there you can hear the bustle of a thriving marketplace.  Here, though, fewer people venture, as there is less to do, and some of the city's cracks show through its veneer.  There is some trash blown up against the buildings by the wind, and you can see evidence of rodents.  Along the western flank of Audric's tower you can see a quiet [alley].");
+    actorText.push("The crowd thins a bit here, north of Audric's tower.  The front of Audric's tower lies [east] of here, and there you can hear the bustle of a thriving marketplace.  Here, though, fewer people venture, as there is less to do, and some of the city's cracks show through its veneer.  There is some trash blown up against the buildings by the wind, and you can see evidence of rodents.  To the south, along the western flank of Audric's tower, you can see a quiet [alley].");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -65,41 +65,21 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  let destination: SceneIds;
+  if (navigate(
+    handlerOptions,
+    SceneIds.OUTSIDE_AUDRICS_TOWER,
+    'east|market|marketplace',
+    emitOthers,
+    `${character.name} heads east.`,
+  )) return true;
 
-  destination = SceneIds.OUTSIDE_AUDRICS_TOWER;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'east|market|marketplace')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${character.name} heads east.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.WEST_OF_AUDRICS_TOWER;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'west|alley')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${character.name} heads into a quiet alley.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
+  if (navigate(
+    handlerOptions,
+    SceneIds.WEST_OF_AUDRICS_TOWER,
+    'south|alley',
+    emitOthers,
+    `${character.name} heads into a quiet alley.`,
+  )) return true;
 
   return false;
 }

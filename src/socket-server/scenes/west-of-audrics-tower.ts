@@ -3,7 +3,7 @@ import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, SceneIds } from './scenes';
+import { scenes, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -76,41 +76,21 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  let destination: SceneIds;
+  if (navigate(
+    handlerOptions,
+    SceneIds.NORTH_OF_AUDRICS_TOWER,
+    'north|lane|small lane',
+    emitOthers,
+    `${name} leaves the alley to the north.`,
+  )) return true;
 
-  destination = SceneIds.NORTH_OF_AUDRICS_TOWER;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'north')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${name} leaves the alley to the north.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.SOUTH_OF_AUDRICS_TOWER;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'south')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${name} leaves the alley to the south.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
+  if (navigate(
+    handlerOptions,
+    SceneIds.SOUTH_OF_AUDRICS_TOWER,
+    'south|road|larger road',
+    emitOthers,
+    `${name} leaves the alley to the south.`,
+  )) return true;
 
   return false;
 }

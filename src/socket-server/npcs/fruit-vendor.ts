@@ -1,6 +1,6 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { NpcIds, NPC } from "./npcs";
+import { NpcIds, NPC, look } from "./npcs";
 import { npcHealthText } from '../../utils/npcHealthText';
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
@@ -40,13 +40,7 @@ export function make(): NPC {
   
     // look at this npc
     if (command.match(makeMatcher(REGEX_LOOK_ALIASES, npc.regexAliases))) {
-      emitOthers(`${name} is checking out ${npc.name}'s goods.`);
-  
-      const actorText: string[] = [];
-      actorText.push(npc.getDescription(character));
-      emitSelf(actorText);
-      
-      return true;
+      return look(emitOthers, emitSelf, npc.getDescription, character, npc.name);
     }
   
     // talk to this npc

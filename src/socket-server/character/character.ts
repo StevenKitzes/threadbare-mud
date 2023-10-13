@@ -383,13 +383,13 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     }
 
     let wornWeight: number = 0;
-    wornWeight += items.get(character.headgear)?.weight || 0;
-    wornWeight += items.get(character.armor)?.weight || 0;
-    wornWeight += items.get(character.gloves)?.weight || 0;
-    wornWeight += items.get(character.legwear)?.weight || 0;
-    wornWeight += items.get(character.footwear)?.weight || 0;
-    wornWeight += items.get(character.weapon)?.weight || 0;
-    wornWeight += items.get(character.offhand)?.weight || 0;
+    wornWeight += items.get(character.headgear || '')?.weight || 0;
+    wornWeight += items.get(character.armor || '')?.weight || 0;
+    wornWeight += items.get(character.gloves || '')?.weight || 0;
+    wornWeight += items.get(character.legwear || '')?.weight || 0;
+    wornWeight += items.get(character.footwear || '')?.weight || 0;
+    wornWeight += items.get(character.weapon || '')?.weight || 0;
+    wornWeight += items.get(character.offhand || '')?.weight || 0;
 
     weight += wornWeight;
 

@@ -8,7 +8,7 @@ import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { NPC, NpcIds, npcFactories } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
-import { SceneIds, scenes } from "./scenes";
+import { SceneIds, navigate, scenes } from "./scenes";
 
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
@@ -86,36 +86,21 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  let destination: SceneIds = SceneIds.COLD_BEDROOM;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'door|heavy door|wooden door|heavy wooden door')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${name} departs through a heavy wooden door.`);
+  if (navigate(
+    handlerOptions,
+    SceneIds.COLD_BEDROOM,
+    'door|heavy door|wooden door|heavy wooden door',
+    emitOthers,
+    `${name} departs through a heavy wooden door.`,
+  )) return true;
 
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.CURVING_STONE_STAIRCASE;
-  if (command.match(makeMatcher(REGEX_GO_ALIASES, 'stairs|stairway|staircase|steps')) && navigateCharacter(character.id, destination)) {
-    emitOthers(`${name} heads down a curving stone staircase.`);
-
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
+  if (navigate(
+    handlerOptions,
+    SceneIds.CURVING_STONE_STAIRCASE,
+    'stairs|stairway|staircase|steps',
+    emitOthers,
+    `${name} heads down a curving stone staircase.`,
+  )) return true;
 
   return false;
 };

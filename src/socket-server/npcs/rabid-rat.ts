@@ -1,6 +1,6 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { NpcIds, NPC } from "./npcs";
+import { NpcIds, NPC, look } from "./npcs";
 import { npcHealthText } from '../../utils/npcHealthText';
 import startCombat from '../../utils/startCombat';
 import { makeMatcher } from "../../utils/makeMatcher";
@@ -45,7 +45,11 @@ export function make(): NPC {
   npc.setCombatInterval = function (c: NodeJS.Timeout | null): void { npc.combatInterval = c; };
 
   npc.getDescription = function (): string {
-    return npc.health < 1 ? "A dead rat lies here, white foam still spilling from its mouth." : npc.description;
+    if (npc.health < 1) {
+      return "A dead rat lies here, white foam still spilling from its mouth.";
+    } else {
+      return `${npc.description}  ${npcHealthText(npc.name, npc.health, npc.healthMax)}`;
+    }
   };
 
   npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -54,14 +58,7 @@ export function make(): NPC {
   
     // look at this npc
     if (command.match(makeMatcher(REGEX_LOOK_ALIASES, npc.regexAliases))) {
-      emitOthers(`${character.name} looks tentatively at ${npc.name}.`);
-  
-      const actorText: string[] = [];
-      if (npc.health > 0) actorText.push(npc.getDescription(character));
-      actorText.push(npcHealthText(npc.name, npc.health, npc.healthMax));
-      emitSelf(actorText);
-      
-      return true;
+      return look(emitOthers, emitSelf, npc.getDescription, character, npc.name);
     }
   
     // talk to this npc

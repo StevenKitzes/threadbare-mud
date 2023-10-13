@@ -7,7 +7,7 @@ import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
-import { SceneIds, scenes } from "./scenes";
+import { SceneIds, navigate, scenes } from "./scenes";
 
 const id: SceneIds = SceneIds.CURVING_STONE_STAIRCASE;
 const title: string = "A curving stone staircase";
@@ -44,25 +44,15 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  let destination: SceneIds;
-  destination = SceneIds.MAGNIFICENT_LIBRARY;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, 'up|library|stairs|stairway|staircase')) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers(`${name} wanders up the stairs.`);
+  if (navigate(
+    handlerOptions,
+    SceneIds.MAGNIFICENT_LIBRARY,
+    'up|library|stairs|stairway|staircase',
+    emitOthers,
+    `${name} wanders up the stairs.`
+  )) return true;
 
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
-
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
-  }
-
-  destination = SceneIds.OUTSIDE_AUDRICS_TOWER;
+  let destination = SceneIds.OUTSIDE_AUDRICS_TOWER;
   if (command.match(makeMatcher(REGEX_GO_ALIASES, 'door|heavy door|wooden door|heavy wooden door'))) {
     if (character.stories.main < 2) {
       emitOthers(`${character.name} fails to open a locked door.`);

@@ -1,4 +1,8 @@
-import { SceneSentiment } from '../../types';
+import { navigateCharacter } from '../../../sqlite/sqlite';
+import { REGEX_GO_ALIASES } from '../../constants';
+import { Character, SceneSentiment } from '../../types';
+import { OptsType } from '../../utils/getGameTextObject';
+import { makeMatcher } from '../../utils/makeMatcher';
 import { HandlerOptions } from '../server';
 
 export type Scene = {
@@ -33,6 +37,30 @@ import('./south-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
 import('./west-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
 import('./ixpanne-west-market').then(scene => scenes.set(scene.id, scene));
 
-export default {
-  scenes
+export default { scenes }
+
+export function navigate(
+  handlerOptions: HandlerOptions,
+  destination: SceneIds,
+  targetAliases: string,
+  emitOthers: (text: string | string[], opts?: OptsType) => void,
+  departureString: string,
+): boolean {
+  const { command, character, socket } = handlerOptions;
+
+  if (
+    command.match(makeMatcher(REGEX_GO_ALIASES, targetAliases)) &&
+    navigateCharacter(character.id, destination)
+  ) {
+    emitOthers(departureString);
+
+    socket.leave(character.scene_id);
+    character.scene_id = destination;
+    socket.join(destination);
+
+    return scenes.get(destination).handleSceneCommand({
+      ...handlerOptions,
+      command: 'enter'
+    });
+  }
 }

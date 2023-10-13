@@ -6,7 +6,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, SceneIds } from './scenes';
+import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -108,21 +108,36 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   let destination: SceneIds;
 
-  destination = ;
-  if (
-    command.match(makeMatcher(REGEX_GO_ALIASES, )) &&
-    navigateCharacter(character.id, destination)
-  ) {
-    emitOthers();
+  // normal travel, concise
+  if (navigate(
+    handlerOptions,
+    SceneIds.-,
+    -targetAliases,
+    emitOthers,
+    -departuretext,
+  )) return true;
 
-    socket.leave(sceneId);
-    character.scene_id = destination;
-    socket.join(destination);
+  // complex, story-controlled exit example
+  let destination = SceneIds.-;
+  if (command.match(makeMatcher(REGEX_GO_ALIASES, ))) {
+    if (character.stories. < 2) {
+      emitOthers(-);
+      emitSelf(-);
+      return true;
+    }
 
-    return scenes.get(destination).handleSceneCommand({
-      ...handlerOptions,
-      command: 'enter'
-    });
+    if (navigateCharacter(character.id, destination)) {
+      emitOthers(-);
+      
+      socket.leave(sceneId);
+      character.scene_id = destination;
+      socket.join(destination);
+      
+      return scenes.get(destination).handleSceneCommand({
+        ...handlerOptions,
+        command: 'enter'
+      });
+    }
   }
 
   return false;
