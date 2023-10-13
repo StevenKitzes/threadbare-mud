@@ -9,6 +9,7 @@ import { ClassTypes, InventoryDescriptionHelper } from '../../types';
 import { getCost, levelRequirementString, xpAmountString } from '../../utils/leveling';
 import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';
+import { getEncumbranceString } from '../../utils/encumbrance';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
@@ -81,29 +82,6 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     }
 
     if (naked) actorText.push('You wear only a modest set of undergarments.');
-
-    // encumbrance
-    let carried: number =
-      character.inventory.reduce( (runningTotal, itemId) => runningTotal + items.get(itemId).weight, 0 );
-    if (character.headgear) carried += items.get(character.headgear).weight;
-    if (character.armor) carried += items.get(character.armor).weight;
-    if (character.gloves) carried += items.get(character.gloves).weight;
-    if (character.legwear) carried += items.get(character.legwear).weight;
-    if (character.footwear) carried += items.get(character.footwear).weight;
-    if (character.weapon) carried += items.get(character.weapon).weight;
-    if (character.offhand) carried += items.get(character.offhand).weight;
-    const maxCarry: number = character.strength * 10;
-    if (carried < maxCarry * 0.25) {
-      actorText.push("You barely notice the weight of the things you are carrying.");
-    } else if (carried < maxCarry * 0.5) {
-      actorText.push("You are carrying enough that you notice the weight.");
-    } else if (carried < maxCarry * 0.75) {
-      actorText.push("You sweat a little under the load of all you're carrying.");
-    } else if (carried <= maxCarry) {
-      actorText.push("You can barely carry all the things you've accumulated.");
-    } else {
-      actorText.push("You are carrying so much that you can't take another step.");
-    }
 
     actorText.push("Try [evaluate skills] to check on your skills and abilities.");
 
@@ -358,7 +336,6 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     emitOthers(`${character.name} is digging through their belongings.`);
 
     const actorText: string[] = [];
-    let weight: number = 0;
 
     if (character.inventory.length === 0) {
       actorText.push("You are not carrying any belongings.");
@@ -371,8 +348,6 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           itemDescriptions.find(desc => desc.id === item.id);
         if (!itemDesc) itemDescriptions.push({ id: item.id, desc: item.title, type: item.type, count: 1 });
         else itemDesc.count++;
-        
-        weight += item.weight;
       })
 
       actorText.push(...[
@@ -382,18 +357,8 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       ])
     }
 
-    let wornWeight: number = 0;
-    wornWeight += items.get(character.headgear || '')?.weight || 0;
-    wornWeight += items.get(character.armor || '')?.weight || 0;
-    wornWeight += items.get(character.gloves || '')?.weight || 0;
-    wornWeight += items.get(character.legwear || '')?.weight || 0;
-    wornWeight += items.get(character.footwear || '')?.weight || 0;
-    wornWeight += items.get(character.weapon || '')?.weight || 0;
-    wornWeight += items.get(character.offhand || '')?.weight || 0;
+    actorText.push(getEncumbranceString(character));
 
-    weight += wornWeight;
-
-    actorText.push(`The weight of all your carried items is ${weight} (including ${wornWeight} from items you have equipped).`);
     actorText.push(`You have ${character.money} coin${character.money === 1 ? '' : 's'} in your pouch.`);
 
     emitSelf(actorText);
@@ -422,7 +387,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         if (writeCharacterInventory(character.id, newInventory)) {
           character.inventory = newInventory;
           scenes.get(character.scene_id).publicInventory.push(item.id);
-          emitSelf(`You dropped ${item.title}.`);
+          emitSelf([
+            `You dropped ${item.title}.`,
+            getEncumbranceString(character)
+          ]);
           emitOthers(`${character.name} dropped ${item.title}.`);
           return true;
         }
@@ -451,7 +419,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         if (writeCharacterInventory(character.id, newInventory)) {
           character.inventory = newInventory;
           sceneInventory.splice(i, 1);
-          emitSelf(`You picked up ${itemTitle}.`);
+          emitSelf([
+            `You picked up ${itemTitle}.`,
+            getEncumbranceString(character)
+          ]);
           emitOthers(`${character.name} picked up ${itemTitle}.`);
           return true;
         }

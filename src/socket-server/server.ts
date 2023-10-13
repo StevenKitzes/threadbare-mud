@@ -14,7 +14,7 @@ import { handleCharacterCommand } from './character/character';
 import { Scene, scenes } from './scenes/scenes';
 import handleQuestsCommand from './quests/quests';
 import items, { Item } from './items/items';
-import characterCanMove from '../utils/characterCanMove';
+import characterCanMove from '../utils/encumbrance';
 import getGameTextObject from '../utils/getGameTextObject';
 import { captureFrom, makeMatcher, startMatcher } from '../utils/makeMatcher';
 import { REGEX_BUY_ALIASES, REGEX_DRINK_ALIASES, REGEX_DROP_ALIASES, REGEX_EAT_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_FIGHT_ALIASES, REGEX_GET_ALIASES, REGEX_GO_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_QUEST_ALIASES, REGEX_REST_ALIASES, REGEX_SELF_ALIASES, REGEX_TALK_ALIASES, REGEX_UNEQUIP_ALIASES, REGEX_USE_ALIASES } from '../constants';
