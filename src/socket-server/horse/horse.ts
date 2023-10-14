@@ -10,13 +10,13 @@ import { writeCharacterData } from "../../../sqlite/sqlite";
 import { getEncumbranceString } from "../../utils/encumbrance";
 
 // capacity mapping
-const capacityMap: Map<ItemIds, number> = new Map<ItemIds, number>();
-capacityMap.set(ItemIds.MODEST_SADDLEBAGS, 40);
-capacityMap.set(ItemIds.LEATHER_SADDLEBAGS, 80);
+export const saddlebagCapacityMap: Map<ItemIds, number> = new Map<ItemIds, number>();
+saddlebagCapacityMap.set(ItemIds.MODEST_SADDLEBAGS, 40);
+saddlebagCapacityMap.set(ItemIds.LEATHER_SADDLEBAGS, 80);
 
 function getHorseEncumbranceString ({ name, saddlebagsId, inventory }: Horse): string {
   const carried: number = inventory.reduce((acc, cur) => acc + items.get(cur).weight, 0);
-  const maxCarry: number = capacityMap.get(saddlebagsId);
+  const maxCarry: number = saddlebagCapacityMap.get(saddlebagsId);
 
   if ( carried < maxCarry * 0.25 ) return `${name} is hardly carrying anything in their saddlebags.`;
   else if ( carried < maxCarry * 0.5 ) return `${name} is carrying a comfortable amount in their saddlebags.`;
@@ -33,9 +33,9 @@ function horseAllowed (
   if (!scenes.get(character.scene_id).horseAllowed) {
     emitOthers(`${character.name} is looking for something, or someone, that they can't find.`);
     emitSelf(`${character.horse.name} is not here.  (They could not follow you inside.  Head outside to find them.)`);
-    return true;
+    return false;
   }
-  return false;
+  return true;
 }
 
 export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
@@ -46,7 +46,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
 
   if (!horseAllowed(character, emitOthers, emitSelf)) return true;
 
-  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, `horse|${character.horse.name}`))) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, `horse|${character.horse.name.toLowerCase()}`))) {
     emitOthers(`${character.name} rifles through their horse's saddlebags.`);
 
     const saddlebagsTitle: string = items.get(character.horse.saddlebagsId).title;
@@ -54,17 +54,28 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
     actorText.push(`You see ${character.horse.name}, wearing ${saddlebagsTitle}.`);
     character.horse.inventory.map(i => actorText.push(`In ${saddlebagsTitle} you find ${items.get(i).title}.`));
     actorText.push(getHorseEncumbranceString(character.horse));
-    actorText.push(`You can [give <item> to horse] or [get <item> from horse].`);
+    actorText.push(`You can [give {item} to horse] or [get {item} from horse].`);
     emitSelf(actorText);
+
+    return true;
   }
 
-  const giveMatch: string = captureFrom_toHorse(command, character.horse.name);
+  const giveMatch: string = captureFrom_toHorse(command, character.horse.name.toLowerCase());
   if (giveMatch !== null) {
     // make sure player has this item
 
     for (let i = 0; i < character.inventory.length; i++) {
       const item: Item = items.get(character.inventory[i]);
       if (item.keywords.includes(giveMatch)) {
+        // make sure horse can carry this
+        const maxCarry: number = saddlebagCapacityMap.get(character.horse.saddlebagsId);
+        const carried: number = character.horse.inventory.reduce((acc, cur) => acc + items.get(cur).weight, 0);
+        if (carried + item.weight > maxCarry) {
+          emitOthers(`${character.name} tried to move ${item.title} to their horse's saddlebags, but it wouldn't fit.`);
+          emitSelf(`You try to put ${item.title} away in ${character.horse.name}'s saddlebags, but it doesn't fit.`);
+          return true;
+        }
+
         const newInventory: ItemIds[] = [...character.inventory];
         const newHorseInventory: ItemIds[] = [...character.horse.inventory];
         newHorseInventory.push(newInventory.splice(i, 1)[0]);
@@ -88,15 +99,14 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
       }
     };
     emitSelf(`You do not have any [${giveMatch}] to give to ${character.horse.name}.`);
+    return true;
   }
 
-  const getMatch: string = captureFrom_fromHorse(command, character.horse.name);
-  if (giveMatch !== null) {
-    // make sure player has this item
-
-    for (let i = 0; i < character.inventory.length; i++) {
+  const getMatch: string = captureFrom_fromHorse(command, character.horse.name.toLowerCase());
+  if (getMatch !== null) {
+    for (let i = 0; i < character.horse.inventory.length; i++) {
       const item: Item = items.get(character.horse.inventory[i]);
-      if (item.keywords.includes(giveMatch)) {
+      if (item.keywords.includes(getMatch)) {
         const newInventory: ItemIds[] = [...character.inventory];
         const newHorseInventory: ItemIds[] = [...character.horse.inventory];
         newInventory.push(newHorseInventory.splice(i, 1)[0]);
@@ -107,6 +117,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
             inventory: newHorseInventory
           }
         })) {
+          console.log('wrote character data')
           character.inventory = newInventory;
           character.horse.inventory = newHorseInventory;
           emitSelf([
@@ -119,6 +130,9 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
         }
       }
     };
-    emitSelf(`There is no [${giveMatch}] in ${items.get(character.horse.saddlebagsId).title}.`);
+    emitSelf(`There is no [${getMatch}] in ${items.get(character.horse.saddlebagsId).title}.`);
+    return true;
   }
+
+  return false;
 }

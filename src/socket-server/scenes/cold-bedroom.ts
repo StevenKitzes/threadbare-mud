@@ -14,7 +14,7 @@ const id: SceneIds = SceneIds.COLD_BEDROOM;
 const title: string = "A cold bedroom";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = false;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 const initialSceneState: any = {
   daggerHere: true,
   outfitHere: true
@@ -116,7 +116,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (command.match(makeMatcher(REGEX_GET_ALIASES, 'outfit|clothes|clothing|black outfit|black clothes|black clothing'))) {
     if (character.scene_states[id].outfitHere) {
-      const newInventory: string[] = [
+      const newInventory: ItemIds[] = [
         ...character.inventory,
         ItemIds.BLACK_HEADBAND,
         ItemIds.LOOSE_BLACK_TUNIC,
@@ -143,7 +143,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (command.match(makeMatcher(REGEX_GET_ALIASES, items.get(ItemIds.SIMPLE_DAGGER).keywords.join('|')))) {
     if (character.scene_states[id].daggerHere) {
-      const newInventory: string[] = [
+      const newInventory: ItemIds[] = [
         ...character.inventory,
         ItemIds.SIMPLE_DAGGER
       ];

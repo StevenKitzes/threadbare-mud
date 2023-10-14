@@ -5,16 +5,17 @@ import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
+import { ItemIds } from '../items/items';
 
 const id: SceneIds = SceneIds.CLASS_SELECTION;
 const title: string = "Select your character class";
 const horseAllowed: boolean = false;
 const sentiment: SceneSentiment = SceneSentiment.remote;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, command, socket } = handlerOptions;
-  const { name, scene_id: sceneId } = character;
+  const { scene_id: sceneId } = character;
   const { emitSelf } = getEmitters(socket, sceneId);
 
   if (command === 'enter') {

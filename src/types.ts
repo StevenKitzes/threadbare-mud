@@ -1,6 +1,7 @@
 // Data types
 
 import { ItemIds } from "./socket-server/items/items";
+import { SceneIds } from "./socket-server/scenes/scenes";
 
 export type Stories = {
   main: number;
@@ -19,20 +20,20 @@ export type Character = {
   agility: number,
   strength: number,
   savvy: number,
-  scene_id: string;
-  checkpoint_id: string,
+  scene_id: SceneIds;
+  checkpoint_id: SceneIds,
   active: number;
   stories: Stories;       // kvp object - key is story name, value is integer denoting progress
   scene_states: any;      // kvp object - key is scene id enum, value is a state defined by that scene
   money: number;
-  inventory: string[];    // simple list of item enums, duplicates allowed
-  headgear: string | null;
-  armor: string | null;
-  gloves: string | null;
-  legwear: string | null;
-  footwear: string | null;
-  weapon: string | null;
-  offhand: string | null;
+  inventory: ItemIds[];    // simple list of item enums, duplicates allowed
+  headgear: ItemIds | null;
+  armor: ItemIds | null;
+  gloves: ItemIds | null;
+  legwear: ItemIds | null;
+  footwear: ItemIds | null;
+  weapon: ItemIds | null;
+  offhand: ItemIds | null;
   xp: number;
   horse: Horse | null;
 };
@@ -111,18 +112,18 @@ export type CharacterUpdateOpts = {
   agility?: number,
   strength?: number,
   savvy?: number,
-  scene_id?: string,
+  scene_id?: SceneIds,
   stories?: Stories;
   scene_states?: any;
   money?: number;
-  inventory?: string[];
-  headgear?: string;
-  armor?: string;
-  gloves?: string;
-  legwear?: string;
-  footwear?: string;
-  weapon?: string;
-  offhand?: string;
+  inventory?: ItemIds[];
+  headgear?: ItemIds;
+  armor?: ItemIds;
+  gloves?: ItemIds;
+  legwear?: ItemIds;
+  footwear?: ItemIds;
+  weapon?: ItemIds;
+  offhand?: ItemIds;
   xp?: number;
   horse?: Horse;
 };
@@ -151,7 +152,7 @@ export type GameText = {
 };
 
 export type InventoryDescriptionHelper = {
-  id: string;
+  id: ItemIds;
   desc: string;
   type: string;
   count: number;

@@ -2,12 +2,12 @@ import { REGEX_BUY_ALIASES } from "../../constants";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { Character, CharacterUpdateOpts } from "../../types";
 import { OptsType } from "../../utils/getGameTextObject";
-import { Item } from "../items/items";
+import { Item, ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 
 export type NPC = {
-  id: string;
+  id: NpcIds;
   name: string;
   description: string;
   keywords: string[];
@@ -15,7 +15,7 @@ export type NPC = {
   
   attackDescription?: string;
   cashLoot?: number;
-  itemLoot?: string[];
+  itemLoot?: ItemIds[];
   saleItems?: Item[];
   xp?: number;
   healthMax?: number;

@@ -5,15 +5,16 @@ import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
+import { ItemIds } from "../items/items";
 import { NPC, NpcIds, npcFactories } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
-import { SceneIds, navigate, scenes } from "./scenes";
+import { SceneIds, navigate } from "./scenes";
 
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = false;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 

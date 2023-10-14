@@ -31,7 +31,8 @@ import {
   REGEX_USE_ALIASES
 } from '../constants';
 import { generateEntitiesCsvs } from '../utils/generateEntitiesCsvs';
-import { handleHorseCommand } from './horse';
+import { handleHorseCommand } from './horse/horse';
+import { npcFactories } from './npcs/npcs';
 
 generateEntitiesCsvs(items, npcFactories);
 

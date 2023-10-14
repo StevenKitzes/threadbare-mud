@@ -9,12 +9,13 @@ import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
+import { ItemIds } from '../items/items';
 
 const id: SceneIds = SceneIds.SOUTH_OF_AUDRICS_TOWER;
 const title: string = "South of Audric's Tower";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 

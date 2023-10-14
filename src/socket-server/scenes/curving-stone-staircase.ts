@@ -6,6 +6,7 @@ import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
+import { ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
 import { SceneIds, navigate, scenes } from "./scenes";
 
@@ -13,7 +14,7 @@ const id: SceneIds = SceneIds.CURVING_STONE_STAIRCASE;
 const title: string = "A curving stone staircase";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = false;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;

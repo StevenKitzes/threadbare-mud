@@ -9,12 +9,13 @@ import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
+import { ItemIds } from '../items/items';
 
 const id: SceneIds = SceneIds.IXPANNE_NORTHWEST_MARKET;
 const title: string = "Northwestern Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 

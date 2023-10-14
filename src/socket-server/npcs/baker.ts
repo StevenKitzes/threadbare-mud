@@ -1,12 +1,10 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
 import { NpcIds, NPC, look, makePurchase } from "./npcs";
-import { npcHealthText } from '../../utils/npcHealthText';
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
-import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { firstCharToUpper } from "../../utils/firstCharToUpper";
-import { writeCharacterData } from "../../../sqlite/sqlite";
-import items, { Item, ItemIds } from "../items/items";
+import items, { ItemIds } from "../items/items";
 
 export function make(): NPC {
   const npc: NPC = {

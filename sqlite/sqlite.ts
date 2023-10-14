@@ -4,7 +4,7 @@ const db = require('./sqlite-get-db.ts');
 
 import { Character, CharacterUpdateOpts, Stories, User } from '../src/types';
 import { SceneIds } from '../src/socket-server/scenes/scenes';
-
+import { ItemIds } from '../src/socket-server/items/items';
 import jStr from '../src/utils/jStr';
 
 type CharacterDBIntermediary = {
@@ -42,6 +42,15 @@ type CharacterDBIntermediary = {
 function dbToChar(intermediary: CharacterDBIntermediary): Character {
   const character: Character = {
     ...intermediary,
+    headgear: intermediary.headgear as ItemIds,
+    armor: intermediary.armor as ItemIds,
+    gloves: intermediary.gloves as ItemIds,
+    legwear: intermediary.legwear as ItemIds,
+    footwear: intermediary.footwear as ItemIds,
+    weapon: intermediary.weapon as ItemIds,
+    offhand: intermediary.offhand as ItemIds,
+    scene_id: intermediary.scene_id as SceneIds,
+    checkpoint_id: intermediary.checkpoint_id as SceneIds,
     stories: JSON.parse(intermediary.stories),
     scene_states: JSON.parse(intermediary.scene_states),
     inventory: JSON.parse(intermediary.inventory),
@@ -52,7 +61,7 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
 
 export type Database = {
   accountHasActiveCharacter: (token: string) => boolean;
-  navigateCharacter: (charId: string, sceneIdEnum: SceneIds) => boolean;
+  navigateCharacter: (charId: string, sceneId: SceneIds) => boolean;
   readActiveCharacterBySession: (token: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
   readCharactersByUserId: (userId: string) => Character[] | undefined;
@@ -71,21 +80,21 @@ export type Database = {
     agility?: number,
     strength?: number,
     savvy?: number,
-    scene_id?: string,
+    scene_id?: SceneIds,
     stories?: Stories;
     scene_states?: any;
     money?: number;
-    inventory?: string[];
-    headgear?: string;
-    armor?: string;
-    gloves?: string;
-    legwear?: string;
-    footwear?: string;
-    weapon?: string;
-    offhand?: string;
+    inventory?: ItemIds[];
+    headgear?: ItemIds;
+    armor?: ItemIds;
+    gloves?: ItemIds;
+    legwear?: ItemIds;
+    footwear?: ItemIds;
+    weapon?: ItemIds;
+    offhand?: ItemIds;
     xp?: number;
   }) => boolean;
-  writeCharacterInventory: (charId: string, inventory: string[]) => boolean;
+  writeCharacterInventory: (charId: string, inventory: ItemIds[]) => boolean;
   writeCharacterSceneStates: (charId: string, sceneStates: any) => boolean;
   writeCharacterStory: (charId: string, story: Stories) => boolean;
   writeNewCharacter: (charId: string, userId: string, name: string) => TransactBundle;

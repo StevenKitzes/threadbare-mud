@@ -17,7 +17,7 @@ const id: SceneIds = SceneIds.;
 const title: string = ;
 const sentiment: SceneSentiment = SceneSentiment.;
 const horseAllowed: boolean = ;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const initialSceneState: any = {};
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();

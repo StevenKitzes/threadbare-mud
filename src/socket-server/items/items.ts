@@ -107,7 +107,7 @@ export type ConsumeItemOpts = {
   handlerOptions: HandlerOptions;
   actionAliases: string;
   targetAliases: string;
-  itemId: string;
+  itemId: ItemIds;
   itemTitle: string;
   extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
   extraEffectsOpts?: any;

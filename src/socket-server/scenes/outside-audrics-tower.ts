@@ -7,12 +7,13 @@ import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
+import { ItemIds } from '../items/items';
 
 const id: SceneIds = SceneIds.OUTSIDE_AUDRICS_TOWER;
 const title: string = "Outside Audric's Tower";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
-const publicInventory: string[] = [];
+const publicInventory: ItemIds[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;

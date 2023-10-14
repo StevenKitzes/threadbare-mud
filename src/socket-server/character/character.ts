@@ -10,6 +10,7 @@ import { getCost, levelRequirementString, xpAmountString } from '../../utils/lev
 import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';
 import { getEncumbranceString } from '../../utils/encumbrance';
+import { saddlebagCapacityMap } from '../horse/horse';
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
@@ -382,7 +383,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        const newInventory: string[] = [...character.inventory];
+        const newInventory: ItemIds[] = [...character.inventory];
         newInventory.splice(i, 1);
         if (writeCharacterInventory(character.id, newInventory)) {
           character.inventory = newInventory;
@@ -413,9 +414,9 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     for (let i = 0; i < sceneInventory.length; i++) {
       if (items.get(sceneInventory[i]).keywords.includes(getMatch)) {
-        const itemId: string = items.get(sceneInventory[i]).id;
+        const itemId: ItemIds = items.get(sceneInventory[i]).id;
         const itemTitle: string = items.get(sceneInventory[i]).title;
-        const newInventory: string[] = [...character.inventory, itemId];
+        const newInventory: ItemIds[] = [...character.inventory, itemId];
         if (writeCharacterInventory(character.id, newInventory)) {
           character.inventory = newInventory;
           sceneInventory.splice(i, 1);
@@ -508,16 +509,26 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       if (item.keywords.includes(equipMatch)) {
         
         if (item.type === ItemTypes.saddlebags) {
-          if (character.horse === null) {
+          if (character.horse === null || !scenes.get(character.scene_id).horseAllowed) {
             emitOthers(`${name} holds up a set of saddlebags, pretending to put them on an imaginary horse.`);
             emitSelf(`You don't have a horse to put ${item.title} on.`);
             return true;
           }
+
+          // make sure new saddlebags can carry what is already in horse's inventory
+          const maxCarry: number = saddlebagCapacityMap.get(item.id);
+          const carried: number = character.horse.inventory.reduce((acc, cur) => acc + items.get(cur).weight, 0);
+          if (carried > maxCarry) {
+            emitOthers(`${character.name} tried to move ${character.horse.name}'s items to smaller saddlebags, but they wouldn't fit.`);
+            emitSelf(`You try to put ${character.horse.name}'s inventory into smaller saddlebags, but they don't fit.`);
+            return true;
+          }
+
           const newHorse: Horse = {
             ...character.horse,
             saddlebagsId: item.id
           };
-          const newInventory: string[] = [ ...character.inventory, character.horse.saddlebagsId ];
+          const newInventory: ItemIds[] = [ ...character.inventory, character.horse.saddlebagsId ];
           let removedItemTitle: string = items.get(character.horse.saddlebagsId).title;
 
           newInventory.splice(i, 1);
@@ -536,7 +547,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         
         if (item.type === ItemTypes.headgear) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.headgear) {
             newInventory.push(character.headgear);
@@ -556,7 +567,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         
         else if (item.type === ItemTypes.armor) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.armor) {
             newInventory.push(character.armor);
@@ -576,7 +587,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         
         else if (item.type === ItemTypes.gloves) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.gloves)  {
             newInventory.push(character.gloves);
@@ -596,7 +607,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         
         else if (item.type === ItemTypes.legwear) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.legwear)  {
             newInventory.push(character.legwear);
@@ -616,7 +627,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         
         else if (item.type === ItemTypes.footwear) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.footwear)  {
             newInventory.push(character.footwear);
@@ -636,7 +647,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
 
         else if ([ItemTypes.lightWeapon, ItemTypes.heavyWeapon, ItemTypes.rangedWeapon].includes(item.type)) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.weapon)  {
             newInventory.push(character.weapon);
@@ -656,7 +667,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
 
         else if ([ ItemTypes.offhand, ItemTypes.trinket ].includes(item.type)) {
-          const newInventory: string[] = [ ...character.inventory ];
+          const newInventory: ItemIds[] = [ ...character.inventory ];
           let removedItemTitle: string | undefined;
           if (character.offhand)  {
             newInventory.push(character.offhand);
@@ -688,7 +699,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   
     if (character.headgear && items.get(character.headgear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.headgear);
-      const newInventory: string[] = [ ...character.inventory, character.headgear ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.headgear ];
       if (writeCharacterData(character.id, {
         headgear: null,
         inventory: newInventory
@@ -703,7 +714,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     else if (character.armor && items.get(character.armor).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.armor);
-      const newInventory: string[] = [ ...character.inventory, character.armor ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.armor ];
       if (writeCharacterData(character.id, {
         armor: null,
         inventory: newInventory
@@ -718,7 +729,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     else if (character.gloves && items.get(character.gloves).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.gloves);
-      const newInventory: string[] = [ ...character.inventory, character.gloves ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.gloves ];
       if (writeCharacterData(character.id, {
         gloves: null,
         inventory: newInventory
@@ -733,7 +744,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     else if (character.legwear && items.get(character.legwear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.legwear);
-      const newInventory: string[] = [ ...character.inventory, character.legwear ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.legwear ];
       if (writeCharacterData(character.id, {
         legwear: null,
         inventory: newInventory
@@ -748,7 +759,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     else if (character.footwear && items.get(character.footwear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.footwear);
-      const newInventory: string[] = [ ...character.inventory, character.footwear ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.footwear ];
       if (writeCharacterData(character.id, {
         footwear: null,
         inventory: newInventory
@@ -763,7 +774,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     else if (character.weapon && items.get(character.weapon).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.weapon);
-      const newInventory: string[] = [ ...character.inventory, character.weapon ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.weapon ];
       if (writeCharacterData(character.id, {
         weapon: null,
         inventory: newInventory
@@ -778,7 +789,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     else if (character.offhand && items.get(character.offhand).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.offhand);
-      const newInventory: string[] = [ ...character.inventory, character.offhand ];
+      const newInventory: ItemIds[] = [ ...character.inventory, character.offhand ];
       if (writeCharacterData(character.id, {
         offhand: null,
         inventory: newInventory

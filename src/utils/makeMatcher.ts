@@ -16,13 +16,13 @@ export function captureFrom (command: string, actionAliases: string): string | n
 }
 
 export function captureFrom_toHorse (command: string, horseName: string) : string | null {
-  const matches: string[] | null = command.match(new RegExp(`^(?:${REGEX_GIVE_ALIASES}) (.*) to (?:${REGEX_HORSE_ALIASES}|${horseName})`));
+  const matches: string[] | null = command.match(new RegExp(`^(?:${REGEX_GIVE_ALIASES}) (.*) to (?:${REGEX_HORSE_ALIASES}|${horseName.toLowerCase()})`));
   if (matches === null) return null;
   return matches[1];
 }
 
 export function captureFrom_fromHorse (command: string, horseName: string) : string | null {
-  const matches: string[] | null = command.match(new RegExp(`^(?:${REGEX_GET_ALIASES}) (.*) from (?:${REGEX_HORSE_ALIASES}|${horseName})`));
+  const matches: string[] | null = command.match(new RegExp(`^(?:${REGEX_GET_ALIASES}) (.*) from (?:${REGEX_HORSE_ALIASES}|${horseName.toLowerCase()})`));
   if (matches === null) return null;
   return matches[1];
 }

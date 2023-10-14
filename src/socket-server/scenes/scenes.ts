@@ -4,14 +4,15 @@ import { Character, SceneSentiment } from '../../types';
 import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
 import { makeMatcher } from '../../utils/makeMatcher';
+import { ItemIds } from '../items/items';
 import { HandlerOptions } from '../server';
 
 export type Scene = {
-  id: string;
+  id: SceneIds;
   title: string;
   sentiment: SceneSentiment;
   horseAllowed: boolean;
-  publicInventory: string[];
+  publicInventory: ItemIds[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
 };
 
