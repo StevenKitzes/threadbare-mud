@@ -64,7 +64,11 @@ export enum ItemIds {
   ORANGE = "17",
   PLUM = "18",
   AVOCADO = "19",
-
+  ELEGANT_DOUBLET = "20",
+  FASHIONABLE_BERET = "21",
+  SUPPLE_LEATHER_GLOVES = "22",
+  SOFT_WOOLEN_LEGGINGS = "23",
+  STYLISH_BOOTS = "24",
 }
 
 { // imports
@@ -87,6 +91,11 @@ export enum ItemIds {
   import('./orange').then(item => items.set(item.id, item));
   import('./plum').then(item => items.set(item.id, item));
   import('./avocado').then(item => items.set(item.id, item));
+  import('./elegant-doublet').then(item => items.set(item.id, item));
+  import('./fashionable-beret').then(item => items.set(item.id, item));
+  import('./supple-leather-gloves').then(item => items.set(item.id, item));
+  import('./soft-woolen-leggings').then(item => items.set(item.id, item));
+  import('./stylish-boots').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {

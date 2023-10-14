@@ -94,19 +94,6 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
     if (item.handleItemCommand && item.handleItemCommand(handlerOptions)) return;
   }
 
-  // before letting the character try to move, check encumbrance
-  if (
-    command.match(startMatcher(REGEX_GO_ALIASES)) &&
-    !characterCanMove(character)
-  ) {
-    // others
-    socket.to(character.scene_id).emit('game-text', getGameTextObject(`${character.name} is carrying so much that they are unable to move, however hard they may try.`));
-    // self
-    socket.emit('game-text', getGameTextObject( "You are carrying so much that you cannot take another step." ));
-
-    return;
-  }
-  
   // check if there are any scene level input options for this character's scene
   try {
     const scene: Scene | undefined = scenes.get(character.scene_id);

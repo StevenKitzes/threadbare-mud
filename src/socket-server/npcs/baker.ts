@@ -47,8 +47,8 @@ export function make(): NPC {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
         `${firstCharToUpper(npc.name)} beams at you, eager to share the labor of her work.  "Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  Here is what I have for sale."`,
-        ...npc.saleItems.map(item => `- ${item.title} (${item.type}) ${item.value} coins`),
-        `You currently have ${character.money} coins.`
+        ...npc.saleItems.map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`),
+        `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);
       return true;
     }

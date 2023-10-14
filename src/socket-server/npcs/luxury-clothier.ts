@@ -1,5 +1,3 @@
-/* Use this template to create new merchants
-
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
 import { NpcIds, NPC, look } from "./npcs";
@@ -10,13 +8,19 @@ import items, { Item, ItemIds } from "../items/items";
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.,
-    name: ,
-    description: ,
-    keywords: ,
-    regexAliases: ,
+    id: NpcIds.LUXURY_CLOTHIER,
+    name: "a luxury clothier",
+    description: "A [luxury clothier], standing with his nose high in the air, selling (and wearing!) clothing that looks fit for royalty.",
+    keywords: ['clothier', 'luxury clothier'],
+    regexAliases: 'clothier|luxury clothier',
 
-    saleItems: ,
+    saleItems: [
+      items.get(ItemIds.FASHIONABLE_BERET),
+      items.get(ItemIds.ELEGANT_DOUBLET),
+      items.get(ItemIds.SUPPLE_LEATHER_GLOVES),
+      items.get(ItemIds.SOFT_WOOLEN_LEGGINGS),
+      items.get(ItemIds.STYLISH_BOOTS)
+    ],
 
     getDescription: () => '',
 
@@ -41,7 +45,7 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        -,
+        character.savvy > 20 ? `Upon being addressed, the clothier can see that you carry yourself differently than most people, and hopes that what he smells on you is money.  "Ah, my friend, welcome.  Welcome!  Perhaps I can interest you in something new to shine light on your standing in our high society?"  He flashes an obsequious grin and gestures toward his offerings.` : `The clothier sneers a little, unsure that you are worth his time when he could be selling to the more well-heeled and deep of pocket.  He nevertheless allows you to peruse his offerings.  "If you can afford them, these are what I have to offer."`,
         ...npc.saleItems.map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`),
         `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);
@@ -79,5 +83,3 @@ export function make(): NPC {
 
   return npc;
 }
-
-*/
