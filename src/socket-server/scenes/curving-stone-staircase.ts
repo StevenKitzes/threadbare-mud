@@ -12,6 +12,7 @@ import { SceneIds, navigate, scenes } from "./scenes";
 const id: SceneIds = SceneIds.CURVING_STONE_STAIRCASE;
 const title: string = "A curving stone staircase";
 const sentiment: SceneSentiment = SceneSentiment.remote;
+const horseAllowed: boolean = false;
 const publicInventory: string[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -81,6 +82,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 }

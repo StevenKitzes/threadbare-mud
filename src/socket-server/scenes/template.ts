@@ -16,6 +16,7 @@ import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 const id: SceneIds = SceneIds.;
 const title: string = ;
 const sentiment: SceneSentiment = SceneSentiment.;
+const horseAllowed: boolean = ;
 const publicInventory: string[] = [];
 
 const initialSceneState: any = {};
@@ -147,6 +148,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

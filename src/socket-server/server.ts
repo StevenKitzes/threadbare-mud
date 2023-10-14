@@ -14,10 +14,7 @@ import { handleCharacterCommand } from './character/character';
 import { Scene, scenes } from './scenes/scenes';
 import handleQuestsCommand from './quests/quests';
 import items, { Item } from './items/items';
-import { npcFactories } from './npcs/npcs';
-import characterCanMove from '../utils/encumbrance';
-import getGameTextObject from '../utils/getGameTextObject';
-import { captureFrom, startMatcher } from '../utils/makeMatcher';
+import { captureFrom } from '../utils/makeMatcher';
 import {
   REGEX_BUY_ALIASES,
   REGEX_DRINK_ALIASES,
@@ -34,6 +31,7 @@ import {
   REGEX_USE_ALIASES
 } from '../constants';
 import { generateEntitiesCsvs } from '../utils/generateEntitiesCsvs';
+import { handleHorseCommand } from './horse';
 
 generateEntitiesCsvs(items, npcFactories);
 
@@ -106,6 +104,9 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
     console.error('failed loading scene id', character.scene_id, ":", err.toString());
     console.error('scene ids', scenes.keys())
   }
+
+  // check if there are horse-related actions for this command
+  if (handleHorseCommand(handlerOptions)) return;
   
   // if the action was not recognized
   let output: string;

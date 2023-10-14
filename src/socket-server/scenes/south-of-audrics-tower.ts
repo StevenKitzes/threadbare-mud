@@ -1,19 +1,19 @@
-import { navigateCharacter } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, SceneIds, navigate } from './scenes';
+import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_LOOK_ALIASES } from '../../constants';
 
 const id: SceneIds = SceneIds.SOUTH_OF_AUDRICS_TOWER;
 const title: string = "South of Audric's Tower";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
+const horseAllowed: boolean = true;
 const publicInventory: string[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -88,6 +88,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

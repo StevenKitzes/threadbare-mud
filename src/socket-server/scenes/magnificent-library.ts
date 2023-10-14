@@ -1,5 +1,4 @@
-import { navigateCharacter, writeCharacterData, writeCharacterStory } from "../../../sqlite/sqlite";
-import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from "../../constants";
+import { REGEX_LOOK_ALIASES } from "../../constants";
 import { SceneSentiment } from "../../types";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
@@ -13,6 +12,7 @@ import { SceneIds, navigate, scenes } from "./scenes";
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
 const sentiment: SceneSentiment = SceneSentiment.remote;
+const horseAllowed: boolean = false;
 const publicInventory: string[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -109,6 +109,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

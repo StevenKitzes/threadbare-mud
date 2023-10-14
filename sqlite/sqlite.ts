@@ -28,6 +28,7 @@ type CharacterDBIntermediary = {
   money: number;
   inventory: string;
   xp: number;
+  horse: string | null;
   // worn items
   headgear: string | null;
   armor: string | null;
@@ -43,7 +44,8 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
     ...intermediary,
     stories: JSON.parse(intermediary.stories),
     scene_states: JSON.parse(intermediary.scene_states),
-    inventory: JSON.parse(intermediary.inventory)
+    inventory: JSON.parse(intermediary.inventory),
+    horse: intermediary.horse !== null ? JSON.parse(intermediary.horse) : null
   };
   return character;
 }
@@ -334,6 +336,10 @@ export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): b
       columnAssignments.push("xp = ?");
       values.push(opts.xp);
     }
+    if (opts.horse !== undefined) {
+      columnAssignments.push("horse = ?");
+      values.push(jStr(opts.horse));
+    }
 
     db.prepare(`${updatePrefix}${columnAssignments.join(', ')}${updateSuffix}`)
       .run(...values, charId);
@@ -358,8 +364,8 @@ export const writeCharacterStory = (charId: string, stories: Stories): boolean =
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
     statement: db.prepare(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp)
-      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', '{\"main\": 0}', '{}', 0, '[]', 0);
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse)
+      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', '{\"main\": 0}', '{}', 0, '[]', 0, null);
     `),
     runValues: [charId, userId, name]
   };

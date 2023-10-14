@@ -1,17 +1,17 @@
-import { navigateCharacter } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, SceneIds, navigate } from './scenes';
+import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_LOOK_ALIASES } from '../../constants';
 
 const id: SceneIds = SceneIds.OUTSIDE_AUDRICS_TOWER;
 const title: string = "Outside Audric's Tower";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
+const horseAllowed: boolean = true;
 const publicInventory: string[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -133,6 +133,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

@@ -1,5 +1,7 @@
 // Data types
 
+import { ItemIds } from "./socket-server/items/items";
+
 export type Stories = {
   main: number;
 };
@@ -32,7 +34,14 @@ export type Character = {
   weapon: string | null;
   offhand: string | null;
   xp: number;
+  horse: Horse | null;
 };
+
+export type Horse = {
+  name: string;
+  saddlebagsId: ItemIds;
+  inventory: ItemIds[];
+}
 
 export type User = {
   id: string;
@@ -115,6 +124,7 @@ export type CharacterUpdateOpts = {
   weapon?: string;
   offhand?: string;
   xp?: number;
+  horse?: Horse;
 };
 
 export type CookieKillerBody = {

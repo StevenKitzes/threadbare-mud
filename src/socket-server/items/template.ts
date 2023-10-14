@@ -11,7 +11,6 @@ const description: string = ;
 const keywords: string[] = ;
 const value: number = ;
 const weight: number = ;
-const healAmount: number = ;
 
 const armorValue: number = ;
 const damageValue: number = ;
@@ -22,6 +21,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 };
+const quest: boolean = ;
+const healAmount: number = ;
 
 export {
   id,

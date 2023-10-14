@@ -6,7 +6,7 @@ import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 
 export type Item = {
-  id: string;
+  id: ItemIds;
   type: ItemTypes;
   title: string;
   description: string;
@@ -35,7 +35,8 @@ export enum ItemTypes {
   lightWeapon = "lightWeapon",
   heavyWeapon = "heavyWeapon",
   rangedWeapon = "rangedWeapon",
-  consumable = "consumable"
+  consumable = "consumable",
+  saddlebags = "saddlebags",
 };
 
 export enum DamageType {
@@ -69,6 +70,8 @@ export enum ItemIds {
   SUPPLE_LEATHER_GLOVES = "22",
   SOFT_WOOLEN_LEGGINGS = "23",
   STYLISH_BOOTS = "24",
+  MODEST_SADDLEBAGS = "25",
+  LEATHER_SADDLEBAGS = "26",
 }
 
 { // imports
@@ -96,6 +99,8 @@ export enum ItemIds {
   import('./supple-leather-gloves').then(item => items.set(item.id, item));
   import('./soft-woolen-leggings').then(item => items.set(item.id, item));
   import('./stylish-boots').then(item => items.set(item.id, item));
+  import('./modest-saddlebags').then(item => items.set(item.id, item));
+  import('./leather-saddlebags').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {

@@ -1,5 +1,5 @@
-import { navigateCharacter, writeCharacterData, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
-import { REGEX_GET_ALIASES, REGEX_GO_ALIASES, REGEX_LOOK_ALIASES, REGEX_REST_ALIASES } from '../../constants';
+import { writeCharacterData, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
+import { REGEX_GET_ALIASES, REGEX_LOOK_ALIASES, REGEX_REST_ALIASES } from '../../constants';
 import { SceneSentiment } from '../../types';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
@@ -7,12 +7,13 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { makeMatcher } from '../../utils/makeMatcher';
 import items, { ItemIds } from '../items/items';
-import { scenes, SceneIds, navigate } from '../scenes/scenes';
+import { SceneIds, navigate } from '../scenes/scenes';
 import { HandlerOptions } from '../server';
 
 const id: SceneIds = SceneIds.COLD_BEDROOM;
 const title: string = "A cold bedroom";
 const sentiment: SceneSentiment = SceneSentiment.remote;
+const horseAllowed: boolean = false;
 const publicInventory: string[] = [];
 const initialSceneState: any = {
   daggerHere: true,
@@ -176,6 +177,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

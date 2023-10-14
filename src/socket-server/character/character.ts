@@ -2,10 +2,10 @@ import { HandlerOptions } from '../server';
 import { characterHealthText } from '../../utils/characterHealthText';
 import { getEmitters } from '../../utils/emitHelper';
 import { firstCharToUpper } from '../../utils/firstCharToUpper';
-import { Item, ItemTypes, items } from '../items/items';
+import { Item, ItemIds, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
-import { ClassTypes, InventoryDescriptionHelper } from '../../types';
+import { ClassTypes, Horse, InventoryDescriptionHelper } from '../../types';
 import { getCost, levelRequirementString, xpAmountString } from '../../utils/leveling';
 import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';
@@ -506,6 +506,34 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       const item: Item = items.get(character.inventory[i]);
       // If this is the item the user is trying to equip
       if (item.keywords.includes(equipMatch)) {
+        
+        if (item.type === ItemTypes.saddlebags) {
+          if (character.horse === null) {
+            emitOthers(`${name} holds up a set of saddlebags, pretending to put them on an imaginary horse.`);
+            emitSelf(`You don't have a horse to put ${item.title} on.`);
+            return true;
+          }
+          const newHorse: Horse = {
+            ...character.horse,
+            saddlebagsId: item.id
+          };
+          const newInventory: string[] = [ ...character.inventory, character.horse.saddlebagsId ];
+          let removedItemTitle: string = items.get(character.horse.saddlebagsId).title;
+
+          newInventory.splice(i, 1);
+          newHorse.saddlebagsId = item.id;
+
+          if (writeCharacterData(character.id, {
+            horse: newHorse,
+            inventory: newInventory
+          })) {
+            character.horse = newHorse;
+            character.inventory = newInventory;
+            emitOthers(`${character.name} removes ${removedItemTitle} and puts ${item.title} on their horse.`);
+            emitSelf(`You remove ${removedItemTitle} and put ${item.title} on ${newHorse.name}.`);
+            return true;
+          }
+        }
         
         if (item.type === ItemTypes.headgear) {
           const newInventory: string[] = [ ...character.inventory ];

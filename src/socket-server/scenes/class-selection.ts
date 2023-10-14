@@ -8,6 +8,7 @@ import { REGEX_LOOK_ALIASES } from '../../constants';
 
 const id: SceneIds = SceneIds.CLASS_SELECTION;
 const title: string = "Select your character class";
+const horseAllowed: boolean = false;
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const publicInventory: string[] = [];
 
@@ -188,6 +189,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

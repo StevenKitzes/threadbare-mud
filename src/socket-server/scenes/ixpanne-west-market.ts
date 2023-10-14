@@ -13,6 +13,7 @@ import { REGEX_LOOK_ALIASES } from '../../constants';
 const id: SceneIds = SceneIds.IXPANNE_WEST_MARKET;
 const title: string = "Western Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
+const horseAllowed: boolean = true;
 const publicInventory: string[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -91,6 +92,7 @@ export {
   id,
   title,
   sentiment,
+  horseAllowed,
   publicInventory,
   handleSceneCommand
 };

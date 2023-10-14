@@ -10,6 +10,7 @@ export type Scene = {
   id: string;
   title: string;
   sentiment: SceneSentiment;
+  horseAllowed: boolean;
   publicInventory: string[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
 };
