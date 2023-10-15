@@ -1,37 +1,37 @@
-title;type;value;weight;armorValue;damageValue;damageType;hitBonus
-a good luck charm;trinket;1;1;;;;
-a black headband;headgear;3;1;1;;;
-a loose black tunic;armor;10;2;1;;;
-a pair of loose, black pants;legwear;10;2;1;;;
-a pair of soft, black boots;footwear;10;2;1;;;
-a simple dagger;lightWeapon;25;2;;5;1;
-Audric's coin pouch;trinket;50;1;;;;
-a small anvil;trinket;0;15;;;;
-a medium anvil;trinket;0;35;;;;
-a large anvil;trinket;0;65;;;;
-a huge anvil;trinket;0;85;;;;
-a colossal anvil;trinket;0;115;;;;
-a tasty sweetroll;consumable;3;1;;;;
-a fresh loaf of bread;consumable;5;1;;;;
-a tasty cake;consumable;8;1;;;;
-an apple;consumable;3;1;;;;
-an orange;consumable;4;1;;;;
-a plum;consumable;3;1;;;;
-an avocado;consumable;8;1;;;;
-an elegant doublet;armor;250;2;1;;;
-a fashionable beret;headgear;100;1;1;;;
-supple leather gloves;gloves;150;1;1;;;
-soft woolen leggings;legwear;200;2;1;;;
-a pair of stylish boots;footwear;250;2;2;;;
-modest saddlebags;saddlebags;30;15;;;;
-leather saddlebags;saddlebags;200;40;;;;
-reinforced saddlebags;saddlebags;500;100;;;;
-a standard broadsword;heavyWeapon;150;4;;25;;
-a standard rapier;lightWeapon;120;3;;20;1;
-little throwing daggers;rangedWeapon;100;4;;20;1;
-a standard mace;heavyWeapon;120;5;;25;2;
-a light leather cap;headgear;30;2;2;;;
-padded leather armor;armor;65;10;7;;;
-sturdy leather gloves;gloves;30;2;2;;;
-splinted leather leggings;legwear;55;10;5;;;
-a pair of heavy, leather boots;footwear;40;4;2;;;
+title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
+a good luck charm;trinket;1;1;;;;;
+a black headband;headgear;3;1;1;;;;
+a loose black tunic;armor;10;2;1;;;;
+a pair of loose, black pants;legwear;10;2;1;;;;
+a pair of soft, black boots;footwear;10;2;1;;;;
+a simple dagger;lightWeapon;25;2;;5;1;;
+Audric's coin pouch;trinket;50;1;;;;;
+a small anvil;trinket;0;15;;;;;
+a medium anvil;trinket;0;35;;;;;
+a large anvil;trinket;0;65;;;;;
+a huge anvil;trinket;0;85;;;;;
+a colossal anvil;trinket;0;115;;;;;
+a tasty sweetroll;consumable;3;1;;;;;10
+a fresh loaf of bread;consumable;5;1;;;;;15
+a tasty cake;consumable;8;1;;;;;10
+an apple;consumable;3;1;;;;;10
+an orange;consumable;4;1;;;;;10
+a plum;consumable;3;1;;;;;8
+an avocado;consumable;8;1;;;;;15
+an elegant doublet;armor;250;2;1;;;;
+a fashionable beret;headgear;100;1;1;;;;
+supple leather gloves;gloves;150;1;1;;;;
+soft woolen leggings;legwear;200;2;1;;;;
+a pair of stylish boots;footwear;250;2;2;;;;
+modest saddlebags;saddlebags;30;15;;;;;
+leather saddlebags;saddlebags;200;40;;;;;
+reinforced saddlebags;saddlebags;500;100;;;;;
+a standard broadsword;heavyWeapon;150;4;;25;;;
+a standard rapier;lightWeapon;120;3;;20;1;;
+little throwing daggers;rangedWeapon;100;4;;20;1;;
+a standard mace;heavyWeapon;120;5;;25;2;;
+a light leather cap;headgear;30;2;2;;;;
+padded leather armor;armor;65;10;7;;;;
+sturdy leather gloves;gloves;30;2;2;;;;
+splinted leather leggings;legwear;55;10;5;;;;
+a pair of heavy, leather boots;footwear;40;4;2;;;;

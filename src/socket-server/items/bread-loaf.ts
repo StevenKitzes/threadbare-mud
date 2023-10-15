@@ -32,5 +32,6 @@ export {
   keywords,
   value,
   weight,
-  handleItemCommand
+  handleItemCommand,
+  healAmount
 };

@@ -11,10 +11,10 @@ export function generateEntitiesCsvs (
   npcFactories: Map<string, () => NPC>
 ): void {
   setTimeout(() => {
-    const itemsColumns: string = 'title;type;value;weight;armorValue;damageValue;damageType;hitBonus';
+    const itemsColumns: string = 'title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount';
     const itemRows: string[] = [];
     items.forEach((item) => itemRows.push([
-      item.title, item.type, item.value, item.weight, item.armorValue || '', item.damageValue || '', item.damageType || '', item.hitBonus || ''
+      item.title, item.type, item.value, item.weight, item.armorValue || '', item.damageValue || '', item.damageType || '', item.hitBonus || '', item.healAmount || ''
     ].join(';')));
     writeFile(itemsFile, [itemsColumns, ...itemRows].join('\n'), { flag: 'w' }, (err: any) => {
       if (err) console.error("Error writing item documentation.", err.toString());
