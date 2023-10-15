@@ -73,7 +73,15 @@ export enum ItemIds {
   MODEST_SADDLEBAGS = "25",
   LEATHER_SADDLEBAGS = "26",
   REINFORCED_SAGGLEBAGS = "27",
-  BROADSWORD = "28",
+  STANDARD_BROADSWORD = "28",
+  STANDARD_RAPIER = "29",
+  LITTLE_THROWING_DAGGERS = "30",
+  STANDARD_MACE = "31",
+  LIGHT_LEATHER_CAP = "32",
+  PADDED_LEATHER_ARMOR = "33",
+  STURDY_LEATHER_GLOVES = "34",
+  SPLINTED_LEATHER_LEGGINGS = "35",
+  HEAVY_LEATHER_BOOTS = "36",
 }
 
 { // imports
@@ -104,7 +112,15 @@ export enum ItemIds {
   import('./modest-saddlebags').then(item => items.set(item.id, item));
   import('./leather-saddlebags').then(item => items.set(item.id, item));
   import('./reinforced-saddlebags').then(item => items.set(item.id, item));
-  import('./broadsword').then(item => items.set(item.id, item));
+  import('./standard-broadsword').then(item => items.set(item.id, item));
+  import('./standard-rapier').then(item => items.set(item.id, item));
+  import('./little-throwing-daggers').then(item => items.set(item.id, item));
+  import('./standard-mace').then(item => items.set(item.id, item));
+  import('./light-leather-cap').then(item => items.set(item.id, item));
+  import('./padded-leather-armor').then(item => items.set(item.id, item));
+  import('./sturdy-leather-gloves').then(item => items.set(item.id, item));
+  import('./splinted-leather-leggings').then(item => items.set(item.id, item));
+  import('./heavy-leather-boots').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {

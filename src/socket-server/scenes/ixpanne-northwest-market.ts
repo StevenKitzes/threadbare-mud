@@ -29,7 +29,9 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.STABLEMASTER)()
+        npcFactories.get(NpcIds.HUMBLE_BLACKSMITH)(),
+        npcFactories.get(NpcIds.STABLEMASTER)(),
+        npcFactories.get(NpcIds.LEATHER_WORKER)()
       ]);
     } else {
       // Respawn logic
