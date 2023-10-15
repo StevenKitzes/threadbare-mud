@@ -54,7 +54,21 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
     stories: JSON.parse(intermediary.stories),
     scene_states: JSON.parse(intermediary.scene_states),
     inventory: JSON.parse(intermediary.inventory),
-    horse: intermediary.horse !== null ? JSON.parse(intermediary.horse) : null
+    horse: intermediary.horse !== null ? JSON.parse(intermediary.horse) : null,
+
+    getLightAttack: null,
+    getHeavyAttack: null,
+    getRangedAttack: null,
+    getAgility: null,
+    getStrength: null,
+    getSavvy: null,
+    getDamageEffect: null,
+    getAccuracyEffect: null,
+    getDefenseEffect: null,
+    getDodgeEffect: null,
+    getArmorEffect: null,
+  
+    temporaryEffects: [],
   };
   return character;
 }

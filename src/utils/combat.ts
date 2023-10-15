@@ -119,15 +119,15 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     return false;
   }
 
-  function characterAttack() {
+  function characterAttack(): void {
     // this line needed for ts linting
-    if (!(npc.armorType !== undefined && npc.armor !== undefined && npc.agility !== undefined && npc.savvy !== undefined && npc.setHealth !== undefined && npc.health !== undefined && npc.healthMax !== undefined)) return true;
+    if (!(npc.armorType !== undefined && npc.armor !== undefined && npc.agility !== undefined && npc.savvy !== undefined && npc.setHealth !== undefined && npc.health !== undefined && npc.healthMax !== undefined && character.getAccuracyEffect !== null && character.getAgility !== null && character.getDamageEffect !== null && character.getHeavyAttack !== null && character.getLightAttack !== null && character.getRangedAttack !== null && character.getSavvy !== null && character.getStrength !== null)) return;
 
-    // Initialize
-    let attack = 0;
+    // Initialize with getters
+    let attack = character.getAccuracyEffect ? character.getAccuracyEffect() : 0;
+    let damage = character.getDamageEffect ? character.getDamageEffect() : 0;
     let defense = 0;
     let defenseWithDodge = 0;
-    let damage = 0;
     const actorText: string[] = [];
 
     // Handle weapon attributes
@@ -138,21 +138,21 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       // Adjust attack based on weapon affinity and character stats
       if (weapon.type === ItemTypes.lightWeapon) {
         attack +=
-          (Math.random() * character.agility) +
-          (Math.random() * character.light_attack);
-        damage += Math.random() * character.light_attack;
+          (Math.random() * character.getAgility()) +
+          (Math.random() * character.getLightAttack());
+        damage += Math.random() * character.getLightAttack();
       }
       if (weapon.type === ItemTypes.heavyWeapon) {
         attack +=
-          (Math.random() * character.strength) +
-          (Math.random() * character.heavy_attack);
-        damage += Math.random() * character.heavy_attack;
+          (Math.random() * character.getStrength()) +
+          (Math.random() * character.getHeavyAttack());
+        damage += Math.random() * character.getHeavyAttack();
       }
       if (weapon.type === ItemTypes.rangedWeapon) {
         attack +=
-          (Math.random() * ((character.agility + character.savvy) / 2)) +
-          (Math.random() * character.ranged_attack);
-        damage += Math.random() * character.ranged_attack;
+          (Math.random() * ((character.getAgility() + character.getSavvy()) / 2)) +
+          (Math.random() * character.getRangedAttack());
+        damage += Math.random() * character.getRangedAttack();
       }
       // Adjust attack based on weapon affinity vs npc armor type
       if (weapon.damageType === DamageType.slashing) {
@@ -187,8 +187,8 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       }
     } else {
       // Using bare hands
-      attack += Math.random() * ((character.agility + character.strength) / 2);
-      damage += Math.random() * character.strength;
+      attack += Math.random() * ((character.getAgility() + character.getStrength()) / 2);
+      damage += Math.random() * character.getStrength();
       if (npc.armorType.includes(ArmorType.strongVsBashing)) {
         attack -= Math.random() * 5;
         actorText.push(`...your martial arts are weak against ${npc.name}'s defenses.`);
@@ -263,13 +263,13 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
   function npcAttack() {
     // this line needed for ts linting
-    if (!(npc.agility !== undefined && npc.strength !== undefined && npc.savvy !== undefined && npc.damageValue !== undefined && npc.healthMax !== undefined)) return true;
+    if (!(npc.agility !== undefined && npc.strength !== undefined && npc.savvy !== undefined && npc.damageValue !== undefined && npc.healthMax !== undefined && character.getDefenseEffect !== null && character.getDodgeEffect !== null && character.getArmorEffect !== null)) return true;
 
     // Initialize
     let attack = 0;
-    let defense = 0;
-    let defenseWithDodge = 0;
     let damage = 0;
+    let defense = character.getDefenseEffect() + character.getArmorEffect();
+    let defenseWithDodge = defense + character.getDodgeEffect();
     const actorText: string[] = [];
     
     // Calculate attack

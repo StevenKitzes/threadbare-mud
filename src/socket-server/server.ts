@@ -31,6 +31,7 @@ import {
   REGEX_USE_ALIASES
 } from '../constants';
 import { generateEntitiesCsvs } from '../utils/generateEntitiesCsvs';
+import { initializeCharacter } from '../utils/initializeCharacter';
 import { handleHorseCommand } from './horse/horse';
 import { npcFactories } from './npcs/npcs';
 
@@ -175,6 +176,8 @@ io.on('connection', (socket) => {
 
       const connectedCharacter: Character | undefined = readActiveCharacterBySession(payload.token);
       if (connectedCharacter === undefined) throw new Error("Got empty character from database.");
+
+      initializeCharacter(connectedCharacter);
 
       characters.set(connectedCharacter.id, connectedCharacter);
       socket.join(connectedCharacter.scene_id);

@@ -1,6 +1,6 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
-import { CharacterUpdateOpts } from "../../types";
+import { CharacterUpdateOpts, StatEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
@@ -20,6 +20,7 @@ export type Item = {
   handleItemCommand?: (handlerOptions: HandlerOptions) => boolean;
   quest?: boolean;
   healAmount?: number;
+  statEffects?: StatEffect[];
 };
 
 export const items: Map<string, Item> = new Map<string, Item>();

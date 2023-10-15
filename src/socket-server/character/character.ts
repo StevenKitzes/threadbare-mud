@@ -287,51 +287,60 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     if (levelMatch === 'light') {
       const cost: number = getCost(character.light_attack);
-      if (
-        character.xp >= cost &&
-        writeCharacterData(character.id, {
+      if (character.xp >= cost) {
+        if (writeCharacterData(character.id, {
           light_attack: character.light_attack + 1,
           xp: character.xp - cost
-        })
-      ) {
-        character.light_attack += 1;
-        character.xp -= cost;
-        emitOthers(`The Lifelight surges through ${name}!`);
-        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using light weapons than before.`);
+        })) {
+          character.light_attack += 1;
+          character.xp -= cost;
+          emitOthers(`The Lifelight surges through ${name}!`);
+          emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using light weapons than before.`);
+          return true;
+        }
+      } else {
+        emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
+        emitSelf(`You have not gathered enough of the Lifelight's warmth to quicken your light weapon strikes.`);
         return true;
       }
     }
 
     if (levelMatch === 'heavy') {
       const cost: number = getCost(character.heavy_attack);
-      if (
-        character.xp >= cost &&
-        writeCharacterData(character.id, {
+      if (character.xp >= cost) {
+        if (writeCharacterData(character.id, {
           heavy_attack: character.heavy_attack + 1,
           xp: character.xp - cost
-        })
-      ) {
-        character.heavy_attack += 1;
-        character.xp -= cost;
-        emitOthers(`The Lifelight surges through ${name}!`);
-        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using heavy weapons than before.`);
+        })) {
+          character.heavy_attack += 1;
+          character.xp -= cost;
+          emitOthers(`The Lifelight surges through ${name}!`);
+          emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using heavy weapons than before.`);
+          return true;
+        }
+      } else {
+        emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
+        emitSelf(`You have not gathered enough of the Lifelight's warmth to strengthen your heavy weapon attacks.`);
         return true;
       }
     }
 
     if (levelMatch === 'ranged') {
       const cost: number = getCost(character.ranged_attack);
-      if (
-        character.xp >= cost &&
-        writeCharacterData(character.id, {
+      if (character.xp >= cost) {
+        if (writeCharacterData(character.id, {
           ranged_attack: character.ranged_attack + 1,
           xp: character.xp - cost
-        })
-      ) {
-        character.ranged_attack += 1;
-        character.xp -= cost;
-        emitOthers(`The Lifelight surges through ${name}!`);
-        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using ranged weapons than before.`);
+        })) {
+          character.ranged_attack += 1;
+          character.xp -= cost;
+          emitOthers(`The Lifelight surges through ${name}!`);
+          emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using ranged weapons than before.`);
+          return true;
+        }
+      } else {
+        emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
+        emitSelf(`You have not gathered enough of the Lifelight's warmth to improve your accuracy with ranged weapon strikes.`);
         return true;
       }
     }

@@ -1,4 +1,5 @@
 import { REGEX_USE_ALIASES } from "../../constants";
+import { EffectStat, StatEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
@@ -11,6 +12,7 @@ const description: string = "A tiny, rustic, hand-made good luck charm that fits
 const keywords: string[] = ['good luck charm', 'lucky charm','charm'];
 const value: number = 1;
 const weight: number = 1;
+const statEffects: StatEffect[] = [ { stat: EffectStat.accuracy, amount: 1000 } ];
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, command, socket } = handlerOptions;
@@ -37,5 +39,6 @@ export {
   keywords,
   value,
   weight,
-  handleItemCommand
+  handleItemCommand,
+  statEffects
 };

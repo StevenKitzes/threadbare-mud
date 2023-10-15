@@ -36,6 +36,20 @@ export type Character = {
   offhand: ItemIds | null;
   xp: number;
   horse: Horse | null;
+
+  getLightAttack: (() => number) | null,
+  getHeavyAttack: (() => number) | null,
+  getRangedAttack: (() => number) | null,
+  getAgility: (() => number) | null,
+  getStrength: (() => number) | null,
+  getSavvy: (() => number) | null,
+  getDamageEffect: (() => number) | null,
+  getAccuracyEffect: (() => number) | null,
+  getDefenseEffect: (() => number) | null,
+  getDodgeEffect: (() => number) | null,
+  getArmorEffect: (() => number) | null,
+
+  temporaryEffects: TemporaryEffect[],
 };
 
 export type Horse = {
@@ -133,8 +147,26 @@ export type CookieKillerBody = {
   status: number;
 };
 
+export type ConfirmedUser = false | {
+  user: User;
+};
+
 export type CreateCharacterPayload = {
   name: string;
+};
+
+export enum EffectStat {
+  lightAttack,
+  heavyAttack,
+  rangedAttack,
+  agility,
+  strength,
+  savvy,
+  damage,
+  accuracy,
+  defense,
+  dodge,
+  armor,
 };
 
 export type GameAction = {
@@ -158,6 +190,11 @@ export type InventoryDescriptionHelper = {
   count: number;
 };
 
+export type ItemEffect = {
+  stat: EffectStat;
+  amount: number;
+};
+
 export type LoginPayload = {
   user: string;
   pass: string;
@@ -169,6 +206,13 @@ export type RegistrationPayload = {
   email: string;
 };
 
-export type ConfirmedUser = false | {
-  user: User;
+export type StatEffect = {
+  stat: EffectStat;
+  amount: number;
+};
+
+export type TemporaryEffect = {
+  amount: number;
+  name: string;
+  stat: EffectStat;
 };
