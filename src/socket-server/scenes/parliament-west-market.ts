@@ -11,8 +11,8 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 
-const id: SceneIds = SceneIds.IXPANNE_NORTHWEST_MARKET;
-const title: string = "Northwestern Marketplace";
+const id: SceneIds = SceneIds.PARLIAMENT_WEST_MARKET;
+const title: string = "Parliament Western Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
@@ -29,9 +29,9 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.HUMBLE_BLACKSMITH)(),
-        npcFactories.get(NpcIds.STABLEMASTER)(),
-        npcFactories.get(NpcIds.LEATHER_WORKER)()
+        npcFactories.get(NpcIds.BAKER)(),
+        npcFactories.get(NpcIds.FRUIT_VENDOR)(),
+        npcFactories.get(NpcIds.LUXURY_CLOTHIER)()
       ]);
     } else {
       // Respawn logic
@@ -56,7 +56,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("You wander the northwestern area of a grand marketplace.  The sounds and smells here are different than in the rest of the bazaar.  In place of shopkeepers, here you find metalworkers and craftsmen.  Folk still bustle about here as they do elsewhere in the market, but the ringing of steel and the roar of the forge take over for shouting merchants.  To the [east] and [south] you see the market sprawling onward.");
+    actorText.push("You stand along the western edge of a grand marketplace, busy with people buying and selling all kinds of things.  The sounds, smells, and sights here dazzle the senses, with food, animals, colors, art; you name it, you can probably find it here.  To the east you see a broad, open [town square].  To the west lies [Audric's tower].  To the [north] and [south] the marketplace sprawls onward.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -72,10 +72,26 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   
   if (navigate(
     handlerOptions,
-    SceneIds.IXPANNE_WEST_MARKET,
-    "s|south|western market|west market",
+    SceneIds.OUTSIDE_AUDRICS_TOWER,
+    "w|tower|audric's tower|west",
     emitOthers,
-    `${name} moves off south, toward the western part of the market.`,
+    `${name} moves off toward Audric's tower.`,
+  )) return true;
+
+  if (navigate(
+    handlerOptions,
+    SceneIds.PARLIAMENT_NORTHWEST_MARKET,
+    "north|northwest market|northwestern market",
+    emitOthers,
+    `${name} moves off northward into another part of the market.`,
+  )) return true;
+
+  if (navigate(
+    handlerOptions,
+    SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
+    "south|southwest market|southwestern market",
+    emitOthers,
+    `${name} moves off southward into another part of the market.`,
   )) return true;
 
   return false;

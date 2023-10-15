@@ -121,7 +121,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (navigate(
     handlerOptions,
-    SceneIds.IXPANNE_WEST_MARKET,
+    SceneIds.PARLIAMENT_WEST_MARKET,
     'e|east|market|marketplace',
     emitOthers,
     `${character.name} heads east and disappears into the marketplace crowd.`,
