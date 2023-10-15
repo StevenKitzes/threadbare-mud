@@ -226,18 +226,20 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   if (levelMatch !== null) {
     if (levelMatch === 'agility') {
       const cost: number = getCost(character.agility);
-      if (
-        character.xp >= cost &&
-        writeCharacterData(character.id, {
+      if ( character.xp >= cost ) {
+        if (writeCharacterData(character.id, {
           agility: character.agility + 1,
           xp: character.xp - cost
-        })
-      ) {
-        character.agility += 1;
-        character.xp -= cost;
-        emitOthers(`The Lifelight surges through ${name}!`);
-        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little quicker than before.`);
-        return true;
+        })) {
+          character.agility += 1;
+          character.xp -= cost;
+          emitOthers(`The Lifelight surges through ${name}!`);
+          emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little quicker than before.`);
+          return true;
+        }
+      } else {
+        emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
+        emitSelf(`You have not gathered enough of the Lifelight's warmth to become more agile.`);
       }
     }
 

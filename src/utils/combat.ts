@@ -56,7 +56,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     // this line needed for ts linting
     if (!(npc.setCombatInterval !== undefined && npc.health !== undefined && npc.setDeathTime !== undefined && npc.cashLoot !== undefined && npc.itemLoot !== undefined && npc.xp !== undefined)) return true;
 
-    // If character has fled
+    // If character has fled or died/gone to checkpoint
     if (character.scene_id !== combatScene) {
       if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
       npc.setCombatInterval(null);
@@ -97,14 +97,18 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       npc.setCombatInterval(null);
       emitOthers(`${character.name} was killed by ${npc.name}!  You see their body fade away into the Lifelight.`);
       emitSelf(`You fall to ${npc.name}.  You hear a chorus of singing voices and see the Lifelight bleeding into your vision...`);
-      if (writeCharacterData(character.id, { health: character.health_max, scene_id: SceneIds.COLD_BEDROOM })) {
-        character.health = character.health_max;
+      const newHealth: number = Math.ceil(character.health_max * 0.6);
+      if (writeCharacterData(character.id, {
+        health: newHealth, scene_id: character.checkpoint_id, xp: 0
+      })) {
+        character.health = newHealth;
+        character.xp = 0;
 
         socket.leave(combatScene);
-        character.scene_id = SceneIds.COLD_BEDROOM;
-        socket.join(SceneIds.COLD_BEDROOM);
+        character.scene_id = character.checkpoint_id;
+        socket.join(character.checkpoint_id);
         
-        scenes.get(SceneIds.COLD_BEDROOM)?.handleSceneCommand({
+        scenes.get(character.checkpoint_id)?.handleSceneCommand({
           ...handlerOptions,
           command: 'enter'
         });
@@ -197,12 +201,11 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
     // Adjust defense based on NPC stats
     defense += npc.armor;
+    defense = Math.random() * defense;
     defenseWithDodge = defense + (Math.random() * ((npc.agility + npc.savvy) / 2));
 
     // Final values
     attack = Math.random() * attack;
-    defense = Math.random() * defense;
-    defenseWithDodge = Math.random() * defenseWithDodge;
     damage = Math.ceil(Math.random() * damage);
     research.playerAttack.push([attack, damage, defense, defenseWithDodge].join(';'));
 
@@ -276,23 +279,29 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     damage += Math.random() * (npc.damageValue);
 
     // Calculate player defense
-    defense +=
-      items.get(character.headgear || '')?.armorValue || 0;
-      items.get(character.armor || '')?.armorValue || 0;
-      items.get(character.gloves || '')?.armorValue || 0;
-      items.get(character.legwear || '')?.armorValue || 0;
-      items.get(character.footwear || '')?.armorValue || 0;
+    defense += items.get(character.headgear || '')?.armorValue || 0;
+    defense += items.get(character.armor || '')?.armorValue || 0;
+    defense += items.get(character.gloves || '')?.armorValue || 0;
+    defense += items.get(character.legwear || '')?.armorValue || 0;
+    defense += items.get(character.footwear || '')?.armorValue || 0;
+    defense = Math.random() * defense;
     defenseWithDodge = defense + (Math.random() * ((character.agility + character.savvy) / 2));
 
     // Final values
-    defenseWithDodge = Math.random() * defenseWithDodge;
     damage = Math.ceil(Math.random() * damage);
     research.npcAttack.push([npc.name, attack, damage, defense, defenseWithDodge].join(';'));
 
+    // if this is a hit, how much should max health increase?
+    const healthBoost: number = Math.floor(damage / (character.health_max / 10))
+
     // Handle result and output
-    if (attack > defenseWithDodge && writeCharacterData(character.id, { health: character.health - damage})) {
+    if (attack > defenseWithDodge && writeCharacterData(character.id, {
+      health: character.health - damage,
+      health_max: character.health_max + healthBoost
+    })) {
       // handle hit
       character.health -= damage;
+      character.health_max += healthBoost;
       if (damage < character.health_max * 0.1) {
         actorText.push(`=You are hit= by ${npc.attackDescription}, but only endure negligible damage.`);
         emitOthers(`${character.name} endures negligible damage from ${npc.attackDescription}.`);
@@ -342,10 +351,18 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   if (npc.setCombatInterval === undefined) return;
   npc.setCombatInterval(setInterval(() => {
     // this garbage needed to satisfy ts linting
-    if (!(npc.agility !== undefined && npc.health !== undefined && npc.healthMax !== undefined)) {
+    if (!(npc.agility !== undefined && npc.health !== undefined && npc.healthMax !== undefined && npc.setCombatInterval !== undefined)) {
       if (npc.combatInterval) clearInterval(npc.combatInterval);
       return;
     }
+
+    // If character has fled or died/gone to checkpoint
+    if (character.scene_id !== combatScene) {
+      if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
+      npc.setCombatInterval(null);
+      return;
+    }
+
     // determine who hits first
     if (Math.random() * character.agility > Math.random() * npc.agility) {
       characterAttack();
