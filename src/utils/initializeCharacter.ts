@@ -7,7 +7,7 @@ export function initializeCharacter(character: Character): void {
       let stat: number = startingStat === null ? 0 : startingStat;
       const now: number = Date.now();
   
-      for (let i = character.temporaryEffects.length - 1; i >= 0; i++) {
+      for (let i = character.temporaryEffects.length - 1; i >= 0; i--) {
         stat +=
           character.temporaryEffects[i].stat === effectStat ?
           character.temporaryEffects[i].amount : 0;

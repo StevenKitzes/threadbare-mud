@@ -1,6 +1,6 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
-import { CharacterUpdateOpts, StatEffect } from "../../types";
+import { CharacterUpdateOpts, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
@@ -20,6 +20,7 @@ export type Item = {
   handleItemCommand?: (handlerOptions: HandlerOptions) => boolean;
   quest?: boolean;
   healAmount?: number;
+  consumeEffects?: TemporaryEffect[];
   statEffects?: StatEffect[];
 };
 
@@ -83,6 +84,7 @@ export enum ItemIds {
   STURDY_LEATHER_GLOVES = "34",
   SPLINTED_LEATHER_LEGGINGS = "35",
   HEAVY_LEATHER_BOOTS = "36",
+  SMALL_HEALING_POTION = "37",
 }
 
 { // imports
@@ -122,6 +124,7 @@ export enum ItemIds {
   import('./sturdy-leather-gloves').then(item => items.set(item.id, item));
   import('./splinted-leather-leggings').then(item => items.set(item.id, item));
   import('./heavy-leather-boots').then(item => items.set(item.id, item));
+  import('./small-healing-potion').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {
@@ -133,6 +136,7 @@ export type ConsumeItemOpts = {
   extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
   extraEffectsOpts?: any;
   healAmount?: number;
+  temporaryEffects?: TemporaryEffect[];
 }
 
 export function consumeItem({
@@ -144,6 +148,7 @@ export function consumeItem({
   extraEffects,
   extraEffectsOpts,
   healAmount,
+  temporaryEffects,
 }: ConsumeItemOpts): boolean {
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
@@ -156,6 +161,25 @@ export function consumeItem({
     characterUpdate.health = Math.min(character.health_max, character.health + healAmount);
     characterUpdate.inventory = [ ...character.inventory ];
     characterUpdate.inventory.splice(character.inventory.indexOf(itemId), 1);
+    if (temporaryEffects !== undefined) {
+      characterUpdate.temporaryEffects = [];
+      temporaryEffects.forEach((effect: TemporaryEffect) => {
+        characterUpdate.temporaryEffects.push(effect);
+        emitSelf(`You feel ${effect.name} beginning to take effect...`);
+        setTimeout(() => {
+          for( let i = 0; i < character.temporaryEffects.length; i++) {
+            if (
+              character.temporaryEffects[i].name === effect.name &&
+              character.temporaryEffects[i].amount === effect.amount &&
+              character.temporaryEffects[i].stat === effect.stat
+            ) {
+              character.temporaryEffects.splice(i, 1);
+              emitSelf(`You feel the effects of ${effect.name} are wearing off...`);
+            }
+          }
+        }, effect.duration);
+      })
+    }
 
     if (extraEffects) {
       characterUpdate = extraEffects(handlerOptions, extraEffectsOpts);

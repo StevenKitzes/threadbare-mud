@@ -2,7 +2,7 @@
 
 import { REGEX_EAT_ALIASES } from "../../constants";
 import { HandlerOptions } from "../server";
-import { DamageType, ItemIds, ItemTypes } from "./items";
+import { ItemIds, ItemTypes, consumeItem } from "./items";
 
 const id: ItemIds = ItemIds.;
 const type: ItemTypes = ItemTypes.consumable;
@@ -12,6 +12,14 @@ const keywords: string[] = ;
 const value: number = ;
 const weight: number = ;
 const healAmount: number = ;
+const temporaryEffects: TemporaryEffect[] = [
+  {
+    amount: ,
+    duration: ,
+    name: ,
+    stat: 
+  }
+];
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -20,7 +28,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     targetAliases: keywords.join('|'),
     itemId: id,
     itemTitle: title,
-    healAmount
+    healAmount,
+    temporaryEffects,
   })) return true;
 
   return false;
@@ -35,7 +44,8 @@ export {
   value,
   weight,
   handleItemCommand,
-  healAmount
+  healAmount,
+  temporaryEffects
 };
 
 */

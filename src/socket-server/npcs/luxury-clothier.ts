@@ -44,7 +44,7 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        character.savvy > 20 ? `Upon being addressed, the clothier can see that you carry yourself differently than most people, and hopes that what he smells on you is money.  "Ah, my friend, welcome.  Welcome!  Perhaps I can interest you in something new to shine light on your standing in our high society?"  He flashes an obsequious grin and gestures toward his offerings.` : `The clothier sneers a little, unsure that you are worth his time when he could be selling to the more well-heeled and deep of pocket.  He nevertheless allows you to peruse his offerings.  "If you can afford them, these are what I have to offer."`,
+        character.getSavvy() > 20 ? `Upon being addressed, the clothier can see that you carry yourself differently than most people, and hopes that what he smells on you is money.  "Ah, my friend, welcome.  Welcome!  Perhaps I can interest you in something new to shine light on your standing in our high society?"  He flashes an obsequious grin and gestures toward his offerings.` : `The clothier sneers a little, unsure that you are worth his time when he could be selling to the more well-heeled and deep of pocket.  He nevertheless allows you to peruse his offerings.  "If you can afford them, these are what I have to offer."`,
         ...npc.saleItems.map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`),
         `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);

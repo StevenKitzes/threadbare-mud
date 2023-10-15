@@ -84,6 +84,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     if (naked) actorText.push('You wear only a modest set of undergarments.');
 
+    character.temporaryEffects.forEach(effect => {
+      actorText.push(`You feel the effects of ${effect.name} coursing through your veins.`);
+    })
+
     actorText.push("Try [evaluate skills] to check on your skills and abilities.");
 
     emitSelf(actorText);

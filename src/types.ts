@@ -140,6 +140,7 @@ export type CharacterUpdateOpts = {
   offhand?: ItemIds;
   xp?: number;
   horse?: Horse;
+  temporaryEffects?: TemporaryEffect[];
 };
 
 export type CookieKillerBody = {
@@ -213,6 +214,7 @@ export type StatEffect = {
 
 export type TemporaryEffect = {
   amount: number;
+  duration: number;
   name: string;
   stat: EffectStat;
 };
