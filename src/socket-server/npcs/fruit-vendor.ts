@@ -4,7 +4,7 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { firstCharToUpper } from "../../utils/firstCharToUpper";
-import items, { ItemIds } from "../items/items";
+import items, { Item, ItemIds } from "../items/items";
 
 export function make(): NPC {
   const npc: NPC = {
@@ -50,6 +50,16 @@ export function make(): NPC {
         `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);
       return true;
+    }
+  
+    // look at an item this npc has for sale
+    for(let i = 0; i < npc.saleItems.length; i++) {
+      const currentItem: Item = npc.saleItems[i];
+      if (command.match(makeMatcher(REGEX_LOOK_ALIASES, currentItem.keywords.join('|')))) {
+        emitOthers(`${name} inspects ${currentItem.title} that ${npc.name} has for sale.`);
+        emitSelf(currentItem.description);
+        return true;
+      }
     }
   
     // purchase from this npc

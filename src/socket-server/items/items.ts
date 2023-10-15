@@ -73,6 +73,7 @@ export enum ItemIds {
   MODEST_SADDLEBAGS = "25",
   LEATHER_SADDLEBAGS = "26",
   REINFORCED_SAGGLEBAGS = "27",
+  BROADSWORD = "28",
 }
 
 { // imports
@@ -103,6 +104,7 @@ export enum ItemIds {
   import('./modest-saddlebags').then(item => items.set(item.id, item));
   import('./leather-saddlebags').then(item => items.set(item.id, item));
   import('./reinforced-saddlebags').then(item => items.set(item.id, item));
+  import('./broadsword').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {
