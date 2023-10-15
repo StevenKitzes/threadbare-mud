@@ -29,6 +29,7 @@ export enum SceneIds {
   WEST_OF_AUDRICS_TOWER = "8",
   IXPANNE_WEST_MARKET = "9",
   IXPANNE_NORTHWEST_MARKET = "10",
+  IXPANNE_SOUTHWEST_MARKET = "11",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
@@ -41,6 +42,7 @@ import('./south-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
 import('./west-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
 import('./ixpanne-west-market').then(scene => scenes.set(scene.id, scene));
 import('./ixpanne-northwest-market').then(scene => scenes.set(scene.id, scene));
+import('./ixpanne-southwest-market').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 

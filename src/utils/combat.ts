@@ -3,7 +3,7 @@ import { DamageType, Item, ItemTypes, items } from '../socket-server/items/items
 import { ArmorType, NPC } from "../socket-server/npcs/npcs";
 import getEmitters from "./emitHelper";
 import { writeCharacterData } from "../../sqlite/sqlite";
-import { SceneIds, scenes } from "../socket-server/scenes/scenes";
+import { scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
 import characterHealthText from "./characterHealthText";
 import { xpAmountString } from "./leveling";

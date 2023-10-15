@@ -224,9 +224,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   // level up skills and abilities
   const levelMatch: string | null = captureFrom(command, 'level');
   if (levelMatch !== null) {
+
     if (levelMatch === 'agility') {
       const cost: number = getCost(character.agility);
-      if ( character.xp >= cost ) {
+      if (character.xp >= cost) {
         if (writeCharacterData(character.id, {
           agility: character.agility + 1,
           xp: character.xp - cost
@@ -240,39 +241,46 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       } else {
         emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
         emitSelf(`You have not gathered enough of the Lifelight's warmth to become more agile.`);
+        return true;
       }
     }
 
     if (levelMatch === 'strength') {
       const cost: number = getCost(character.strength);
-      if (
-        character.xp >= cost &&
-        writeCharacterData(character.id, {
+      if (character.xp >= cost) {
+        if (writeCharacterData(character.id, {
           strength: character.strength + 1,
           xp: character.xp - cost
-        })
-      ) {
-        character.strength += 1;
-        character.xp -= cost;
-        emitOthers(`The Lifelight surges through ${name}!`);
-        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little stronger than before.`);
+        })) {
+          character.strength += 1;
+          character.xp -= cost;
+          emitOthers(`The Lifelight surges through ${name}!`);
+          emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little stronger than before.`);
+          return true;
+        }
+      } else {
+        emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
+        emitSelf(`You have not gathered enough of the Lifelight's warmth to gain more strength.`);
         return true;
       }
     }
 
     if (levelMatch === 'savvy') {
       const cost: number = getCost(character.savvy);
-      if (
-        character.xp >= cost &&
-        writeCharacterData(character.id, {
+      if (character.xp >= cost) {
+        if (writeCharacterData(character.id, {
           savvy: character.savvy + 1,
           xp: character.xp - cost
-        })
-      ) {
-        character.savvy += 1;
-        character.xp -= cost;
-        emitOthers(`The Lifelight surges through ${name}!`);
-        emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel your mind is a little sharper than before.`);
+        })) {
+          character.savvy += 1;
+          character.xp -= cost;
+          emitOthers(`The Lifelight surges through ${name}!`);
+          emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel your mind is a little sharper than before.`);
+          return true;
+        }
+      } else {
+        emitOthers(`The Lifelight glimmers in ${name}, but fizzles as quickly as it appears.`);
+        emitSelf(`You have not gathered enough of the Lifelight's warmth to sharpen your intelligence and wisdom.`);
         return true;
       }
     }

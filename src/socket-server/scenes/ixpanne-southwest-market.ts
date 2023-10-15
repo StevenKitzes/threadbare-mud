@@ -11,8 +11,8 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 
-const id: SceneIds = SceneIds.IXPANNE_WEST_MARKET;
-const title: string = "Western Marketplace";
+const id: SceneIds = SceneIds.IXPANNE_SOUTHWEST_MARKET;
+const title: string = "Southwestern Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
@@ -29,9 +29,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.BAKER)(),
-        npcFactories.get(NpcIds.FRUIT_VENDOR)(),
-        npcFactories.get(NpcIds.LUXURY_CLOTHIER)()
       ]);
     } else {
       // Respawn logic
@@ -56,7 +53,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("You stand along the western edge of a grand marketplace, busy with people buying and selling all kinds of things.  The sounds, smells, and sights here dazzle the senses, with food, animals, colors, art; you name it, you can probably find it here.  To the east you see a broad, open [town square].  To the west lies [Audric's tower].  To the [north] and [south] the marketplace sprawls onward.");
+    actorText.push("The southwestern reach of the marketplace is a den of opulence.  Other corners of the bazaar feature elegant and fancy offerings, certainly; but here stand the most prestigious shops.  In fact, vendors do not stand in the street with carts full of their wares, but rather take up residence ... in shops!");
+    actorText.push("To the west, a boutique [jewelry shop] is tucked into the bottom floor of an upscale apartment building.  To the southwest lies an [armorer] specializing in dress and decorative pieces.  To the south you see a mysterious and somewhat spooky storefront, apparently kept by an [alchemist].  The rest of the marketplace sprawls onward to the north and east.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -72,26 +70,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   
   if (navigate(
     handlerOptions,
-    SceneIds.OUTSIDE_AUDRICS_TOWER,
-    "tower|audric's tower|west",
+    SceneIds.IXPANNE_WEST_MARKET,
+    "north|western market|west market",
     emitOthers,
-    `${name} moves off toward Audric's tower.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.IXPANNE_NORTHWEST_MARKET,
-    "north|northwest market|northwestern market",
-    emitOthers,
-    `${name} moves off northward into another part of the market.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.IXPANNE_SOUTHWEST_MARKET,
-    "south|southwest market|southwestern market",
-    emitOthers,
-    `${name} moves off southward into another part of the market.`,
+    `${name} moves off north, toward the western part of the market.`,
   )) return true;
 
   return false;
