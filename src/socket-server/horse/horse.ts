@@ -1,5 +1,5 @@
-import { REGEX_EQUIP_ALIASES, REGEX_LOOK_ALIASES } from "../../constants";
-import { captureFrom_fromHorse, captureFrom_toHorse, makeMatcher } from "../../utils/makeMatcher";
+import { REGEX_HORSE_ALIASES, REGEX_LOOK_ALIASES, REGEX_RENAME_ALIASES } from "../../constants";
+import { captureFrom, captureFrom_fromHorse, captureFrom_toHorse, makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 import { getEmitters } from '../../utils/emitHelper';
 import { scenes } from "../scenes/scenes";
@@ -8,6 +8,7 @@ import { OptsType } from "../../utils/getGameTextObject";
 import items, { Item, ItemIds } from "../items/items";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { getEncumbranceString } from "../../utils/encumbrance";
+import { firstCharToUpper } from "../../utils/firstCharToUpper";
 
 // capacity mapping
 export const saddlebagCapacityMap: Map<ItemIds, number> = new Map<ItemIds, number>();
@@ -46,7 +47,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
 
   if (!horseAllowed(character, emitOthers, emitSelf)) return true;
 
-  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, `horse|${character.horse.name.toLowerCase()}`))) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, `${REGEX_HORSE_ALIASES}|${character.horse.name.toLowerCase()}`))) {
     emitOthers(`${character.name} rifles through their horse's saddlebags.`);
 
     const saddlebagsTitle: string = items.get(character.horse.saddlebagsId).title;
@@ -54,10 +55,33 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
     actorText.push(`You see ${character.horse.name}, wearing ${saddlebagsTitle}.`);
     character.horse.inventory.map(i => actorText.push(`In ${saddlebagsTitle} you find ${items.get(i).title}.`));
     actorText.push(getHorseEncumbranceString(character.horse));
-    actorText.push(`You can [give {item} to horse] or [get {item} from horse].`);
+    actorText.push(`You can [give {item} to horse], [get {item} from horse], [rename horse {new-name}].`);
     emitSelf(actorText);
 
     return true;
+  }
+
+  const renameMatch: string = captureFrom(command, `${REGEX_RENAME_ALIASES}) (?:${REGEX_HORSE_ALIASES}`);
+  if (renameMatch !== null) {
+    const formattedRenameMatch: string = firstCharToUpper(renameMatch.trim());
+    if (formattedRenameMatch.length < 3) {
+      emitSelf(`That name is too short.  Your horse deserves a longer name (3 characters at least)!`);
+      return true;
+    } else if (formattedRenameMatch.length > 20) {
+      emitSelf(`That name is too long.  Your horse won't be able to remember it (20 characters at most)!`);
+      return true;
+    } else {
+      if (writeCharacterData(character.id, {
+        horse: {
+          ...character.horse,
+          name: formattedRenameMatch
+        }
+      })) {
+        character.horse.name = formattedRenameMatch;
+        emitSelf(`Your horse will now answer to the name {${formattedRenameMatch}}.`);
+        return true;
+      }
+    }
   }
 
   const giveMatch: string = captureFrom_toHorse(command, character.horse.name.toLowerCase());

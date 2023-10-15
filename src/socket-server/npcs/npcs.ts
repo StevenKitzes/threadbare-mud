@@ -59,6 +59,7 @@ export enum NpcIds {
   BAKER = "5",
   FRUIT_VENDOR = "6",
   LUXURY_CLOTHIER = "7",
+  STABLEMASTER = "8",
 }
 
 import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
@@ -68,6 +69,7 @@ import('./rabid-rat').then(npc => npcFactories.set(NpcIds.RABID_RAT, npc.make));
 import('./baker').then(npc => npcFactories.set(NpcIds.BAKER, npc.make));
 import('./fruit-vendor').then(npc => npcFactories.set(NpcIds.FRUIT_VENDOR, npc.make));
 import('./luxury-clothier').then(npc => npcFactories.set(NpcIds.LUXURY_CLOTHIER, npc.make));
+import('./stablemaster').then(npc => npcFactories.set(NpcIds.STABLEMASTER, npc.make));
 
 export function look(
   emitOthers: (text: string | string[], opts?: OptsType) => void,

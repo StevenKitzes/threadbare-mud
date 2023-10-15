@@ -14,6 +14,7 @@ export const REGEX_HORSE_ALIASES: string = 'horse|steed|mount'
 export const REGEX_INVENTORY_ALIASES: string = 'inventory|inv';
 export const REGEX_LOOK_ALIASES: string = 'look|observe|inspect|check|scan|investigate|peek';
 export const REGEX_QUEST_ALIASES: string = 'quest|quests|mission|missions|story|stories';
+export const REGEX_RENAME_ALIASES: string = 'name|rename'
 export const REGEX_REST_ALIASES: string = 'rest|sleep|heal|nap|lie down|lay down';
 export const REGEX_SELF_ALIASES: string = 'self|me|myself';
 export const REGEX_TALK_ALIASES: string = 'talk|speak|chat|talk to|speak with|chat with';

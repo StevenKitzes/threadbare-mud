@@ -3,7 +3,7 @@ import { ItemIds, ItemTypes } from "./items";
 const id: ItemIds = ItemIds.MODEST_SADDLEBAGS;
 const type: ItemTypes = ItemTypes.saddlebags;
 const title: string = 'modest saddlebags';
-const description: string = "A set of [modest saddlebags], made of sturdy cloth with a simple rope harness.";
+const description: string = "A set of [modest saddlebags], made of sturdy cloth with a simple rope harness.  The will allow your horse to carry a little bit of extra gear.";
 const keywords: string[] = ['modest saddlebags'];
 const value: number = 30;
 const weight: number = 15;
