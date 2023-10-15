@@ -73,7 +73,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.OUTSIDE_AUDRICS_TOWER,
-    "tower|audric's tower|west",
+    "w|tower|audric's tower|west",
     emitOthers,
     `${name} moves off toward Audric's tower.`,
   )) return true;

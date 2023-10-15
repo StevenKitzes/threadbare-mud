@@ -69,7 +69,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.OUTSIDE_AUDRICS_TOWER,
-    'east|market|marketplace',
+    'e|east|market|marketplace',
     emitOthers,
     `${character.name} heads east.`,
   )) return true;
@@ -77,7 +77,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.WEST_OF_AUDRICS_TOWER,
-    'south|alley',
+    's|south|alley',
     emitOthers,
     `${character.name} heads into a quiet alley.`,
   )) return true;

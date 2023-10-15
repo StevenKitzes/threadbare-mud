@@ -55,7 +55,7 @@ export function navigate(
 ): boolean {
   const { command, character, socket } = handlerOptions;
 
-  if (command.match(makeMatcher(REGEX_GO_ALIASES, targetAliases))) {
+  if (command.match(makeMatcher(REGEX_GO_ALIASES, targetAliases)) || command.match(makeMatcher(targetAliases))) {
     // before letting the character try to move, check encumbrance
     if (!characterCanMove(character)) {
       // others

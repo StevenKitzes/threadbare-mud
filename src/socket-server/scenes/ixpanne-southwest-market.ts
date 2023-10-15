@@ -53,7 +53,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("The southwestern reach of the marketplace is a den of opulence.  Other corners of the bazaar feature elegant and fancy offerings, certainly; but here stand the most prestigious shops.  In fact, vendors do not stand in the street with carts full of their wares, but rather take up residence ... in shops!");
+    actorText.push("The southwestern reach of the marketplace is a den of opulence.  Other corners of the bazaar feature elegant and fancy offerings, certainly; but here stand the most prestigious shops.  In fact, vendors do not stand in the street with carts full of their wares, but rather take up residence in dedicated storefronts.");
     actorText.push("To the west, a boutique [jewelry shop] is tucked into the bottom floor of an upscale apartment building.  To the southwest lies an [armorer] specializing in dress and decorative pieces.  To the south you see a mysterious and somewhat spooky storefront, apparently kept by an [alchemist].  The rest of the marketplace sprawls onward to the north and east.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
@@ -71,7 +71,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.IXPANNE_WEST_MARKET,
-    "north|western market|west market",
+    "n|north|western market|west market",
     emitOthers,
     `${name} moves off north, toward the western part of the market.`,
   )) return true;

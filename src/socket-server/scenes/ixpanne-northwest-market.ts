@@ -73,7 +73,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.IXPANNE_WEST_MARKET,
-    "south|western market|west market",
+    "s|south|western market|west market",
     emitOthers,
     `${name} moves off south, toward the western part of the market.`,
   )) return true;
