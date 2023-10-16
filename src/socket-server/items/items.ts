@@ -85,6 +85,12 @@ export enum ItemIds {
   SPLINTED_LEATHER_LEGGINGS = "35",
   HEAVY_LEATHER_BOOTS = "36",
   SMALL_HEALING_POTION = "37",
+  AGILITY_POTION = "38",
+  STRENGTH_POTION = "39",
+  SAVVY_POTION = "40",
+  LIGHT_ATTACK_POTION = "41",
+  HEAVY_ATTACK_POTION = "42",
+  RANGED_ATTACK_POTION = "43",
 }
 
 { // imports
@@ -125,6 +131,12 @@ export enum ItemIds {
   import('./splinted-leather-leggings').then(item => items.set(item.id, item));
   import('./heavy-leather-boots').then(item => items.set(item.id, item));
   import('./small-healing-potion').then(item => items.set(item.id, item));
+  import('./agility-potion').then(item => items.set(item.id, item));
+  import('./strength-potion').then(item => items.set(item.id, item));
+  import('./savvy-potion').then(item => items.set(item.id, item));
+  import('./light-attack-potion').then(item => items.set(item.id, item));
+  import('./heavy-attack-potion').then(item => items.set(item.id, item));
+  import('./ranged-attack-potion').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {

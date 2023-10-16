@@ -8,10 +8,11 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC } from '../npcs/npcs';
+import { NPC, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
+import { ItemIds } from '../items/items';
 
 const id: SceneIds = SceneIds.;
 const title: string = ;
@@ -85,7 +86,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     }
 
     // This will be pushed to actor text independent of story
-    actorText.push;
+    actorText.push-;
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -106,8 +107,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
     return true;
   }
-
-  let destination: SceneIds;
 
   // normal travel, concise
   if (navigate(

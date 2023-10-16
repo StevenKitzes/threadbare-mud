@@ -30,6 +30,7 @@ export enum SceneIds {
   PARLIAMENT_WEST_MARKET = "9",
   PARLIAMENT_NORTHWEST_MARKET = "10",
   PARLIAMENT_SOUTHWEST_MARKET = "11",
+  PARLIAMENT_ALCHEMY_SHOP = "12",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
@@ -43,6 +44,7 @@ import('./west-of-audrics-tower').then(scene => scenes.set(scene.id, scene));
 import('./parliament-west-market').then(scene => scenes.set(scene.id, scene));
 import('./parliament-northwest-market').then(scene => scenes.set(scene.id, scene));
 import('./parliament-southwest-market').then(scene => scenes.set(scene.id, scene));
+import('./parliament-alchemy-shop').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 

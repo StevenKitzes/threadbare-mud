@@ -1,20 +1,21 @@
+import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 
-const id: SceneIds = SceneIds.PARLIAMENT_WEST_MARKET;
-const title: string = "Parliament Western Marketplace";
-const sentiment: SceneSentiment = SceneSentiment.neutral;
-const horseAllowed: boolean = true;
+const id: SceneIds = SceneIds.PARLIAMENT_ALCHEMY_SHOP;
+const title: string = "An ominous alchemy shop in Parliament";
+const sentiment: SceneSentiment = SceneSentiment.remote;
+const horseAllowed: boolean = false;
 const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -28,11 +29,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.BAKER)(),
-        npcFactories.get(NpcIds.FRUIT_VENDOR)(),
-        npcFactories.get(NpcIds.LUXURY_CLOTHIER)()
-      ]);
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS)() ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
@@ -51,12 +48,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${name} looks around at the marketplace.`);
+    emitOthers(`${name} looks around at the mysterious objects on display here.`);
 
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("You stand along the western edge of a grand marketplace, busy with people buying and selling all kinds of things.  The sounds, smells, and sights here dazzle the senses, with food, animals, colors, art; you name it, you can probably find it here.  To the east you see a broad, open [town square].  To the west lies [Audric's tower].  To the [north] and [south] the marketplace sprawls onward.");
+    actorText.push(`Gazing around the dark alchemy shop, you are a bit taken aback by the state of the place.  The decor is marked by cobwebs, deep layers of dust, and jars and bottles of supplies left open, forgotten.  The shop's offerings are scattered haphazardly across tables, shelves, even on the floor.  Multiple cauldrons of various shapes, sizes, and materials smoke and steam over fires in the back of the undivided room.  You don't know if you smell metal, blood, chemicals, herbs, or something that has no place in this world.  The only exit from this dungeonesque potion shop is back out to the [market], to the northeast.`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -70,28 +67,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (navigate(
-    handlerOptions,
-    SceneIds.OUTSIDE_AUDRICS_TOWER,
-    "w|tower|audric's tower|west",
-    emitOthers,
-    `${name} moves off toward Audric's tower.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_NORTHWEST_MARKET,
-    "n|north|northwest market|northwestern market",
-    emitOthers,
-    `${name} moves off northward into another part of the market.`,
-  )) return true;
-
+  // normal travel, concise
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    "s|south|southwest market|southwestern market",
+    'ne|northeast|market',
     emitOthers,
-    `${name} moves off southward into another part of the market.`,
+    `${name} leaves the alchemy shop for the market.`,
   )) return true;
 
   return false;

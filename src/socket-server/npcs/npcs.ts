@@ -62,6 +62,7 @@ export enum NpcIds {
   STABLEMASTER = "8",
   HUMBLE_BLACKSMITH = "9",
   LEATHER_WORKER = "10",
+  ALCHEMIST_GNARLED_BEYOND_HIS_YEARS = "11",
 }
 
 import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
@@ -74,6 +75,7 @@ import('./luxury-clothier').then(npc => npcFactories.set(NpcIds.LUXURY_CLOTHIER,
 import('./stablemaster').then(npc => npcFactories.set(NpcIds.STABLEMASTER, npc.make));
 import('./humble-blacksmith').then(npc => npcFactories.set(NpcIds.HUMBLE_BLACKSMITH, npc.make));
 import('./leather-worker').then(npc => npcFactories.set(NpcIds.LEATHER_WORKER, npc.make));
+import('./alchemist-gnarled-beyond-his-years').then(npc => npcFactories.set(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS, npc.make));
 
 export function look(
   emitOthers: (text: string | string[], opts?: OptsType) => void,
