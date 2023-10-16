@@ -12,7 +12,7 @@ const keywords: string[] = ;
 const value: number = ;
 const weight: number = ;
 const healAmount: number = ;
-const temporaryEffects: TemporaryEffect[] = [
+const consumeEffects: TemporaryEffect[] = [
   {
     amount: ,
     duration: ,
@@ -29,7 +29,7 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
     itemId: id,
     itemTitle: title,
     healAmount,
-    temporaryEffects,
+    consumeEffects,
   })) return true;
 
   return false;
@@ -45,7 +45,7 @@ export {
   weight,
   handleItemCommand,
   healAmount,
-  temporaryEffects
+  consumeEffects
 };
 
 */

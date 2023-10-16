@@ -13,7 +13,7 @@ const value: number = ;
 const weight: number = ;
 
 const armorValue: number = ;
-const damageValue: number = ;
+const damageValue: DamageType = ;
 const damageType: number = ;
 const hitBonus: number = ;
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
@@ -23,6 +23,8 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
 };
 const quest: boolean = ;
 const healAmount: number = ;
+
+const statEffects: StatEffect[] = ;
 
 export {
   id,
@@ -38,7 +40,8 @@ export {
   hitBonus,
   handleItemCommand
   quest,
-  healAmount
+  healAmount,
+  statEffects
 };
 
 */

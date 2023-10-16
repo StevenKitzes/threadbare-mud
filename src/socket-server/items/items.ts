@@ -91,6 +91,10 @@ export enum ItemIds {
   LIGHT_ATTACK_POTION = "41",
   HEAVY_ATTACK_POTION = "42",
   RANGED_ATTACK_POTION = "43",
+  SILVER_CROWN = "44",
+  SILVER_RINGS = "45",
+  INSPIRING_SILVER_SCEPTER = "46",
+  SILVER_DAGGER = "47",
 }
 
 { // imports
@@ -137,6 +141,10 @@ export enum ItemIds {
   import('./light-attack-potion').then(item => items.set(item.id, item));
   import('./heavy-attack-potion').then(item => items.set(item.id, item));
   import('./ranged-attack-potion').then(item => items.set(item.id, item));
+  import('./silver-crown').then(item => items.set(item.id, item));
+  import('./silver-rings').then(item => items.set(item.id, item));
+  import('./inspiring-silver-scepter').then(item => items.set(item.id, item));
+  import('./silver-dagger').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {

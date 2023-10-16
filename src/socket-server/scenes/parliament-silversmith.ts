@@ -11,8 +11,8 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 
-const id: SceneIds = SceneIds.PARLIAMENT_ALCHEMY_SHOP;
-const title: string = "An ominous alchemy shop in Parliament";
+const id: SceneIds = SceneIds.PARLIAMENT_SILVERSMITH;
+const title: string = "Parliament Silversmith";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = false;
 const publicInventory: ItemIds[] = [];
@@ -28,7 +28,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS)() ]);
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.CIVILIZED_SILVERSMITH)() ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
@@ -47,12 +47,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${name} looks around at the mysterious objects on display here.`);
+    emitOthers(`${name}`);
 
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push(`Gazing around the dark alchemy shop, you are a bit taken aback by the state of the place.  The decor is marked by cobwebs, deep layers of dust, and jars and bottles of supplies left open, forgotten.  The shop's offerings are scattered haphazardly across tables, shelves, even on the floor.  Multiple cauldrons of various shapes, sizes, and materials smoke and steam over fires in the back of the undivided room.  You don't know if you smell metal, blood, chemicals, herbs, or something that has no place in this world.  The only exit from this dungeonesque potion shop is back out to the [market], to the northeast.`);
+    actorText.push(`The shop is clean and tidy, with silver jewelry, tableware, and even some decorative weapons.  All the items for sale are displayed on velvet pillows for an added element of luxury.  Fine curtains decorate the walls, and there is even a bit of stained glass set into some of the windows.  The front door leads out to the east, back into the [market].`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -70,9 +70,9 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    'n|north|market',
+    'e|east|door|front door|market',
     emitOthers,
-    `${name} leaves the alchemy shop for the market.`,
+    `${name} leaves the silver shop to return to the market outside.`,
   )) return true;
 
   return false;
