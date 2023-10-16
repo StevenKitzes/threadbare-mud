@@ -95,6 +95,12 @@ export enum ItemIds {
   SILVER_RINGS = "45",
   INSPIRING_SILVER_SCEPTER = "46",
   SILVER_DAGGER = "47",
+  PARLIAMENT_GREAT_HELM = "48",
+  PARLIAMENT_ARMOR = "49",
+  PARLIAMENT_GAUNTLETS = "50",
+  PARLIAMENT_GREAVES = "51",
+  PARLIAMENT_BOOTS = "52",
+  PARLIAMENT_DECORATIVE_SWORD = "53",
 }
 
 { // imports
@@ -145,6 +151,12 @@ export enum ItemIds {
   import('./silver-rings').then(item => items.set(item.id, item));
   import('./inspiring-silver-scepter').then(item => items.set(item.id, item));
   import('./silver-dagger').then(item => items.set(item.id, item));
+  import('./parliament-great-helm').then(item => items.set(item.id, item));
+  import('./parliament-armor').then(item => items.set(item.id, item));
+  import('./parliament-gauntlets').then(item => items.set(item.id, item));
+  import('./parliament-greaves').then(item => items.set(item.id, item));
+  import('./parliament-boots').then(item => items.set(item.id, item));
+  import('./parliament-decorative-sword').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {
