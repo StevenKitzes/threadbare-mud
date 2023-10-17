@@ -17,6 +17,7 @@ const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
+const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -102,5 +103,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
-  handleSceneCommand
+  handleSceneCommand,
+  getSceneNpcs
 };

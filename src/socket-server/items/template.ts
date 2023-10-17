@@ -13,8 +13,8 @@ const value: number = ;
 const weight: number = ;
 
 const armorValue: number = ;
-const damageValue: DamageType = ;
-const damageType: number = ;
+const damageValue: number = ;
+const damageType: DamageType = ;
 const hitBonus: number = ;
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, command, socket } = handlerOptions;

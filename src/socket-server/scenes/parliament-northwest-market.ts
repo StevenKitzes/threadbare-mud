@@ -18,6 +18,7 @@ const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
+const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -56,7 +57,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("You wander the northwestern area of a grand marketplace.  The sounds and smells here are different than in the rest of the bazaar.  In place of shopkeepers, here you find metalworkers and craftsmen.  Folk still bustle about here as they do elsewhere in the market, but the ringing of steel and the roar of the forge take over for shouting merchants.  To the [east] and [south] you see the market sprawling onward.");
+    actorText.push("You wander the northwestern area of a grand marketplace.  The sounds and smells here are different than in the rest of the bazaar.  In place of shopkeepers, here you find metalworkers and craftsmen.  Folk still bustle about here as they do elsewhere in the market, but the ringing of steel and the roar of the forge take over for shouting merchants.  To the [east] is the market's open northern promenade, and to the [south] you see the market sprawling onward.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -78,6 +79,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     `${name} moves off south, toward the western part of the market.`,
   )) return true;
 
+  if (navigate(
+    handlerOptions,
+    SceneIds.PARLIAMENT_NORTH_PROMENADE,
+    "e|east|north promenade|promenade",
+    emitOthers,
+    `${name} moves off east, toward the market's north promenade.`,
+  )) return true;
+
   return false;
 }
 
@@ -87,5 +96,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
-  handleSceneCommand
+  handleSceneCommand,
+  getSceneNpcs
 };

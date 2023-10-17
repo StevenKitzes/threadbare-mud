@@ -18,7 +18,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   const { emitSelf, emitOthers } = getEmitters(socket, character.scene_id);
 
   // look at yourself
-  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES))) {
+  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES)) || command.match(makeMatcher(REGEX_SELF_ALIASES))) {
     if (!character.job) {
       emitSelf("You must finish creating your new character first.");
       return true;
@@ -86,6 +86,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     character.temporaryEffects.forEach(effect => {
       actorText.push(`You feel the effects of ${effect.name} coursing through your veins.`);
+    });
+
+    character.factionAnger.forEach(fa => {
+      actorText.push(`${firstCharToUpper(fa.faction)} remember how you've wronged them, and will attack on sight.`);
     })
 
     actorText.push("Try [evaluate skills] to check on your skills and abilities.");

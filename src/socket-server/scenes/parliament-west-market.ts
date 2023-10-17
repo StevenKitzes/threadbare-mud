@@ -10,6 +10,7 @@ import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { firstCharToUpper } from '../../utils/firstCharToUpper';
 
 const id: SceneIds = SceneIds.PARLIAMENT_WEST_MARKET;
 const title: string = "Parliament Western Marketplace";
@@ -18,6 +19,7 @@ const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
+const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -31,7 +33,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       characterNpcs.set(character.id, [
         npcFactories.get(NpcIds.BAKER)(),
         npcFactories.get(NpcIds.FRUIT_VENDOR)(),
-        npcFactories.get(NpcIds.LUXURY_CLOTHIER)()
+        npcFactories.get(NpcIds.LUXURY_CLOTHIER)(),
+        npcFactories.get(NpcIds.GLOWERING_PEACEKEEPER)(),
       ]);
     } else {
       // Respawn logic
@@ -39,6 +42,20 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
       })
     }
+
+    // Angered faction enemies attack!
+    setTimeout(() => {
+      characterNpcs.get(character.id).forEach(c => {
+        if (c.health > 0 && character.factionAnger.find(fa => fa.faction === c.faction)) {
+          emitOthers(`${firstCharToUpper(c.name)} remembers ${name} as an enemy of ${c.faction} and attacks!`);
+          emitSelf(`${firstCharToUpper(c.name)} {recognizes you} as an enemy of ${c.faction} and =attacks you=!`);
+          c.handleNpcCommand({
+            ...handlerOptions,
+            command: `fight ${c.keywords[0]}`
+          });
+        }
+      });
+    }, 250);
 
     return handleSceneCommand({
       ...handlerOptions,
@@ -81,7 +98,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_NORTHWEST_MARKET,
-    "n|north|northwest market|northwestern market",
+    "n|north",
     emitOthers,
     `${name} moves off northward into another part of the market.`,
   )) return true;
@@ -89,7 +106,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    "s|south|southwest market|southwestern market",
+    "s|south",
     emitOthers,
     `${name} moves off southward into another part of the market.`,
   )) return true;
@@ -103,5 +120,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
-  handleSceneCommand
+  handleSceneCommand,
+  getSceneNpcs
 };

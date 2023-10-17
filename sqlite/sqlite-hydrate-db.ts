@@ -54,31 +54,31 @@ dbToHydrate.transaction(() => {
   // Characters table stuff for admin
   const startingInventory: string[] = ['1'];
   hydrate(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `, [
-    adminCharacterId, adminId, adminCharacterName, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, testScene1Id, '1', '{"main":0}', '{}', '10', JSON.stringify(startingInventory), "0", null
+    adminCharacterId, adminId, adminCharacterName, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', '{"main":0}', '{}', '0', JSON.stringify(startingInventory), "0", null, "[]"
   ]);
 })();
 
 // Non-admin user
 dbToHydrate.transaction(() => {
   hydrate(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `, [
-    testCharacter1Id, testUserId, testCharacter1Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, testScene1Id, '1', '{"main":0}', '{}', '0', '["1"]', "0", null
+    testCharacter1Id, testUserId, testCharacter1Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', '{"main":0}', '{}', '0', '["1"]', "0", null, "[]"
   ]);
   hydrate(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `, [
-    testCharacter2Id, testUserId, testCharacter2Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, testScene1Id, '1', '{"main":0}', '{}', '0', '["1"]', "0", null
+    testCharacter2Id, testUserId, testCharacter2Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', '{"main":0}', '{}', '0', '["1"]', "0", null, "[]"
   ]);
   hydrate(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `, [
-    testCharacter3Id, testUserId, testCharacter3Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, testScene1Id, '1', '{"main":0}', '{}', '0', '["1"]', "0", null
+    testCharacter3Id, testUserId, testCharacter3Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', '{"main":0}', '{}', '0', '["1"]', "0", null, "[]"
   ]);
 })();

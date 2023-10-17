@@ -5,6 +5,7 @@ import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { ItemIds } from '../items/items';
+import { NPC } from '../npcs/npcs';
 import { HandlerOptions } from '../server';
 
 export type Scene = {
@@ -14,6 +15,7 @@ export type Scene = {
   horseAllowed: boolean;
   publicInventory: ItemIds[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
+  getSceneNpcs?: () => Map<string, NPC[]>;
 };
 
 export const scenes: Map<string, Scene> = new Map<string, Scene>();
@@ -33,6 +35,8 @@ export enum SceneIds {
   PARLIAMENT_ALCHEMY_SHOP = "12",
   PARLIAMENT_SILVERSMITH = "13",
   PARLIAMENT_DECORATIVE_ARMORY = "14",
+  PARLIAMENT_NORTH_PROMENADE = "15",
+  PARLIAMENT_MARKET_INN = "16",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
@@ -49,6 +53,8 @@ import('./parliament-southwest-market').then(scene => scenes.set(scene.id, scene
 import('./parliament-alchemy-shop').then(scene => scenes.set(scene.id, scene));
 import('./parliament-silversmith').then(scene => scenes.set(scene.id, scene));
 import('./parliament-decorative-armory').then(scene => scenes.set(scene.id, scene));
+import('./parliament-north-promenade').then(scene => scenes.set(scene.id, scene));
+import('./parliament-market-inn').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 

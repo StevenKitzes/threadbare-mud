@@ -48,6 +48,7 @@ statements.push(db.prepare(`CREATE TABLE IF NOT EXISTS characters (
   offhand TEXT,
   xp INTEGER NOT NULL,
   horse TEXT,
+  faction_anger TEXT NOT NULL,
   
   FOREIGN KEY (user_id) REFERENCES users (id)
 );`));

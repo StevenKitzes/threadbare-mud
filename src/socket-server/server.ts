@@ -1,4 +1,4 @@
-import { Character, GameAction, GameText } from '../types';
+import { Character, CharacterUpdateOpts, Faction, FactionAnger, GameAction, GameText } from '../types';
 import express from 'express';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
@@ -8,11 +8,8 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local'});
 dotenv.config({ override: true });
 
-import { accountHasActiveCharacter, readActiveCharacterBySession } from '../../sqlite/sqlite';
-import { handleCharacterCommand } from './character/character';
+import { accountHasActiveCharacter, readActiveCharacterBySession, writeCharacterData } from '../../sqlite/sqlite';
 
-import { Scene, scenes } from './scenes/scenes';
-import handleQuestsCommand from './quests/quests';
 import items, { Item } from './items/items';
 import { captureFrom } from '../utils/makeMatcher';
 import {
@@ -32,8 +29,11 @@ import {
 } from '../constants';
 import { generateEntitiesCsvs } from '../utils/generateEntitiesCsvs';
 import { initializeCharacter } from '../utils/initializeCharacter';
-import { handleHorseCommand } from './horse/horse';
 import { npcFactories } from './npcs/npcs';
+import handleQuestsCommand from './quests/quests';
+import handleCharacterCommand from './character/character';
+import { Scene, scenes } from './scenes/scenes';
+import { handleHorseCommand } from './horse/horse';
 
 generateEntitiesCsvs(items, npcFactories);
 
@@ -61,6 +61,27 @@ const characters: Map<string, Character> = new Map<string, Character>();
 
 function handleGameAction(handlerOptions: HandlerOptions): void {
   const { character, command, socket } = handlerOptions;
+
+  // un-anger forgiving factions
+  const characterUpdate: CharacterUpdateOpts = {};
+  characterUpdate.factionAnger = [
+    ...character.factionAnger,
+  ];
+  const forgiven: Faction[] = [];
+  for (let i = characterUpdate.factionAnger.length - 1; i >= 0; i--) {
+    const currentFactionAnger: FactionAnger = characterUpdate.factionAnger[i];
+    if (Date.now() >= currentFactionAnger.expiry) {
+      forgiven.push(currentFactionAnger.faction);
+      characterUpdate.factionAnger.splice(i, 1);
+    }
+  }
+  if (writeCharacterData(character.id, characterUpdate)) {
+    character.factionAnger = characterUpdate.factionAnger;
+    socket.emit('game-text', {
+      gameText: forgiven.map(f => `It took some time, but ${f} have forgiven you.`)
+    });
+  }
+
   // check if the player just needs a little help
   if (command === 'help') {
     socket.emit('game-text', {

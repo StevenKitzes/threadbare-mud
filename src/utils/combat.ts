@@ -1,17 +1,20 @@
 import { HandlerOptions } from "../socket-server/server";
 import { DamageType, Item, ItemTypes, items } from '../socket-server/items/items';
-import { ArmorType, NPC } from "../socket-server/npcs/npcs";
+import { ArmorType, NPC, NpcIds } from "../socket-server/npcs/npcs";
 import getEmitters from "./emitHelper";
 import { writeCharacterData } from "../../sqlite/sqlite";
-import { scenes } from "../socket-server/scenes/scenes";
+import { Scene, scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
 import characterHealthText from "./characterHealthText";
 import { xpAmountString } from "./leveling";
 import { OptsType } from "./getGameTextObject";
 
 import research from "./research";
+import { Character, CharacterUpdateOpts, Faction, FactionAnger } from "../types";
 
-const COMBAT_TIMER: number = 2000;
+const COMBAT_TIMER: number = 1900;
+const COMBAT_RANDOMIZATION: number = 200;
+const FACTION_ANGER_DURATION: number = 300000; // five minutes
 
 function npcReady(
   npc: NPC,
@@ -44,10 +47,48 @@ function npcReady(
   return true;
 }
 
+function fightAllInSceneExcept(
+  character: Character,
+  npcFaction: Faction,
+  npcId: NpcIds,
+  handlerOptions: HandlerOptions
+): void {
+  const combatScene: Scene | undefined = scenes.get(character.scene_id);
+  if (!combatScene || !combatScene.getSceneNpcs) return;
+  const npcs: NPC[] | undefined = combatScene.getSceneNpcs().get(character.id);
+  if (npcs === undefined) return;
+  
+  npcs.forEach(c => {
+    if (c.health && c.health > 0 && c.faction === npcFaction && c.id !== npcId) {
+      c.handleNpcCommand({
+        ...handlerOptions,
+        command: `fight ${c.keywords[0]}`
+      });
+    }
+  });
+}
+
 export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   const { character, socket } = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   const combatScene: string = character.scene_id;
+
+  if (npc.faction) {
+    // if character has not already angered this faction
+    if (!character.factionAnger.find(fa => fa.faction === npc.faction)) {
+      const characterUpdate: CharacterUpdateOpts = {};
+      characterUpdate.factionAnger = [
+        ...character.factionAnger,
+        { faction: npc.faction, expiry: Date.now() + FACTION_ANGER_DURATION } as FactionAnger
+      ];
+      if (writeCharacterData(character.id, characterUpdate)) {
+        character.factionAnger = characterUpdate.factionAnger;
+        emitOthers(`${character.name} has enraged ${npc.faction}!`);
+        emitSelf(`=You have enraged {${npc.faction}} and they will now +attack you on sight+!=`);
+        fightAllInSceneExcept(character, npc.faction, npc.id, handlerOptions);
+      }
+    }
+  }
   
   // make sure this NPC has all the requisite stats to even enter combat
   if (!npcReady(npc, emitSelf)) return;
@@ -380,7 +421,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       characterHealthText(character),
       `= - = - = - = - = - =`
     ]);
-  }, COMBAT_TIMER));
+  }, Math.ceil(Math.random() * COMBAT_RANDOMIZATION) + COMBAT_TIMER));
 }
 
 export default startCombat;

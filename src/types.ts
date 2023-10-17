@@ -11,17 +11,17 @@ export type Character = {
   id: string;
   user_id: string;
   name: string;
-  job: string | null,
-  health: number,
-  health_max: number,
-  light_attack: number,
-  heavy_attack: number,
-  ranged_attack: number,
-  agility: number,
-  strength: number,
-  savvy: number,
+  job: string | null;
+  health: number;
+  health_max: number;
+  light_attack: number;
+  heavy_attack: number;
+  ranged_attack: number;
+  agility: number;
+  strength: number;
+  savvy: number;
   scene_id: SceneIds;
-  checkpoint_id: SceneIds,
+  checkpoint_id: SceneIds;
   active: number;
   stories: Stories;       // kvp object - key is story name, value is integer denoting progress
   scene_states: any;      // kvp object - key is scene id enum, value is a state defined by that scene
@@ -36,6 +36,7 @@ export type Character = {
   offhand: ItemIds | null;
   xp: number;
   horse: Horse | null;
+  factionAnger: FactionAnger[];
 
   getLightAttack: (() => number) | null,
   getHeavyAttack: (() => number) | null,
@@ -106,7 +107,11 @@ export enum SceneSentiment {
   favorSkyguard,
   favorSpymasters,
   favorWeavers
-}
+};
+
+export enum Faction {
+  PARLIAMENT_PEACEKEEPER = 'the Parliament city guard',
+};
 
 // App type definitions
 
@@ -117,16 +122,17 @@ export type ApiResponse = {
 };
 
 export type CharacterUpdateOpts = {
-  job?: string,
-  health?: number,
-  health_max?: number,
-  light_attack?: number,
-  heavy_attack?: number,
-  ranged_attack?: number,
-  agility?: number,
-  strength?: number,
-  savvy?: number,
-  scene_id?: SceneIds,
+  job?: string;
+  health?: number;
+  health_max?: number;
+  light_attack?: number;
+  heavy_attack?: number;
+  ranged_attack?: number;
+  agility?: number;
+  strength?: number;
+  savvy?: number;
+  scene_id?: SceneIds;
+  checkpoint_id?: SceneIds;
   stories?: Stories;
   scene_states?: any;
   money?: number;
@@ -140,6 +146,7 @@ export type CharacterUpdateOpts = {
   offhand?: ItemIds;
   xp?: number;
   horse?: Horse;
+  factionAnger?: FactionAnger[];
   temporaryEffects?: TemporaryEffect[];
 };
 
@@ -169,6 +176,11 @@ export enum EffectStat {
   dodge,
   armor,
 };
+
+export type FactionAnger = {
+  faction: Faction;
+  expiry: number;
+}
 
 export type GameAction = {
   token: string;

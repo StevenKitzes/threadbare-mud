@@ -1,6 +1,5 @@
-import { REGEX_BUY_ALIASES } from "../../constants";
-import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
-import { Character, CharacterUpdateOpts } from "../../types";
+import { makeMatcher } from "../../utils/makeMatcher";
+import { Character, CharacterUpdateOpts, Faction } from "../../types";
 import { OptsType } from "../../utils/getGameTextObject";
 import { Item, ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
@@ -13,6 +12,7 @@ export type NPC = {
   keywords: string[];
   regexAliases: string;
   
+  faction?: Faction;
   attackDescription?: string;
   cashLoot?: number;
   itemLoot?: ItemIds[];
@@ -65,6 +65,11 @@ export enum NpcIds {
   ALCHEMIST_GNARLED_BEYOND_HIS_YEARS = "11",
   CIVILIZED_SILVERSMITH = "12",
   PARLIAMENTARY_DECORATIVE_SMITH = "13",
+  GRUFF_INNKEEPER = "14",
+  SNEERING_PEACEKEEPER = "15",
+  SCOWLING_PEACEKEEPER = "16",
+  GLOWERING_PEACEKEEPER = "17",
+  PEACEKEEPER_CAPTAIN = "18",
 }
 
 import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
@@ -80,6 +85,11 @@ import('./leather-worker').then(npc => npcFactories.set(NpcIds.LEATHER_WORKER, n
 import('./alchemist-gnarled-beyond-his-years').then(npc => npcFactories.set(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS, npc.make));
 import('./civilized-silversmith').then(npc => npcFactories.set(NpcIds.CIVILIZED_SILVERSMITH, npc.make));
 import('./parliamentary-decorative-smith').then(npc => npcFactories.set(NpcIds.PARLIAMENTARY_DECORATIVE_SMITH, npc.make));
+import('./gruff-innkeeper').then(npc => npcFactories.set(NpcIds.GRUFF_INNKEEPER, npc.make));
+import('./sneering-peacekeeper').then(npc => npcFactories.set(NpcIds.SNEERING_PEACEKEEPER, npc.make));
+import('./scowling-peacekeeper').then(npc => npcFactories.set(NpcIds.SCOWLING_PEACEKEEPER, npc.make));
+import('./glowering-peacekeeper').then(npc => npcFactories.set(NpcIds.GLOWERING_PEACEKEEPER, npc.make));
+import('./peacekeeper-captain').then(npc => npcFactories.set(NpcIds.PEACEKEEPER_CAPTAIN, npc.make));
 
 export function look(
   emitOthers: (text: string | string[], opts?: OptsType) => void,

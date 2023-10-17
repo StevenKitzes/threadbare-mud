@@ -1,18 +1,20 @@
+import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
-import { REGEX_LOOK_ALIASES } from '../../constants';
 import { makeMatcher } from '../../utils/makeMatcher';
+import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { firstCharToUpper } from '../../utils/firstCharToUpper';
 
-const id: SceneIds = SceneIds.NORTH_OF_AUDRICS_TOWER;
-const title: string = "North of Audric's Tower";
+const id: SceneIds = SceneIds.PARLIAMENT_NORTH_PROMENADE;
+const title: string = "Parliament Northern Promenade";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
@@ -29,13 +31,30 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.SMALL_RAT)() ]);
+      characterNpcs.set(character.id, [
+        npcFactories.get(NpcIds.SNEERING_PEACEKEEPER)(),
+        npcFactories.get(NpcIds.SCOWLING_PEACEKEEPER)(),
+        npcFactories.get(NpcIds.PEACEKEEPER_CAPTAIN)(),
+        npcFactories.get(NpcIds.GLOWERING_PEACEKEEPER)(),
+      ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
         if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
       })
     }
+
+    // Angered faction enemies attack!
+    characterNpcs.get(character.id).forEach(c => {
+      if (c.health > 0 && character.factionAnger.find(fa => fa.faction === c.faction)) {
+        emitOthers(`${firstCharToUpper(c.name)} remembers ${name} as an enemy of ${c.faction} and attacks!`);
+        emitSelf(`${firstCharToUpper(c.name)} {recognizes you} as an enemy of ${c.faction} and =attacks you=!`);
+        c.handleNpcCommand({
+          ...handlerOptions,
+          command: `fight ${c.keywords[0]}`
+        });
+      }
+    });
 
     return handleSceneCommand({
       ...handlerOptions,
@@ -48,12 +67,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${character.name} looks around.`);
+    emitOthers(`${name} looks around at the promenade.`);
 
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("The crowd thins a bit here, north of Audric's tower.  The front of Audric's tower lies [east] of here, and there you can hear the bustle of a thriving marketplace.  Here, though, fewer people venture, as there is less to do, and some of the city's cracks show through its veneer.  There is some trash blown up against the buildings by the wind, and you can see evidence of rodents.  To the south, along the western flank of Audric's tower, you can see a quiet [alley].");
+    actorText.push(`This part of the promenade is free of store fronts and market stalls.  Folk stroll about or relax in the shade of trees on benches.  Peacekeepers, the city guard of Parliament, pass by on occasion.  To the north lies an inn and tavern with a sign over the door reading The [Parliament Market Inn].  To the [south], a beautiful, open square spreads before you.  To the [east] and [west], the marketplace sprawls onward.`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -67,20 +86,21 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
+  // normal travel, concise
   if (navigate(
     handlerOptions,
-    SceneIds.OUTSIDE_AUDRICS_TOWER,
-    'e|east|market|marketplace',
+    SceneIds.PARLIAMENT_NORTHWEST_MARKET,
+    'w|west',
     emitOthers,
-    `${character.name} heads east.`,
+    `${name} walks west, to another part of the market.`,
   )) return true;
 
   if (navigate(
     handlerOptions,
-    SceneIds.WEST_OF_AUDRICS_TOWER,
-    's|south|alley',
+    SceneIds.PARLIAMENT_MARKET_INN,
+    'n|north|inn|market inn|parliament market inn',
     emitOthers,
-    `${character.name} heads into a quiet alley.`,
+    `${name} steps into the Parliament Market Inn to the north.`,
   )) return true;
 
   return false;

@@ -2,7 +2,7 @@ import { Statement } from 'better-sqlite3';
 
 const db = require('./sqlite-get-db.ts');
 
-import { Character, CharacterUpdateOpts, Stories, User } from '../src/types';
+import { Character, CharacterUpdateOpts, FactionAnger, Horse, Stories, User } from '../src/types';
 import { SceneIds } from '../src/socket-server/scenes/scenes';
 import { ItemIds } from '../src/socket-server/items/items';
 import jStr from '../src/utils/jStr';
@@ -29,6 +29,7 @@ type CharacterDBIntermediary = {
   inventory: string;
   xp: number;
   horse: string | null;
+  faction_anger: string;
   // worn items
   headgear: string | null;
   armor: string | null;
@@ -55,8 +56,9 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
     scene_states: JSON.parse(intermediary.scene_states),
     inventory: JSON.parse(intermediary.inventory),
     horse: intermediary.horse !== null ? JSON.parse(intermediary.horse) : null,
+    factionAnger: JSON.parse(intermediary.faction_anger),
 
-    getLightAttack: null,
+     getLightAttack: null,
     getHeavyAttack: null,
     getRangedAttack: null,
     getAgility: null,
@@ -107,6 +109,8 @@ export type Database = {
     weapon?: ItemIds;
     offhand?: ItemIds;
     xp?: number;
+    horse?: Horse;
+    factionAnger?: FactionAnger[];
   }) => boolean;
   writeCharacterInventory: (charId: string, inventory: ItemIds[]) => boolean;
   writeCharacterSceneStates: (charId: string, sceneStates: any) => boolean;
@@ -363,6 +367,10 @@ export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): b
       columnAssignments.push("horse = ?");
       values.push(jStr(opts.horse));
     }
+    if (opts.factionAnger !== undefined) {
+      columnAssignments.push("faction_anger = ?");
+      values.push(jStr(opts.factionAnger));
+    }
 
     db.prepare(`${updatePrefix}${columnAssignments.join(', ')}${updateSuffix}`)
       .run(...values, charId);
@@ -387,8 +395,8 @@ export const writeCharacterStory = (charId: string, stories: Stories): boolean =
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
     statement: db.prepare(`
-    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse)
-      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', '{\"main\": 0}', '{}', 0, '[]', 0, null);
+    INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
+      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', '{\"main\": 0}', '{}', 0, '[]', 0, null, '[]');
     `),
     runValues: [charId, userId, name]
   };

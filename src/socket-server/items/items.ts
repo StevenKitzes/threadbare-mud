@@ -42,9 +42,9 @@ export enum ItemTypes {
 };
 
 export enum DamageType {
-  slashing,
-  piercing,
-  bashing
+  slashing = 1,
+  piercing = 2,
+  bashing = 3
 }
 
 export enum ItemIds {
@@ -101,6 +101,10 @@ export enum ItemIds {
   PARLIAMENT_GREAVES = "51",
   PARLIAMENT_BOOTS = "52",
   PARLIAMENT_DECORATIVE_SWORD = "53",
+  BOTTLE_OF_BEER = "54",
+  BOTTLE_OF_GRAIN_SPIRIT = "55",
+  BOTTLE_OF_CHEAP_GRAIN_SPIRIT = "56",
+  PEACEKEEPER_LONGSWORD = "57",
 }
 
 { // imports
@@ -157,6 +161,10 @@ export enum ItemIds {
   import('./parliament-greaves').then(item => items.set(item.id, item));
   import('./parliament-boots').then(item => items.set(item.id, item));
   import('./parliament-decorative-sword').then(item => items.set(item.id, item));
+  import('./cool-beer').then(item => items.set(item.id, item));
+  import('./bottle-of-grain-spirit').then(item => items.set(item.id, item));
+  import('./bottle-of-cheap-grain-spirit').then(item => items.set(item.id, item));
+  import('./peacekeeper-longsword').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {
@@ -168,7 +176,7 @@ export type ConsumeItemOpts = {
   extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
   extraEffectsOpts?: any;
   healAmount?: number;
-  temporaryEffects?: TemporaryEffect[];
+  consumeEffects?: TemporaryEffect[];
 }
 
 export function consumeItem({
@@ -180,7 +188,7 @@ export function consumeItem({
   extraEffects,
   extraEffectsOpts,
   healAmount,
-  temporaryEffects,
+  consumeEffects,
 }: ConsumeItemOpts): boolean {
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
@@ -193,9 +201,9 @@ export function consumeItem({
     characterUpdate.health = Math.min(character.health_max, character.health + healAmount);
     characterUpdate.inventory = [ ...character.inventory ];
     characterUpdate.inventory.splice(character.inventory.indexOf(itemId), 1);
-    if (temporaryEffects !== undefined) {
+    if (consumeEffects !== undefined) {
       characterUpdate.temporaryEffects = [];
-      temporaryEffects.forEach((effect: TemporaryEffect) => {
+      consumeEffects.forEach((effect: TemporaryEffect) => {
         characterUpdate.temporaryEffects.push(effect);
         emitSelf(`You feel ${effect.name} beginning to take effect...`);
         setTimeout(() => {
@@ -206,7 +214,7 @@ export function consumeItem({
               character.temporaryEffects[i].stat === effect.stat
             ) {
               character.temporaryEffects.splice(i, 1);
-              emitSelf(`You feel the effects of ${effect.name} are wearing off...`);
+              emitSelf(`You sense ${effect.name} wearing off...`);
             }
           }
         }, effect.duration);

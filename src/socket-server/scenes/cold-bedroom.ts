@@ -67,9 +67,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (
     command.match(makeMatcher(REGEX_REST_ALIASES)) &&
-    writeCharacterData(character.id, { health: character.health_max })
+    writeCharacterData(character.id, { health: character.health_max, checkpoint_id: id })
   ) {
     character.health = character.health_max;
+    character.checkpoint_id = id;
     emitOthers(`${character.name} rests for a while on a bed with satin sheets.`);
     emitSelf(`You rest a while on a bed with satin sheets, and feel rejuvenated.`);
     return true;
