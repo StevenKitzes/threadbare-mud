@@ -9,6 +9,7 @@ import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { handleAggro } from '../../utils/combat';
 
 const id: SceneIds = SceneIds.WEST_OF_AUDRICS_TOWER;
 const title: string = "A Quiet Alley West of Audric's Tower";
@@ -39,15 +40,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
-    // Aggro enemies attack!
-    characterNpcs.get(character.id).forEach(c => {
-      if (c.health > 0 && c.aggro) {
-        c.handleNpcCommand({
-          ...handlerOptions,
-          command: `fight ${c.keywords[0]}`
-        });
-      }
-    });
+    handleAggro(characterNpcs, character, handlerOptions);
 
     return handleSceneCommand({
       ...handlerOptions,

@@ -70,6 +70,7 @@ export enum NpcIds {
   SCOWLING_PEACEKEEPER = "16",
   GLOWERING_PEACEKEEPER = "17",
   PEACEKEEPER_CAPTAIN = "18",
+  HUNTING_BOWYER = "19",
 }
 
 import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
@@ -90,6 +91,7 @@ import('./sneering-peacekeeper').then(npc => npcFactories.set(NpcIds.SNEERING_PE
 import('./scowling-peacekeeper').then(npc => npcFactories.set(NpcIds.SCOWLING_PEACEKEEPER, npc.make));
 import('./glowering-peacekeeper').then(npc => npcFactories.set(NpcIds.GLOWERING_PEACEKEEPER, npc.make));
 import('./peacekeeper-captain').then(npc => npcFactories.set(NpcIds.PEACEKEEPER_CAPTAIN, npc.make));
+import('./hunting-bowyer').then(npc => npcFactories.set(NpcIds.HUNTING_BOWYER, npc.make));
 
 export function look(
   emitOthers: (text: string | string[], opts?: OptsType) => void,

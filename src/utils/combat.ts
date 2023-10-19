@@ -11,6 +11,7 @@ import { OptsType } from "./getGameTextObject";
 
 import research from "./research";
 import { Character, CharacterUpdateOpts, Faction, FactionAnger } from "../types";
+import { firstCharToUpper } from "./firstCharToUpper";
 
 const COMBAT_TIMER: number = 1900;
 const COMBAT_RANDOMIZATION: number = 200;
@@ -45,6 +46,42 @@ function npcReady(
   }
 
   return true;
+}
+
+export function handleAggro(
+  characterNpcs: Map<string, NPC[]>,
+  character: Character,
+  handlerOptions: HandlerOptions
+): void {
+  // Aggro enemies attack!
+  characterNpcs.get(character.id)?.forEach(c => {
+    if (c.health && c.health > 0 && c.aggro) {
+      c.handleNpcCommand({
+        ...handlerOptions,
+        command: `fight ${c.keywords[0]}`
+      });
+    }
+  });
+}
+
+export function handleFactionAggro(
+  characterNpcs: Map<string, NPC[]>,
+  character: Character,
+  handlerOptions: HandlerOptions,
+  emitOthers: (text: string | string[], opts?: OptsType) => void,
+  emitSelf: (text: string | string[], opts?: OptsType) => void
+): void {
+  // Angered faction enemies attack!
+  characterNpcs.get(character.id)?.forEach(c => {
+    if (c.health && c.health > 0 && character.factionAnger.find(fa => fa.faction === c.faction)) {
+      emitOthers(`${firstCharToUpper(c.name)} remembers ${name} as an enemy of ${c.faction} and attacks!`);
+      emitSelf(`${firstCharToUpper(c.name)} {recognizes you} as an enemy of ${c.faction} and =attacks you=!`);
+      c.handleNpcCommand({
+        ...handlerOptions,
+        command: `fight ${c.keywords[0]}`
+      });
+    }
+  });
 }
 
 function fightAllInSceneExcept(
@@ -170,6 +207,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     let defense = 0;
     let defenseWithDodge = 0;
     const actorText: string[] = [];
+    const otherText: string[] = [];
 
     // Handle weapon attributes
     const weapon: Item | undefined = items.get(character.weapon || '');
@@ -242,63 +280,72 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
     // Adjust defense based on NPC stats
     defense += npc.armor;
-    defense = Math.random() * defense;
-    defenseWithDodge = defense + (Math.random() * ((npc.agility + npc.savvy) / 2));
 
-    // Final values
-    attack = Math.random() * attack;
-    damage = Math.ceil(Math.random() * damage);
-    research.playerAttack.push([attack, damage, defense, defenseWithDodge].join(';'));
-
-    // Handle result and output
-    const item: Item | undefined = items.get(character.weapon || '');
-    const weaponName: string = item === undefined ? 'an unarmed strike' : item.title;
-    if (attack > defenseWithDodge) {
-      // handle hit
-      npc.setHealth(npc.health - damage);
-      if (damage < npc.healthMax * 0.1) {
-        actorText.push(`+Your attack hits+, but ${weaponName} only does negligible damage.`);
-        emitOthers(`${character.name} does negligible damage to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.2) {
-        actorText.push(`+Your attack hits+, inflicting light damage with ${weaponName}.`);
-        emitOthers(`${character.name} does light damage to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.3) {
-        actorText.push(`+Your attack hits+, doing noticeable harm with ${weaponName}.`);
-        emitOthers(`${character.name} does noticeable harm to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.4) {
-        actorText.push(`+Your attack hits+, causing significant damage with ${weaponName}.`);
-        emitOthers(`${character.name} causes significant damage to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.5) {
-        actorText.push(`+Your attack hits+ well enough to cause lasting injury with ${weaponName}.`);
-        emitOthers(`${character.name} causes lasting injury to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.6) {
-        actorText.push(`+Your attack hits+ hard enough with ${weaponName} to put ${npc.name} off balance.`);
-        emitOthers(`${character.name} hits hard enough with ${weaponName} to put ${npc.name} off balance.`);
-      } else if (damage < npc.healthMax * 0.7) {
-        actorText.push(`+Your attack hits+, doing substantial damage with ${weaponName}.`);
-        emitOthers(`${character.name} does substantial damage to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.8) {
-        actorText.push(`+Your attack hits+, doing heavy damage and staggering ${npc.name} with ${weaponName}.`);
-        emitOthers(`${character.name} does heavy damage and staggers ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax * 0.9) {
-        actorText.push(`+Your attack hits+, causing massive damage with ${weaponName}.`);
-        emitOthers(`${character.name} causes massive damage to ${npc.name} with ${weaponName}.`);
-      } else if (damage < npc.healthMax) {
-        actorText.push(`+Your attack hits+ almost hard enough with ${weaponName} to kill ${npc.name} with a single strike.`);
-        emitOthers(`${character.name} hits almost hard enough with ${weaponName} to kill ${npc.name} in one strike.`);
-      } else {
-        actorText.push(`+Your attack hits+ with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
-        emitOthers(`${character.name} hits with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
-      }
-    } else if (attack > defense) {
-      // handle dodge
-      actorText.push(`Your attack with ${weaponName} goes wide as {${npc.name} evades}.`);
-      emitOthers(`${character.name} attacks with ${weaponName} but ${npc.name} evades.`);
-    } else {
-      // handle miss
-      actorText.push(`Your attack with ${weaponName} {misses}.`);
-      emitOthers(`${character.name} attacks ${npc.name} with ${weaponName} but misses the mark.`);
+    // handle multiple attacks for dextrous characters with light weapons
+    let attacks: number = 1;
+    if (weapon === undefined || weapon.type === ItemTypes.lightWeapon) {
+      attacks = Math.floor(Math.random() * ((character.getAgility() + character.getLightAttack()) / 10)) + 1;
     }
+    for (let i = 0; i < attacks; i++) {
+      // Final values
+      defense = Math.random() * defense;
+      defenseWithDodge = defense + (Math.random() * ((npc.agility + npc.savvy) / 2));
+
+      attack = Math.random() * attack;
+      damage = Math.ceil(Math.random() * damage);
+      research.playerAttack.push([attack, damage, defense, defenseWithDodge].join(';'));
+
+      // Handle result and output
+      const item: Item | undefined = items.get(character.weapon || '');
+      const weaponName: string = item === undefined ? 'an unarmed strike' : item.title;
+      if (attack > defenseWithDodge) {
+        // handle hit
+        npc.setHealth(npc.health - damage);
+        if (damage < npc.healthMax * 0.1) {
+          actorText.push(`+Your attack hits+, but ${weaponName} only does negligible damage.`);
+          otherText.push(`${character.name} does negligible damage to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.2) {
+          actorText.push(`+Your attack hits+, inflicting light damage with ${weaponName}.`);
+          otherText.push(`${character.name} does light damage to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.3) {
+          actorText.push(`+Your attack hits+, doing noticeable harm with ${weaponName}.`);
+          otherText.push(`${character.name} does noticeable harm to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.4) {
+          actorText.push(`+Your attack hits+, causing significant damage with ${weaponName}.`);
+          otherText.push(`${character.name} causes significant damage to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.5) {
+          actorText.push(`+Your attack hits+ well enough to cause lasting injury with ${weaponName}.`);
+          otherText.push(`${character.name} causes lasting injury to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.6) {
+          actorText.push(`+Your attack hits+ hard enough with ${weaponName} to put ${npc.name} off balance.`);
+          otherText.push(`${character.name} hits hard enough with ${weaponName} to put ${npc.name} off balance.`);
+        } else if (damage < npc.healthMax * 0.7) {
+          actorText.push(`+Your attack hits+, doing substantial damage with ${weaponName}.`);
+          otherText.push(`${character.name} does substantial damage to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.8) {
+          actorText.push(`+Your attack hits+, doing heavy damage and staggering ${npc.name} with ${weaponName}.`);
+          otherText.push(`${character.name} does heavy damage and staggers ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax * 0.9) {
+          actorText.push(`+Your attack hits+, causing massive damage with ${weaponName}.`);
+          otherText.push(`${character.name} causes massive damage to ${npc.name} with ${weaponName}.`);
+        } else if (damage < npc.healthMax) {
+          actorText.push(`+Your attack hits+ almost hard enough with ${weaponName} to kill ${npc.name} with a single strike.`);
+          otherText.push(`${character.name} hits almost hard enough with ${weaponName} to kill ${npc.name} in one strike.`);
+        } else {
+          actorText.push(`+Your attack hits+ with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
+          otherText.push(`${character.name} hits with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
+        }
+      } else if (attack > defense) {
+        // handle dodge
+        actorText.push(`Your attack with ${weaponName} goes wide as {${npc.name} evades}.`);
+        otherText.push(`${character.name} attacks with ${weaponName} but ${npc.name} evades.`);
+      } else {
+        // handle miss
+        actorText.push(`Your attack with ${weaponName} {misses}.`);
+        otherText.push(`${character.name} attacks ${npc.name} with ${weaponName} but misses the mark.`);
+      }
+    }
+    emitOthers(otherText);
     emitSelf(actorText);
   }
 

@@ -27,7 +27,7 @@ modest saddlebags;saddlebags;30;15;;;;;
 leather saddlebags;saddlebags;200;40;;;;;
 reinforced saddlebags;saddlebags;500;100;;;;;
 a standard broadsword;heavyWeapon;150;4;;15;1;;
-a standard rapier;lightWeapon;120;3;;10;2;;
+a standard rapier;lightWeapon;120;3;;7;2;;
 little throwing daggers;rangedWeapon;100;4;;10;2;;
 a standard mace;heavyWeapon;120;5;;15;3;;
 a light leather cap;headgear;30;2;2;;;;
@@ -56,3 +56,6 @@ a bottle of beer;consumable;5;1;;;;;10
 a bottle of grain spirit;consumable;20;2;;;;;5
 a bottle of cheap grain spirit;consumable;10;2;;;;;5
 a Parliamentary peacekeeper's longsword;lightWeapon;90;3;;10;1;;
+a cheap bow for basic hunting;rangedWeapon;80;3;;10;2;;
+a basic hunting bow;rangedWeapon;150;3;;15;2;;
+a hunting crossbow;rangedWeapon;250;5;;25;2;;

@@ -50,27 +50,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
-    // Aggro enemies attack!
-    characterNpcs.get(character.id).forEach(c => {
-      if (c.health > 0 && c.aggro) {
-        c.handleNpcCommand({
-          ...handlerOptions,
-          command: `fight ${c.keywords[0]}`
-        });
-      }
-    });
-
-    // Angered faction enemies attack!
-    characterNpcs.get(character.id).forEach(c => {
-      if (c.health > 0 && character.factionAnger.find(fa => fa.faction === c.faction)) {
-        emitOthers(`${firstCharToUpper(c.name)} remembers ${name} as an enemy of ${c.faction} and attacks!`);
-        emitSelf(`${firstCharToUpper(c.name)} recognizes you as an enemy of ${c.faction} and attacks you!`);
-        c.handleNpcCommand({
-          ...handlerOptions,
-          command: `fight ${c.keywords[0]}`
-        });
-      }
-    });
+    handleAggro(characterNpcs, character, handlerOptions);
+    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
 
     return handleSceneCommand({
       ...handlerOptions,

@@ -11,6 +11,7 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { firstCharToUpper } from '../../utils/firstCharToUpper';
+import { handleFactionAggro } from '../../utils/combat';
 
 const id: SceneIds = SceneIds.PARLIAMENT_WEST_MARKET;
 const title: string = "Parliament Western Marketplace";
@@ -43,19 +44,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
-    // Angered faction enemies attack!
-    setTimeout(() => {
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.health > 0 && character.factionAnger.find(fa => fa.faction === c.faction)) {
-          emitOthers(`${firstCharToUpper(c.name)} remembers ${name} as an enemy of ${c.faction} and attacks!`);
-          emitSelf(`${firstCharToUpper(c.name)} {recognizes you} as an enemy of ${c.faction} and =attacks you=!`);
-          c.handleNpcCommand({
-            ...handlerOptions,
-            command: `fight ${c.keywords[0]}`
-          });
-        }
-      });
-    }, 250);
+    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
 
     return handleSceneCommand({
       ...handlerOptions,

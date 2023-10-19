@@ -105,6 +105,9 @@ export enum ItemIds {
   BOTTLE_OF_GRAIN_SPIRIT = "55",
   BOTTLE_OF_CHEAP_GRAIN_SPIRIT = "56",
   PEACEKEEPER_LONGSWORD = "57",
+  BUDGET_HUNTING_BOW = "58",
+  HUNTING_BOW = "59",
+  HUNTING_CROSSBOW = "60",
 }
 
 { // imports
@@ -165,6 +168,9 @@ export enum ItemIds {
   import('./bottle-of-grain-spirit').then(item => items.set(item.id, item));
   import('./bottle-of-cheap-grain-spirit').then(item => items.set(item.id, item));
   import('./peacekeeper-longsword').then(item => items.set(item.id, item));
+  import('./budget-hunting-bow').then(item => items.set(item.id, item));
+  import('./hunting-bow').then(item => items.set(item.id, item));
+  import('./hunting-crossbow').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {

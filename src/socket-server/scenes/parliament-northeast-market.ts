@@ -1,21 +1,18 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, navigate, SceneIds } from './scenes';
+import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
-import { firstCharToUpper } from '../../utils/firstCharToUpper';
-import { handleFactionAggro } from '../../utils/combat';
 
-const id: SceneIds = SceneIds.PARLIAMENT_NORTH_PROMENADE;
-const title: string = "Parliament Northern Promenade";
+const id: SceneIds = SceneIds.PARLIAMENT_NORTHEAST_MARKET;
+const title: string = "Parliament Northeastern Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
@@ -33,8 +30,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.SNEERING_PEACEKEEPER)(),
-        npcFactories.get(NpcIds.SCOWLING_PEACEKEEPER)(),
+        npcFactories.get(NpcIds.HUNTING_BOWYER)()
       ]);
     } else {
       // Respawn logic
@@ -42,8 +38,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
       })
     }
-
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
 
     return handleSceneCommand({
       ...handlerOptions,
@@ -56,12 +50,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${name} looks around at the promenade.`);
+    emitOthers(`${name} looks around at the marketplace.`);
 
     const actorText: string[] = [title, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push(`This part of the promenade is free of store fronts and market stalls.  Folk stroll about or relax in the shade of trees on benches.  Peacekeepers, the city guard of Parliament, pass by on occasion.  To the north lies an inn and tavern with a sign over the door reading The [Parliament Market Inn].  To the [south], a beautiful, open square spreads before you.  To the [east] and [west], the marketplace sprawls onward.`);
+    actorText.push("Here lies the northeastern corner of Parliament's grand marketplace.  While bustling in its own way, this reach of the market is more quiet than the others.  Those who come here know what they seek, so merchant need do less shouting to attract attention.  To the [west] of you list the market's north promenade, and the [south] the marketplace sprawls onward.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -75,21 +69,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  // normal travel, concise
   if (navigate(
     handlerOptions,
-    SceneIds.PARLIAMENT_NORTHWEST_MARKET,
-    'w|west',
+    SceneIds.PARLIAMENT_NORTH_PROMENADE,
+    "w|west|north promenade|promenade",
     emitOthers,
-    `${name} walks west, to another part of the market.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_MARKET_INN,
-    'n|north|inn|market inn|parliament market inn',
-    emitOthers,
-    `${name} steps into the Parliament Market Inn to the north.`,
+    `${name} moves off west, toward the market's north promenade.`,
   )) return true;
 
   return false;

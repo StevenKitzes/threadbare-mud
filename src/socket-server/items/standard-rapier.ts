@@ -10,7 +10,7 @@ const value: number = 120;
 const weight: number = 3;
 
 // Optional
-const damageValue: number = 10;
+const damageValue: number = 7;
 
 export {
   id,
