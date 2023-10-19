@@ -86,6 +86,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (navigate(
     handlerOptions,
+    SceneIds.PARLIAMENT_NORTHEAST_MARKET,
+    'e|east',
+    emitOthers,
+    `${name} walks east, to another part of the market.`,
+  )) return true;
+
+  if (navigate(
+    handlerOptions,
     SceneIds.PARLIAMENT_MARKET_INN,
     'n|north|inn|market inn|parliament market inn',
     emitOthers,

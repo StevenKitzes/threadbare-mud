@@ -30,7 +30,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.HUNTING_BOWYER)()
+        npcFactories.get(NpcIds.HUNTING_BOWYER)(),
+        npcFactories.get(NpcIds.KITSCHY_ENCHANTMENT_VENDOR)(),
       ]);
     } else {
       // Respawn logic

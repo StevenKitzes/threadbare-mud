@@ -1,6 +1,6 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
-import { CharacterUpdateOpts, StatEffect, TemporaryEffect } from "../../types";
+import { CharacterUpdateOpts, EffectStat, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
@@ -108,6 +108,17 @@ export enum ItemIds {
   BUDGET_HUNTING_BOW = "58",
   HUNTING_BOW = "59",
   HUNTING_CROSSBOW = "60",
+  FLICKWRIST_BRACERS = "61",
+  STOUT_STANCE_BOOTS = "62",
+  EAGLE_EYE_SPECTACLES = "63",
+  QUICKSTEP_TROUSERS = "64",
+  STRONGSLEEVES_COAT = "65",
+  THINKING_CAP = "66",
+  FOESBANE_GLOVES = "67",
+  TRUESTRIKE_GLOVES = "68",
+  PROTECTION_CHARM = "69",
+  DEFTSTEP_BOOTS = "70",
+  SCALESKIN_JACKET = "71",
 }
 
 { // imports
@@ -171,6 +182,17 @@ export enum ItemIds {
   import('./budget-hunting-bow').then(item => items.set(item.id, item));
   import('./hunting-bow').then(item => items.set(item.id, item));
   import('./hunting-crossbow').then(item => items.set(item.id, item));
+  import('./flickwrist-bracers').then(item => items.set(item.id, item));
+  import('./stout-stance-boots').then(item => items.set(item.id, item));
+  import('./eagle-eye-spectacles').then(item => items.set(item.id, item));
+  import('./quickstep-trousers').then(item => items.set(item.id, item));
+  import('./strongsleeves-coat').then(item => items.set(item.id, item));
+  import('./thinking-cap').then(item => items.set(item.id, item));
+  import('./foesbane-gloves').then(item => items.set(item.id, item));
+  import('./truestrike-gloves').then(item => items.set(item.id, item));
+  import('./protection-charm').then(item => items.set(item.id, item));
+  import('./deftstep-boots').then(item => items.set(item.id, item));
+  import('./scaleskin-jacket').then(item => items.set(item.id, item));
 }
 
 export type ConsumeItemOpts = {
