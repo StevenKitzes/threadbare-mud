@@ -1,16 +1,19 @@
 import { EffectStat, StatEffect } from "../../types";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.HUNTING_BOW;
-const type: ItemTypes = ItemTypes.rangedWeapon;
-const title: string = "a basic hunting bow";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A [basic hunting bow], made of sound wood.  A capable enough piece of equipment that it may even hold its own on the battlefield, though it isn't intended for that purpose.";
 const keywords: string[] = ['bow', 'hunting bow', 'basic hunting bow'];
-const value: number = 150;
-const weight: number = 3;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const damageValue: number = 15;
-const damageType: DamageType = DamageType.piercing;
+const damageValue: number = csvData.damageValue;
+const damageType: DamageType = csvData.damageType;
 
 const statEffects: StatEffect[] = [
   {
@@ -23,6 +26,10 @@ const statEffects: StatEffect[] = [
   },
 ];
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -30,6 +37,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   damageValue,
   damageType,

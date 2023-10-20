@@ -1,15 +1,22 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.STYLISH_BOOTS;
-const type: ItemTypes = ItemTypes.footwear;
-const title: string = "a pair of stylish boots";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "These [stylish boots] feature premium leather and slightly raised heels.";
 const keywords: string[] = ['stylish boots', 'boots'];
-const value: number = 250;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
 // Optional
-const armorValue: number = 2;
+const armorValue: number = csvData.armorValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -18,6 +25,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue
 };

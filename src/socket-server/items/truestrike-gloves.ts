@@ -1,19 +1,26 @@
 import { EffectStat, StatEffect } from "../../types";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.TRUESTRIKE_GLOVES;
-const type: ItemTypes = ItemTypes.gloves;
-const title: string = 'Truestrike Gloves';
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A pair of black, leather [Truestrike Gloves], these are said to make it easier to strike an opponent in a fight.";
 const keywords: string[] = ['gloves', 'truestrike gloves', 'magic gloves'];
-const value: number = 1200;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const armorValue: number = 2;
+const armorValue: number = csvData.armorValue;
 const statEffects: StatEffect[] = [{
   stat: EffectStat.accuracy,
   amount: 1
 }];
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -22,6 +29,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
   statEffects

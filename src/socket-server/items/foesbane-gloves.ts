@@ -1,19 +1,26 @@
 import { EffectStat, StatEffect } from "../../types";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.FOESBANE_GLOVES;
-const type: ItemTypes = ItemTypes.gloves;
-const title: string = 'Foesbane Gloves';
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A pair of ambitiously named [Foesbane Gloves], made of stout leather and said to enable the wearer to fight more effectively.";
 const keywords: string[] = ['gloves', 'foesbane gloves', 'magic gloves'];
-const value: number = 1200;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const armorValue: number = 2;
+const armorValue: number = csvData.armorValue;
 const statEffects: StatEffect[] = [{
   stat: EffectStat.damage,
   amount: 1
 }];
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -22,6 +29,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
   statEffects

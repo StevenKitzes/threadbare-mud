@@ -1,15 +1,18 @@
 import { REGEX_EAT_ALIASES } from "../../constants";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
 import { HandlerOptions } from "../server";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes, consumeItem } from "./items";
 
 const id: ItemIds = ItemIds.CAKE;
-const type: ItemTypes = ItemTypes.consumable;
-const title: string = "a tasty cake";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A freshly baked cake, sweet and covered with little bits of fruit and a sugar glaze.";
 const keywords: string[] = ['cake', 'fruit cake', 'tart'];
-const value: number = 8;
-const weight: number = 1;
-const healAmount: number = 10;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
+const healAmount: number = csvData.healAmount;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -24,6 +27,10 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   return false;
 };
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -31,6 +38,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   handleItemCommand,
   healAmount

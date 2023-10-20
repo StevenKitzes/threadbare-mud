@@ -1,15 +1,18 @@
 import { REGEX_EAT_ALIASES } from "../../constants";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
 import { HandlerOptions } from "../server";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes, consumeItem } from "./items";
 
 const id: ItemIds = ItemIds.BREAD_LOAF;
-const type: ItemTypes = ItemTypes.consumable;
-const title: string = "a fresh loaf of bread";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A freshly baked loaf of bread, just firm enough and just fluffy enough, and it smells great.";
 const keywords: string[] = ['bread', 'bread loaf', 'loaf of bread'];
-const value: number = 5;
-const weight: number = 1;
-const healAmount: number = 15;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
+const healAmount: number = csvData.healAmount;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -24,6 +27,10 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   return false;
 };
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -31,6 +38,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   handleItemCommand,
   healAmount

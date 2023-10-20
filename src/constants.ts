@@ -1,5 +1,7 @@
 export const SESSION_TIMEOUT: number = 60 * 60 * 24 * 30;  // 30 days
 
+export const ITEM_VALUE_RANDOMIZER_TIMER: number = 1000 * 60 * 10;
+
 export const REGEX_BUY_ALIASES: string = 'buy|purchase|shop';
 export const REGEX_DRINK_ALIASES: string = 'use|consume|drink|quaff|gulp';
 export const REGEX_DROP_ALIASES: string = 'drop|leave|discard|huck|eject|jettison|abandon|dump|unload';

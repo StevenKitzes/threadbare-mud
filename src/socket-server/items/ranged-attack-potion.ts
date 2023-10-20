@@ -2,17 +2,20 @@ import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_DRINK_ALIASES } from "../../constants";
 import { CharacterUpdateOpts } from "../../types";
 import getEmitters from "../../utils/emitHelper";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.RANGED_ATTACK_POTION;
-const type: ItemTypes = ItemTypes.consumable;
-const title: string = "a bright, yellow potion";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A [bright yellow potion] in a cylindrical vial, emitting steam and glowing despite resting cool in your hand.";
 const keywords: string[] = ['bright yellow potion', 'yellow potion'];
-const value: number = 1000;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, character: {name}, command, socket} = handlerOptions;
@@ -46,6 +49,10 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   return false;
 };
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -53,6 +60,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   handleItemCommand,
 };

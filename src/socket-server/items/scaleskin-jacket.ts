@@ -1,19 +1,26 @@
 import { EffectStat, StatEffect } from "../../types";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.SCALESKIN_JACKET;
-const type: ItemTypes = ItemTypes.armor;
-const title: string = 'Scaleskin Jacket';
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A leather [Scaleskin Jacket], taking its name from the embossed reptile scale pattern over its surface.  It is said to grant more protection to the wearer than just the leather normally would.";
 const keywords: string[] = ['jacket', 'scaleskin jacket', 'magic jacket', 'leather jacket'];
-const value: number = 1500;
-const weight: number = 10;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const armorValue: number = 12;
+const armorValue: number = csvData.armorValue;
 const statEffects: StatEffect[] = [{
   stat: EffectStat.armor,
   amount: 1
 }];
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -22,6 +29,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
   statEffects

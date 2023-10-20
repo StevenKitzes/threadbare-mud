@@ -1,15 +1,22 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.ELEGANT_DOUBLET;
-const type: ItemTypes = ItemTypes.armor;
-const title: string = "an elegant doublet";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "This fitted, [elegant doublet] features black, silken sleeves and a bodice that is beautifully embroidered with a motif of golden foliage.";
 const keywords: string[] = ['doublet', 'elegant doublet'];
-const value: number = 250;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
 // Optional
-const armorValue: number = 1;
+const armorValue: number = csvData.armorValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -18,6 +25,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
 };

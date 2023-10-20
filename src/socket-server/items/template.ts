@@ -2,29 +2,35 @@
 
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.;
-const type: ItemTypes = ItemTypes.;
-const title: string = ;
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = ;
 const keywords: string[] = ;
-const value: number = ;
-const weight: number = ;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const armorValue: number = ;
-const damageValue: number = ;
-const damageType: DamageType = ;
-const hitBonus: number = ;
+const armorValue: number = csvData.armorValue;
+const damageValue: number = csvData.damageValue;
+const damageType: DamageType = csvData.damageType;
+const hitBonus: number = csvData.hitBonus;
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 };
 const quest: boolean = ;
-const healAmount: number = ;
+const healAmount: number = csvData.healAmount;
 
 const statEffects: StatEffect[] = ;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -33,6 +39,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
   damageValue,

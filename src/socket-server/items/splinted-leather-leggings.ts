@@ -1,14 +1,21 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.SPLINTED_LEATHER_LEGGINGS;
-const type: ItemTypes = ItemTypes.legwear;
-const title: string = "splinted leather leggings";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "This set of [splinted leather leggings] is composed of a tough, padded lining, covered by protective bands of hardened leather.";
 const keywords: string[] = ['splinted leather leggings', 'splinted leggings', 'leather leggings'];
-const value: number = 55;
-const weight: number = 10;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const armorValue: number = 5;
+const armorValue: number = csvData.armorValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -17,6 +24,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
 };

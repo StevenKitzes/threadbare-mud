@@ -1,15 +1,22 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.SILVER_DAGGER;
-const type: ItemTypes = ItemTypes.lightWeapon;
-const title: string = "a shining silver dagger";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A shining, [silver dagger], polished to gleam in the light.  A mark of prestige, while still demonstrating some bite to match any bark.";
 const keywords: string[] = ['silver dagger', 'shining dagger', 'shining silver dagger'];
-const value: number = 40;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const damageValue: number = 6;
+const damageValue: number = csvData.damageValue;
 const damageType: number = DamageType.piercing;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -18,6 +25,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   damageValue,
   damageType,

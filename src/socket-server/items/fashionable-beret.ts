@@ -1,15 +1,22 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.FASHIONABLE_BERET;
-const type: ItemTypes = ItemTypes.headgear;
-const title: string = "a fashionable beret";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "This [fashionable beret] is made of fine wool and has a round, flat crown.  It is stitched with accents of golden thread.";
 const keywords: string[] = ['beret', 'fashionable beret', 'hat'];
-const value: number = 100;
-const weight: number = 1;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
 // Optional
-const armorValue: number = 1;
+const armorValue: number = csvData.armorValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -18,6 +25,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue
 };

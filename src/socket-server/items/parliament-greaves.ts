@@ -1,14 +1,21 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.PARLIAMENT_GREAVES;
-const type: ItemTypes = ItemTypes.legwear;
-const title: string = "a set of Parliamentary greaves";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A fine set of [polished plate greaves] to protect the legs, etched with the livery of the Realm of Ixpanne.";
 const keywords: string[] = ['polished plate greaves', 'plate greaves', 'polished greaves'];
-const value: number = 2500;
-const weight: number = 25;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const armorValue: number = 25;
+const armorValue: number = csvData.armorValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -17,6 +24,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
 };

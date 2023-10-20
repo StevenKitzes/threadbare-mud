@@ -2,16 +2,18 @@
 
 import { REGEX_EAT_ALIASES } from "../../constants";
 import { HandlerOptions } from "../server";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes, consumeItem } from "./items";
 
 const id: ItemIds = ItemIds.;
-const type: ItemTypes = ItemTypes.consumable;
-const title: string = ;
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = ;
 const keywords: string[] = ;
-const value: number = ;
-const weight: number = ;
-const healAmount: number = ;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
+const healAmount: number = csvData.healAmount;
 const consumeEffects: TemporaryEffect[] = [
   {
     amount: ,
@@ -35,6 +37,10 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   return false;
 };
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -42,6 +48,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   handleItemCommand,
   healAmount,

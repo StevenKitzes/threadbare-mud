@@ -1,15 +1,22 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.LOOSE_BLACK_TUNIC;
-const type: ItemTypes = ItemTypes.armor;
-const title: string = "a loose black tunic";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A loose-fitting, comfortable, black tunic.  The sleeves of this [loose black tunic] are bound tightly to the wrists with strips of gray cloth wrappings.";
 const keywords: string[] = ['loose black tunic', 'black tunic', 'tunic'];
-const value: number = 10;
-const weight: number = 2;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
 // Optional
-const armorValue: number = 1;
+const armorValue: number = csvData.armorValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -18,6 +25,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   armorValue,
 };

@@ -1,15 +1,18 @@
 import { REGEX_EAT_ALIASES } from "../../constants";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
 import { HandlerOptions } from "../server";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes, consumeItem } from "./items";
 
 const id: ItemIds = ItemIds.SWEETROLL;
-const type: ItemTypes = ItemTypes.consumable;
-const title: string = "a tasty sweetroll";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A tasty looking sweetroll.";
 const keywords: string[] = ['sweetroll', 'roll'];
-const value: number = 3;
-const weight: number = 1;
-const healAmount: number = 10;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
+const healAmount: number = csvData.healAmount;
 
 const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
@@ -24,6 +27,10 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   return false;
 };
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -31,6 +38,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   handleItemCommand,
   healAmount

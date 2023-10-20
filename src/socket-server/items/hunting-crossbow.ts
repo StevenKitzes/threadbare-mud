@@ -1,16 +1,19 @@
 import { EffectStat, StatEffect } from "../../types";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.HUNTING_CROSSBOW;
-const type: ItemTypes = ItemTypes.rangedWeapon;
-const title: string = "a hunting crossbow";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const title: string = csvData.title;
 const description: string = "A [hunting crossbow], of sound build.  Not meant for combat, it is clunky and difficult to reload and manage on the battlefield, but it will fire straight and true.";
 const keywords: string[] = ['crossbow', 'hunting crossbow'];
-const value: number = 250;
-const weight: number = 5;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
-const damageValue: number = 25;
-const damageType: DamageType = DamageType.piercing;
+const damageValue: number = csvData.damageValue;
+const damageType: DamageType = csvData.damageType;
 
 const statEffects: StatEffect[] = [
   {
@@ -23,6 +26,10 @@ const statEffects: StatEffect[] = [
   },
 ];
 
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
+
 export {
   id,
   type,
@@ -30,6 +37,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   damageValue,
   damageType,

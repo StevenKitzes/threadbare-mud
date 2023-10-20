@@ -29,6 +29,7 @@
     "bufferutil": "^4.0.7",
     "concurrently": "^8.2.1",
     "cors": "^2.8.5",
+    "csv-parse": "^5.5.2",
     "encoding": "^0.1.13",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",

@@ -11,21 +11,21 @@ export function generateEntitiesCsvs (
   npcFactories: Map<string, () => NPC>
 ): void {
   setTimeout(() => {
-    const itemsColumns: string = 'title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount';
+    const itemsColumns: string = 'id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount';
     const itemRows: string[] = [];
     items.forEach((item) => itemRows.push([
-      item.title, item.type, item.value, item.weight, item.armorValue || '', item.damageValue || '', item.damageType || '', item.hitBonus || '', item.healAmount || ''
+      item.id, item.title, item.type, item.value, item.weight, item.armorValue || '', item.damageValue || '', item.damageType || '', item.hitBonus || '', item.healAmount || ''
     ].join(';')));
     writeFile(itemsFile, [itemsColumns, ...itemRows].join('\n'), { flag: 'w' }, (err: any) => {
       if (err) console.error("Error writing item documentation.", err.toString());
     })
     
-    const npcsColumns: string = 'name;cashLoot;xp;healthMax;agility;strength;savvy;damageValue;armor;armorType';
+    const npcsColumns: string = 'id;name;cashLoot;xp;healthMax;agility;strength;savvy;damageValue;armor;armorType';
     const npcRows: string[] = [];
     npcFactories.forEach((factory) => {
       const npc: NPC = factory();
       npcRows.push([
-        npc.name, npc.cashLoot || '', npc.xp || '', npc.healthMax || '', npc.agility || '', npc.strength || '', npc.savvy || '', npc.damageValue || '', npc.armor || '', npc.armorType || ''
+        npc.id, npc.name, npc.cashLoot || '', npc.xp || '', npc.healthMax || '', npc.agility || '', npc.strength || '', npc.savvy || '', npc.damageValue || '', npc.armor || '', npc.armorType || ''
       ].join(';'))
     });
     writeFile(npcsFile, [npcsColumns, ...npcRows].join('\n'), { flag: 'w' }, (err: any) => {

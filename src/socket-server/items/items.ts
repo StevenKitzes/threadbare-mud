@@ -1,9 +1,11 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
-import { REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
+import { ITEM_VALUE_RANDOMIZER_TIMER, REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
 import { CharacterUpdateOpts, EffectStat, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
+
+import { itemImports, readItemCsv } from "./csvItemImport";
 
 export type Item = {
   id: ItemIds;
@@ -12,6 +14,7 @@ export type Item = {
   description: string;
   keywords: string[];
   value: number;
+  randomizeValue: () => number;
   weight: number;
   armorValue?: number;
   damageValue?: number;
@@ -121,7 +124,7 @@ export enum ItemIds {
   SCALESKIN_JACKET = "71",
 }
 
-{ // imports
+readItemCsv(() => {
   import('./good-luck-charm').then(item => items.set(item.id, item));
   import('./black-headband').then(item => items.set(item.id, item));
   import('./loose-black-tunic').then(item => items.set(item.id, item));
@@ -193,7 +196,12 @@ export enum ItemIds {
   import('./protection-charm').then(item => items.set(item.id, item));
   import('./deftstep-boots').then(item => items.set(item.id, item));
   import('./scaleskin-jacket').then(item => items.set(item.id, item));
-}
+});
+
+setInterval(() => {
+  items.forEach(item => item.randomizeValue());
+  console.log('Item values randomized.');
+}, ITEM_VALUE_RANDOMIZER_TIMER);
 
 export type ConsumeItemOpts = {
   handlerOptions: HandlerOptions;

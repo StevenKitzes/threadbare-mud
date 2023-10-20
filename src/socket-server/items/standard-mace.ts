@@ -1,16 +1,23 @@
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
 const id: ItemIds = ItemIds.STANDARD_MACE;
-const type: ItemTypes = ItemTypes.heavyWeapon;
-const damageType: DamageType = DamageType.bashing;
-const title: string = "a standard mace";
+const csvData: ItemImport = itemImports.get(id);
+const type: ItemTypes = csvData.type;
+const damageType: DamageType = csvData.damageType;
+const title: string = csvData.title;
 const description: string = "A [standard mace], typical of the sort of thing you would see the town guard carrying around.";
 const keywords: string[] = ['standard mace', 'mace'];
-const value: number = 120;
-const weight: number = 5;
+let value: number = itemPriceRandomizer(csvData.value);
+const weight: number = csvData.weight;
 
 // Optional
-const damageValue: number = 15;
+const damageValue: number = csvData.damageValue;
+
+function randomizeValue (): number {
+  return value = itemPriceRandomizer(csvData.value);
+}
 
 export {
   id,
@@ -19,6 +26,7 @@ export {
   description,
   keywords,
   value,
+  randomizeValue,
   weight,
   damageValue,
   damageType
