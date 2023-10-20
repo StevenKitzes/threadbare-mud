@@ -66,7 +66,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers();
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // Only relevant to scenes that need to respond to story status
     if (

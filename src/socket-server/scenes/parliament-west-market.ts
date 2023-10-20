@@ -59,7 +59,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around at the marketplace.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push("You stand along the western edge of a grand marketplace, busy with people buying and selling all kinds of things.  The sounds, smells, and sights here dazzle the senses, with food, animals, colors, art; you name it, you can probably find it here.  To the east you see a broad, open [town square].  To the west lies [Audric's tower].  To the [north] and [south] the marketplace sprawls onward.");

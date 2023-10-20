@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${character.name} looks around.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push("The crowd thins a bit here, north of Audric's tower.  The front of Audric's tower lies [east] of here, and there you can hear the bustle of a thriving marketplace.  Here, though, fewer people venture, as there is less to do, and some of the city's cracks show through its veneer.  There is some trash blown up against the buildings by the wind, and you can see evidence of rodents.  To the south, along the western flank of Audric's tower, you can see a quiet [alley].");

@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name}`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push(`The shop is clean and tidy, with silver jewelry, tableware, and even some decorative weapons.  All the items for sale are displayed on velvet pillows for an added element of luxury.  Fine curtains decorate the walls, and there is even a bit of stained glass set into some of the windows.  The front door leads out to the east, back into the [market].`);

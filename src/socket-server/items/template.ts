@@ -1,6 +1,7 @@
 /* Use this template to create new items
 
 import getEmitters from "../../utils/emitHelper";
+import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";

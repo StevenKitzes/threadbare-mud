@@ -49,7 +49,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around the library.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     actorText.push("The arched ceiling soars high overhead, obscured in darkness.  The [bookshelves] lining the walls of this circular room rise into those same shadows.  Light of every color streams into the main part of the library through stained glass windows, and motes of dust hang in the air, sparkling and shimmering.  Luxurious pillows and upholstery line the elaborate furnishings - though the vivacity of the scene is dulled a bit by a thin layer of dust that lies over everything.  The number and variety of the library's many [books] and [scrolls] is also impressive.  They are stacked on tables and desks in piles, disorderly but not quite discarded.");
     actorText.push("Aside from the [heavy wooden door] you first used to enter this room, there are a few others, but for now they are all locked.  You can also go down a curving stone [staircase].");

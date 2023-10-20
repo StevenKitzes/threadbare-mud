@@ -5,7 +5,7 @@ import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 
-import { readItemCsv } from "./csvItemImport";
+import { itemImports, readItemCsv } from "./csvItemImport";
 
 export type Item = {
   id: ItemIds;
@@ -122,6 +122,9 @@ export enum ItemIds {
   PROTECTION_CHARM = "69",
   DEFTSTEP_BOOTS = "70",
   SCALESKIN_JACKET = "71",
+  FLORAL_WOODEN_SHIELD = "72",
+  SHIELD_WITH_FILIGREE = "73",
+  BASIC_PAINTED_SHIELD = "74",
 }
 
 readItemCsv(() => {
@@ -196,6 +199,9 @@ readItemCsv(() => {
   import('./protection-charm').then(item => items.set(item.id, item));
   import('./deftstep-boots').then(item => items.set(item.id, item));
   import('./scaleskin-jacket').then(item => items.set(item.id, item));
+  import('./floral-wooden-shield').then(item => items.set(item.id, item));
+  import('./shield-with-filigree').then(item => items.set(item.id, item));
+  import('./basic-painted-shield').then(item => items.set(item.id, item));
 });
 
 setInterval(() => {

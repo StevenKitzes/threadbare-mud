@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${character.name} looks around.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push("The road south of Audric's tower is fairly busy, as it serves the marketplace to the east.  It is well-trodden and kept safe by city guardsmen.  This being an urban center, though, it isn't the cleanest place in the world.  Signs of rodents can be found here despite the amount of traffic the area sees.  The front of Audric's tower lies [east] of here, along with a busy marketplace.  To the north, along the western flank of Audric's tower, lies a quiet [alley].");

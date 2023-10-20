@@ -45,7 +45,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around the bedroom.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     if (
       character.stories.main === 0 &&
       writeCharacterStory(character.id, { ...character.stories, main: 1 })

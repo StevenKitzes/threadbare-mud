@@ -51,7 +51,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} gazes about at the fine armor on display.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push(`This establishment is tidy, but simple, focused on the quality of the armor pieces on display, which are among the finest you can imagine finding.  Smaller pieces - gauntlets and boots - rest on pillow-topped stands, while larger sets of armor are supported on padded mannequins.  Everything here gleams, polished to a mirror finish.  The one way in and out is a door that leads back out northeast, to the [market].`);

@@ -27,7 +27,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push(`Choose a job/background for your character.  You can choose from among Weaver, Peacemaker, Skyguard, Ranger, Spymaster, or Common Rogue.`);

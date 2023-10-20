@@ -73,6 +73,7 @@ export enum NpcIds {
   PEACEKEEPER_CAPTAIN = "18",
   HUNTING_BOWYER = "19",
   KITSCHY_ENCHANTMENT_VENDOR = "20",
+  SHOWY_SHIELDS_SHOPKEEPER = "21",
 }
 
 readNpcCsv(() => {
@@ -96,6 +97,7 @@ readNpcCsv(() => {
   import('./peacekeeper-captain').then(npc => npcFactories.set(NpcIds.PEACEKEEPER_CAPTAIN, npc.make));
   import('./hunting-bowyer').then(npc => npcFactories.set(NpcIds.HUNTING_BOWYER, npc.make));
   import('./kitschy-enchantment-vendor').then(npc => npcFactories.set(NpcIds.KITSCHY_ENCHANTMENT_VENDOR, npc.make));
+  import('./showy-shields-shopkeeper').then(npc => npcFactories.set(NpcIds.SHOWY_SHIELDS_SHOPKEEPER, npc.make));
 });
   
   export function look(

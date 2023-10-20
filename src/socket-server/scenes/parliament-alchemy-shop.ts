@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around at the mysterious objects on display here.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push(`Gazing around the dark alchemy shop, you are a bit taken aback by the state of the place.  The decor is marked by cobwebs, deep layers of dust, and jars and bottles of supplies left open, forgotten.  The shop's offerings are scattered haphazardly across tables, shelves, even on the floor.  Multiple cauldrons of various shapes, sizes, and materials smoke and steam over fires in the back of the undivided room.  You don't know if you smell metal, blood, chemicals, herbs, or something that has no place in this world.  The only exit from this dungeonesque potion shop is back out to the [market], to the northeast.`);

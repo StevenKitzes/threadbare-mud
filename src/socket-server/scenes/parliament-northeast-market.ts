@@ -32,6 +32,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       characterNpcs.set(character.id, [
         npcFactories.get(NpcIds.HUNTING_BOWYER)(),
         npcFactories.get(NpcIds.KITSCHY_ENCHANTMENT_VENDOR)(),
+        npcFactories.get(NpcIds.SHOWY_SHIELDS_SHOPKEEPER)(),
       ]);
     } else {
       // Respawn logic
@@ -53,10 +54,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around at the marketplace.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("Here lies the northeastern corner of Parliament's grand marketplace.  While bustling in its own way, this reach of the market is more quiet than the others.  Those who come here know what they seek, so merchant need do less shouting to attract attention.  To the [west] of you list the market's north promenade, and the [south] the marketplace sprawls onward.");
+    actorText.push("Here lies the northeastern corner of Parliament's grand marketplace.  Folk bustle about, heads turning this way and that to wonders and shouts from merchants peddling an eclectic mix of goods.  To the [west] of you lies the market's north promenade, and the [south] the marketplace sprawls onward.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);

@@ -372,6 +372,8 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     defense += items.get(character.gloves || '')?.armorValue || 0;
     defense += items.get(character.legwear || '')?.armorValue || 0;
     defense += items.get(character.footwear || '')?.armorValue || 0;
+    defense += items.get(character.weapon || '')?.armorValue || 0;
+    defense += items.get(character.offhand || '')?.armorValue || 0;
     defense = Math.random() * defense;
     defenseWithDodge = defense + (Math.random() * ((character.agility + character.savvy) / 2));
 

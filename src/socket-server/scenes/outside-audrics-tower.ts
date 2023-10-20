@@ -30,7 +30,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${character.name} gazes about outside the tower.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push(`From outside the front door of Audric's [tower], you realize both that it is, in fact, a tower, and that it is dizzyingly tall.  You are unable to make out its pinnacle.  You also realize that there is wizardry afoot.  The stairs inside are by far too few to account for the height of the window from the bedroom in which you once awoke.`);

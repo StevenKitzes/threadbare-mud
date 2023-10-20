@@ -28,7 +28,6 @@ import {
   REGEX_USE_ALIASES
 } from '../constants';
 import { initializeCharacter } from '../utils/initializeCharacter';
-import { npcFactories } from './npcs/npcs';
 import handleQuestsCommand from './quests/quests';
 import handleCharacterCommand from './character/character';
 import { Scene, scenes } from './scenes/scenes';
@@ -144,7 +143,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   else if (targetName = captureFrom(command, REGEX_TALK_ALIASES)) output = `You do not see {${targetName}} here to talk to.`;
   else if (targetName = captureFrom(command, REGEX_UNEQUIP_ALIASES)) output = `You don't have any {${targetName}} equipped.`;
   else if (targetName = captureFrom(command, REGEX_USE_ALIASES)) output = `You are not carrying any {${targetName}} you can use.`;
-  else output = `We know here no magic by the name of {${command}} . . .`;
+  else output = `You can't {${command}} here.`;
 
   socket.emit('game-text', {
     gameText: output,

@@ -51,7 +51,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} has a look around at the other patrons of the inn.`);
 
-    const actorText: string[] = [title, '- - -'];
+    const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
     actorText.push(`You look around the inn and see that it is quite a respectable establishment.  The clientele are presentable and well behaved, and the innkeeper, while gruff, clearly knows his business and keeps his wits about him.The door to the [south] leads back out to the market's [north promenade].`);
