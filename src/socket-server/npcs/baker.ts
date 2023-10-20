@@ -5,11 +5,15 @@ import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { firstCharToUpper } from "../../utils/firstCharToUpper";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.BAKER;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.BAKER,
-    name: "a baker",
+    id,
+    name: csvData.name,
     description: "A [baker] displays her goods, with a smile as warm as her freshly baked breads, sweetrolls, and cakes.",
     keywords: ['baker'],
     regexAliases: 'baker',

@@ -6,11 +6,15 @@ import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_REST_ALIASES, REGEX_TALK_A
 import items, { Item, ItemIds } from "../items/items";
 import { CharacterUpdateOpts } from "../../types";
 import { writeCharacterData } from "../../../sqlite/sqlite";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.GRUFF_INNKEEPER;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.GRUFF_INNKEEPER,
-    name: "a gruff innkeeper",
+    id,
+    name: csvData.name,
     description: "A [gruff innkeeper], his face peppered with stubble and his clothing sized a little too small for his stout physique.  His apron, though, is clean and pressed, lending him an air of diligence and trustworthiness.",
     keywords: ['innkeeper', 'innkeep', 'barkeep', 'barkeeper', 'gruff innkeeper', 'gruff innkeep', 'gruff barkeep', 'gruff barkeeper'],
     regexAliases: 'innkeeper|innkeep|barkeep|barkeeper|gruff innkeeper|gruff innkeep|gruff barkeep|gruff barkeeper',

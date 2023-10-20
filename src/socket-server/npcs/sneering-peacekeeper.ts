@@ -8,11 +8,15 @@ import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../
 import { ClassTypes, Faction } from "../../types";
 import { firstCharToUpper } from "../../utils/firstCharToUpper";
 import { ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.SNEERING_PEACEKEEPER;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.SNEERING_PEACEKEEPER,
-    name: "a sneering peacekeeper",
+    id,
+    name: csvData.name,
     description: "A [sneering peacekeeper], city guard of Parliament, stalks about on his rounds.  He sneers at anyone who crosses his path.",
     keywords: ['sneering peacekeeper', 'peacekeeper', 'guard', 'city guard'],
     regexAliases: 'peacekeeper|sneering peacekeeper|guard|city guard',
@@ -21,13 +25,13 @@ export function make(): NPC {
     attackDescription: "a peacekeeper's longsword",
     cashLoot: 5,
     itemLoot: [ItemIds.PEACEKEEPER_LONGSWORD],
-    xp: 5,
-    healthMax: 100,
-    agility: 10,
-    strength: 12,
-    savvy: 8,
-    damageValue: 15,
-    armor: 12,
+    xp: csvData.cashLoot,
+    healthMax: csvData.healthMax,
+    agility: csvData.agility,
+    strength: csvData.strength,
+    savvy: csvData.savvy,
+    damageValue: csvData.damageValue,
+    armor: csvData.armor,
     armorType: [],
     aggro: false,
     

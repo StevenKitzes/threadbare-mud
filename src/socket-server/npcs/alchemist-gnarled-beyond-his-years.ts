@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS,
-    name: "a young, but gnarled, alchemist",
+    id,
+    name: csvData.name,
     description: "A [young alchemist] whose body is nevertheless twisted and gnarled, whether by failed potions or experimental recipes.  He wears dark rags, now tattered and stained, but once fine.",
     keywords: ['young alchemist', 'gnarled alchemist', 'twisted alchemist', 'alchemist'],
     regexAliases: 'alchemist|young alchemist|gnarled alchemist|twisted alchemist',

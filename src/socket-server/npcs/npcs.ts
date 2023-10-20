@@ -4,6 +4,7 @@ import { OptsType } from "../../utils/getGameTextObject";
 import { Item, ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
 import { writeCharacterData } from "../../../sqlite/sqlite";
+import { readNpcCsv } from "./csvNpcImport";
 
 export type NPC = {
   id: NpcIds;
@@ -74,29 +75,31 @@ export enum NpcIds {
   KITSCHY_ENCHANTMENT_VENDOR = "20",
 }
 
-import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
-import('./small-rat').then(npc => npcFactories.set(NpcIds.SMALL_RAT, npc.make));
-import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
-import('./rabid-rat').then(npc => npcFactories.set(NpcIds.RABID_RAT, npc.make));
-import('./baker').then(npc => npcFactories.set(NpcIds.BAKER, npc.make));
-import('./fruit-vendor').then(npc => npcFactories.set(NpcIds.FRUIT_VENDOR, npc.make));
-import('./luxury-clothier').then(npc => npcFactories.set(NpcIds.LUXURY_CLOTHIER, npc.make));
-import('./stablemaster').then(npc => npcFactories.set(NpcIds.STABLEMASTER, npc.make));
-import('./humble-blacksmith').then(npc => npcFactories.set(NpcIds.HUMBLE_BLACKSMITH, npc.make));
-import('./leather-worker').then(npc => npcFactories.set(NpcIds.LEATHER_WORKER, npc.make));
-import('./alchemist-gnarled-beyond-his-years').then(npc => npcFactories.set(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS, npc.make));
-import('./civilized-silversmith').then(npc => npcFactories.set(NpcIds.CIVILIZED_SILVERSMITH, npc.make));
-import('./parliamentary-decorative-smith').then(npc => npcFactories.set(NpcIds.PARLIAMENTARY_DECORATIVE_SMITH, npc.make));
-import('./gruff-innkeeper').then(npc => npcFactories.set(NpcIds.GRUFF_INNKEEPER, npc.make));
-import('./sneering-peacekeeper').then(npc => npcFactories.set(NpcIds.SNEERING_PEACEKEEPER, npc.make));
-import('./scowling-peacekeeper').then(npc => npcFactories.set(NpcIds.SCOWLING_PEACEKEEPER, npc.make));
-import('./glowering-peacekeeper').then(npc => npcFactories.set(NpcIds.GLOWERING_PEACEKEEPER, npc.make));
-import('./peacekeeper-captain').then(npc => npcFactories.set(NpcIds.PEACEKEEPER_CAPTAIN, npc.make));
-import('./hunting-bowyer').then(npc => npcFactories.set(NpcIds.HUNTING_BOWYER, npc.make));
-import('./kitschy-enchantment-vendor').then(npc => npcFactories.set(NpcIds.KITSCHY_ENCHANTMENT_VENDOR, npc.make));
-
-export function look(
-  emitOthers: (text: string | string[], opts?: OptsType) => void,
+readNpcCsv(() => {
+  import('./audric').then(npc => npcFactories.set(NpcIds.AUDRIC, npc.make));
+  import('./small-rat').then(npc => npcFactories.set(NpcIds.SMALL_RAT, npc.make));
+  import('./stout-rat').then(npc => npcFactories.set(NpcIds.STOUT_RAT, npc.make));
+  import('./rabid-rat').then(npc => npcFactories.set(NpcIds.RABID_RAT, npc.make));
+  import('./baker').then(npc => npcFactories.set(NpcIds.BAKER, npc.make));
+  import('./fruit-vendor').then(npc => npcFactories.set(NpcIds.FRUIT_VENDOR, npc.make));
+  import('./luxury-clothier').then(npc => npcFactories.set(NpcIds.LUXURY_CLOTHIER, npc.make));
+  import('./stablemaster').then(npc => npcFactories.set(NpcIds.STABLEMASTER, npc.make));
+  import('./humble-blacksmith').then(npc => npcFactories.set(NpcIds.HUMBLE_BLACKSMITH, npc.make));
+  import('./leather-worker').then(npc => npcFactories.set(NpcIds.LEATHER_WORKER, npc.make));
+  import('./alchemist-gnarled-beyond-his-years').then(npc => npcFactories.set(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS, npc.make));
+  import('./civilized-silversmith').then(npc => npcFactories.set(NpcIds.CIVILIZED_SILVERSMITH, npc.make));
+  import('./parliamentary-decorative-smith').then(npc => npcFactories.set(NpcIds.PARLIAMENTARY_DECORATIVE_SMITH, npc.make));
+  import('./gruff-innkeeper').then(npc => npcFactories.set(NpcIds.GRUFF_INNKEEPER, npc.make));
+  import('./sneering-peacekeeper').then(npc => npcFactories.set(NpcIds.SNEERING_PEACEKEEPER, npc.make));
+  import('./scowling-peacekeeper').then(npc => npcFactories.set(NpcIds.SCOWLING_PEACEKEEPER, npc.make));
+  import('./glowering-peacekeeper').then(npc => npcFactories.set(NpcIds.GLOWERING_PEACEKEEPER, npc.make));
+  import('./peacekeeper-captain').then(npc => npcFactories.set(NpcIds.PEACEKEEPER_CAPTAIN, npc.make));
+  import('./hunting-bowyer').then(npc => npcFactories.set(NpcIds.HUNTING_BOWYER, npc.make));
+  import('./kitschy-enchantment-vendor').then(npc => npcFactories.set(NpcIds.KITSCHY_ENCHANTMENT_VENDOR, npc.make));
+});
+  
+  export function look(
+    emitOthers: (text: string | string[], opts?: OptsType) => void,
   emitSelf: (text: string | string[], opts?: OptsType) => void,
   getDescription: (character: Character) => string,
   character: Character,

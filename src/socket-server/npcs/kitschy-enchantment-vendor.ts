@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.KITSCHY_ENCHANTMENT_VENDOR;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.KITSCHY_ENCHANTMENT_VENDOR,
-    name: "a kitschy enchantment vendor",
+    id,
+    name: csvData.name,
     description: "A kitschy [enchantment vendor] has a broad array of items on display, that he swears are magical.",
     keywords: ['vendor', 'enchantment vendor', 'kitschy enchantment vendor'],
     regexAliases: 'vendor|enchantment vendor|kitschy enchantment vendor',

@@ -7,11 +7,15 @@ import { Character, CharacterUpdateOpts } from "../../types";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { SceneIds } from "../scenes/scenes";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.AUDRIC;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.AUDRIC,
-    name: "Audric",
+    id,
+    name: csvData.name,
     description: "[Audric] wears elaborate robes in colored brocade, jewelry of all kinds, and an embroidered cap.  He has long white hair, a long white beard, shining eyes and a quick smile.",
     keywords: ['audric', 'man', 'old man'],
     regexAliases: 'audric|man|old man|wizard|mage',

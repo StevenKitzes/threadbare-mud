@@ -1,11 +1,11 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { ITEM_VALUE_RANDOMIZER_TIMER, REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
-import { CharacterUpdateOpts, EffectStat, StatEffect, TemporaryEffect } from "../../types";
+import { CharacterUpdateOpts, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 
-import { itemImports, readItemCsv } from "./csvItemImport";
+import { readItemCsv } from "./csvItemImport";
 
 export type Item = {
   id: ItemIds;

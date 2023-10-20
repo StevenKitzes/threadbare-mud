@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.PARLIAMENTARY_DECORATIVE_SMITH;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.PARLIAMENTARY_DECORATIVE_SMITH,
-    name: "a master armorer",
+    id,
+    name: csvData.name,
     description: "A [master armorer], working with a set of the best tools money can buy.  He crafts armor that will do its job in the field, but looks good enough to illustrate the station of his noble-born clientele.",
     keywords: ['armorer', 'master armorer', 'master'],
     regexAliases: 'armorer|master|master armorer',

@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.HUMBLE_BLACKSMITH;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.HUMBLE_BLACKSMITH,
-    name: "a humble blacksmith",
+    id,
+    name: csvData.name,
     description: "A [humble blacksmith] pounds away at his anvil, sweat pouring from his brow the way it only can at the forge.",
     keywords: ['blacksmith', 'humble blacksmith', 'smith', 'humble smith'],
     regexAliases: "blacksmith|smith|humble smith|humble blacksmith",

@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.LEATHER_WORKER;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.LEATHER_WORKER,
-    name: "a leather worker",
+    id,
+    name: csvData.name,
     description: "A [leather worker], plying his trade in the shade of a broad strip of canvas and surrounded by the fruits of his labor: an array of leather armors suitable for light combat action.",
     keywords: ['leather worker', 'tanner', 'armorer'],
     regexAliases: 'leather worker|tanner|armorer',

@@ -7,11 +7,15 @@ import { npcHealthText } from '../../utils/npcHealthText';
 import startCombat from '../../utils/combat';
 import { makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: ,
-    name: ,
+    id,
+    name: csvData.name,
     description: ,
     keywords: ,
     regexAliases: ,
@@ -19,14 +23,14 @@ export function make(): NPC {
     attackDescription: ,
     cashLoot: ,
     itemLoot: ,
-    xp: ,
-    healthMax: ,
-    agility: ,
-    strength: ,
-    savvy: ,
-    damageValue: ,
-    armor: ,
-    armorType: ,
+    xp: csvData.cashLoot,
+    healthMax: csvData.healthMax,
+    agility: csvData.agility,
+    strength: csvData.strength,
+    savvy: csvData.savvy,
+    damageValue: csvData.damageValue,
+    armor: csvData.armor,
+    armorType: [-],
     aggro: false,
     
     health: ,

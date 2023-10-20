@@ -8,11 +8,15 @@ import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../
 import { ClassTypes, Faction } from "../../types";
 import { firstCharToUpper } from "../../utils/firstCharToUpper";
 import { ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.PEACEKEEPER_CAPTAIN;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.SCOWLING_PEACEKEEPER,
-    name: "a peacekeeper captain",
+    id,
+    name: csvData.name,
     description: "A [peacekeeper captain] of the Parliamentary city guard strolls along on his rounds, an arrogant eyebrow raised and his hands clasped authoritatively behind his back.  His uniform is differentiated by a golden tassle at his shoulder.",
     keywords: ['peacekeeper', 'peacekeeper captain', 'captain', 'guard', 'city guard'],
     regexAliases: 'peacekeeper|peacekeeper captain|captain|guard|city guard',
@@ -21,13 +25,13 @@ export function make(): NPC {
     attackDescription: "a peacekeeper's longsword",
     cashLoot: 10,
     itemLoot: [ItemIds.PEACEKEEPER_LONGSWORD],
-    xp: 7,
-    healthMax: 125,
-    agility: 10,
-    strength: 10,
-    savvy: 10,
-    damageValue: 15,
-    armor: 13,
+    xp: csvData.cashLoot,
+    healthMax: csvData.healthMax,
+    agility: csvData.agility,
+    strength: csvData.strength,
+    savvy: csvData.savvy,
+    damageValue: csvData.damageValue,
+    armor: csvData.armor,
     armorType: [],
     aggro: false,
     

@@ -7,11 +7,15 @@ import { REGEX_BUY_ALIASES, REGEX_HORSE_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_
 import items, { Item, ItemIds } from "../items/items";
 import { CharacterUpdateOpts, Horse } from "../../types";
 import { writeCharacterData } from "../../../sqlite/sqlite";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.STABLEMASTER;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.STABLEMASTER,
-    name: "a stablemaster",
+    id,
+    name: csvData.name,
     description: "A [stablemaster] is hard at work, bent over the hoof of a horse he is shoeing.",
     keywords: ['stablemaster', 'groom'],
     regexAliases: 'stablemaster|groom',

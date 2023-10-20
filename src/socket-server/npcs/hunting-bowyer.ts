@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.HUNTING_BOWYER;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.HUNTING_BOWYER,
-    name: "a hunting bowyer",
+    id,
+    name: csvData.name,
     description: "A [hunting bowyer], this seller of bows and arrows specializes in equipment for hunting.",
     keywords: ['bowyer', 'hunting bowyer'],
     regexAliases: 'bowyer|hunting bowyer',

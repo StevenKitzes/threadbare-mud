@@ -4,11 +4,15 @@ import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import items, { Item, ItemIds } from "../items/items";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.CIVILIZED_SILVERSMITH;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.CIVILIZED_SILVERSMITH,
-    name: "a civilized silversmith",
+    id,
+    name: csvData.name,
     description: "A [civilized silversmith], dressed in fine, silk robes and carrying herself with immaculate posture.",
     keywords: ['silversmith', 'civilized silversmith'],
     regexAliases: 'silversmith|civilized silversmith',

@@ -27,15 +27,12 @@ import {
   REGEX_UNEQUIP_ALIASES,
   REGEX_USE_ALIASES
 } from '../constants';
-import { generateEntitiesCsvs } from '../utils/generateEntitiesCsvs';
 import { initializeCharacter } from '../utils/initializeCharacter';
 import { npcFactories } from './npcs/npcs';
 import handleQuestsCommand from './quests/quests';
 import handleCharacterCommand from './character/character';
 import { Scene, scenes } from './scenes/scenes';
 import { handleHorseCommand } from './horse/horse';
-
-generateEntitiesCsvs(items, npcFactories);
 
 export type HandlerOptions = {
   io: Server;

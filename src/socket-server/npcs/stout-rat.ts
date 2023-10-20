@@ -5,11 +5,15 @@ import { npcHealthText } from '../../utils/npcHealthText';
 import startCombat from '../../utils/combat';
 import { makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { NpcImport, npcImports } from "./csvNpcImport";
+
+const id: NpcIds = NpcIds.STOUT_RAT;
+const csvData: NpcImport = npcImports.get(id);
 
 export function make(): NPC {
   const npc: NPC = {
-    id: NpcIds.STOUT_RAT,
-    name: "a stout rat",
+    id,
+    name: csvData.name,
     description: "This [stout rat] looks a little more resiliant than your average rodent, but may have paid for it in intelligence.",
     keywords: ['stout rat', 'rat'],
     regexAliases: 'stout rat|rat|rodent',
@@ -17,13 +21,13 @@ export function make(): NPC {
 
     cashLoot: 0,
     itemLoot: [],
-    xp: 2,
-    healthMax: 100,
-    agility: 4,
-    strength: 2,
-    savvy: 4,
-    damageValue: 3,
-    armor: 1,
+    xp: csvData.cashLoot,
+    healthMax: csvData.healthMax,
+    agility: csvData.agility,
+    strength: csvData.strength,
+    savvy: csvData.savvy,
+    damageValue: csvData.damageValue,
+    armor: csvData.armor,
     armorType: [],
     aggro: false,
     
