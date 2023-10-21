@@ -55,7 +55,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     actorText.push("Aside from the [heavy wooden door] you first used to enter this room, there are a few others, but for now they are all locked.  You can also go down a curving stone [staircase].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription(character)));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
     
     emitSelf(actorText);
 

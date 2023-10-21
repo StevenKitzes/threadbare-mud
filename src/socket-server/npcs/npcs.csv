@@ -1,22 +1,22 @@
 id;name;cashLoot;xp;healthMax;agility;strength;savvy;damageValue;armor
-1;Audric;;;;;;;;
-2;a small rat;;1;5;14;2;6;3;1
-3;a stout rat;;2;100;4;2;4;3;1
-4;a rabid rat;;2;10;15;3;2;3;1
-5;a baker;;;;;;;;
-6;a fruit vendor;;;;;;;;
-7;a luxury clothier;;;;;;;;
-8;a stablemaster;;;;;;;;
-9;a humble blacksmith;;;;;;;;
-10;a leather worker;;;;;;;;
-11;a young, but gnarled, alchemist;;;;;;;;
-12;a civilized silversmith;;;;;;;;
-13;a master armorer;;;;;;;;
-14;a gruff innkeeper;;;;;;;;
-15;a sneering peacekeeper;5;5;100;10;12;8;15;12
-16;a scowling peacekeeper;5;5;100;10;12;8;15;12
-17;a glowering peacekeeper;5;5;100;10;12;8;15;12
-16;a peacekeeper captain;10;7;125;10;10;10;15;13
-19;a hunting bowyer;;;;;;;;
-20;a kitschy enchantment vendor;;;;;;;;
-21;a decorative shield merchant;;;;;;;;
+1;[Audric];;;;;;;;
+2;a [small rat];;1;5;14;2;6;3;1
+3;a [stout rat];;2;100;4;2;4;3;1
+4;a [rabid rat];;2;10;15;3;2;3;1
+5;a [baker];;;;;;;;
+6;a [fruit vendor];;;;;;;;
+7;a [luxury clothier];;;;;;;;
+8;a [stablemaster];;;;;;;;
+9;a [humble blacksmith];;;;;;;;
+10;a [leather worker];;;;;;;;
+11;a young, but gnarled, [alchemist];;;;;;;;
+12;a [civilized silversmith];;;;;;;;
+13;a [master armorer];;;;;;;;
+14;a [gruff innkeeper];;;;;;;;
+15;a [sneering peacekeeper];5;5;100;10;12;8;15;12
+16;a [scowling peacekeeper];5;5;100;10;12;8;15;12
+17;a [glowering peacekeeper];5;5;100;10;12;8;15;12
+16;a [peacekeeper captain];10;7;125;10;10;10;15;13
+19;a [hunting bowyer];;;;;;;;
+20;a kitschy [enchantment vendor];;;;;;;;
+21;a decorative [shield merchant];;;;;;;;

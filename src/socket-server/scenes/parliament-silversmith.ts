@@ -58,7 +58,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription(character)));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
 
     emitSelf(actorText);
 

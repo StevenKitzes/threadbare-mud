@@ -1,17 +1,15 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, navigate, SceneIds } from './scenes';
+import { navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
-import { firstCharToUpper } from '../../utils/firstCharToUpper';
 import { handleFactionAggro } from '../../utils/combat';
 
 const id: SceneIds = SceneIds.PARLIAMENT_NORTH_PROMENADE;
@@ -66,7 +64,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription(character)));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
 
     emitSelf(actorText);
 

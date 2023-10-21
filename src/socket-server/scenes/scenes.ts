@@ -1,6 +1,6 @@
 import { navigateCharacter } from '../../../sqlite/sqlite';
 import { REGEX_GO_ALIASES } from '../../constants';
-import { Character, SceneSentiment } from '../../types';
+import { SceneSentiment } from '../../types';
 import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
 import { makeMatcher } from '../../utils/makeMatcher';
@@ -38,6 +38,7 @@ export enum SceneIds {
   PARLIAMENT_NORTH_PROMENADE = "15",
   PARLIAMENT_MARKET_INN = "16",
   PARLIAMENT_NORTHEAST_MARKET = "17",
+  PARLIAMENT_SOUTH_PROMENADE = "18",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
@@ -57,6 +58,7 @@ import('./parliament-decorative-armory').then(scene => scenes.set(scene.id, scen
 import('./parliament-north-promenade').then(scene => scenes.set(scene.id, scene));
 import('./parliament-market-inn').then(scene => scenes.set(scene.id, scene));
 import('./parliament-northeast-market').then(scene => scenes.set(scene.id, scene));
+import('./parliament-south-promenade').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 
