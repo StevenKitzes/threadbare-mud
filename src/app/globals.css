@@ -39,6 +39,9 @@ body {
   .emphasize-hint {
     color: goldenrod;
   }
+  .highlight {
+    color: fuchsia;
+  }
   .page-foundation {
     @apply bg-black text-white flex flex-row w-screen h-screen;
   }

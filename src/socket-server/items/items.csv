@@ -73,3 +73,8 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 72;a wooden shield with bright floral decoration;offhand;50;8;5;;;;
 73;a silver and gold filigreed shield;offhand;800;15;5;;;;
 74;a basic shield;offhand;250;10;7;;;;
+75;A Guide to the Five Realms of the Drear;book;20;1;;;;;
+76;A Field Guide for Soldiers of the Empire of the Sky;book;5;1;;;;;
+77;Personal Growth: The Lifelight and You;book;20;1;;;;;
+78;A Contemporary Discussion of the Realms;book;20;1;;;;;
+79;Filstred’s Guide to Life on the Continent;book;15;1;;;;;

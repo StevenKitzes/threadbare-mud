@@ -83,6 +83,15 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     `${name} walks west, to another part of the market.`,
   )) return true;
 
+  // normal travel, concise
+  if (navigate(
+    handlerOptions,
+    SceneIds.FROM_TALES_TO_TOMES,
+    's|south|bookstore|book store|book shop|tales to tomes|from tales to tomes',
+    emitOthers,
+    `${name} walks into From Tales to Tomes, a book shop.`,
+  )) return true;
+
   return false;
 }
 

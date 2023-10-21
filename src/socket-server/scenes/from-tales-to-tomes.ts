@@ -1,20 +1,21 @@
+import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 
-const id: SceneIds = SceneIds.PARLIAMENT_SOUTHWEST_MARKET;
-const title: string = "Parliament Southwestern Marketplace";
-const sentiment: SceneSentiment = SceneSentiment.neutral;
-const horseAllowed: boolean = true;
+const id: SceneIds = SceneIds.FROM_TALES_TO_TOMES;
+const title: string = "From Tales to Tomes";
+const sentiment: SceneSentiment = SceneSentiment.remote;
+const horseAllowed: boolean = false;
 const publicInventory: ItemIds[] = [];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -29,8 +30,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [
-      ]);
+      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.TALES_TO_TOMES_OWNER)() ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
@@ -49,13 +49,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${name} looks around at the marketplace.`);
+    emitOthers(`${name} looks around at all the books here.`);
 
     const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push("The southwestern reach of the marketplace is a den of opulence.  Other corners of the bazaar feature elegant and fancy offerings, certainly; but here stand the most prestigious shops.  In fact, vendors do not stand in the street with carts full of their wares, but rather take up residence in dedicated storefronts.");
-    actorText.push("To the west, a boutique [silversmith] is tucked into the bottom floor of an upscale apartment building.  To the southwest lies an [armorer] specializing in dress and decorative pieces.  To the south you see a mysterious, foreboding storefront, littered with vials and jars of hazy substances, perhaps kept by an [alchemist].  The rest of the marketplace sprawls onward to the [north], and [east] of here is the market's southern promenade.");
+    actorText.push(`This bookstore is very well appointed, a luxury establishment worthy of Parliament's reputation.  The walls and furniture are of rich, deep reds and dark, lacquered woods, finished with finely chiseled patterns and moldings.  Set about the place are a number of cozy reading spaces, and the owner as provided tea and biscuits so that anyone purchasing books can have a comfortable home away from home to enjoy and discuss them.  The shelves sag with the weight of so many books, you almost can't even imagine them all having been written.  Books of all kinds: history, farming, warfare, religion, combat, the list goes on.  But a few catch your eye more than others.  The owner may be able to help guide you.  The exit to the [north] leads back out onto the southern promenade of Parliament's sprawling marketplace.`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -69,44 +68,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_WEST_MARKET,
-    "n|north|western market|west market",
-    emitOthers,
-    `${name} moves off north, toward the western part of the market.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_SILVERSMITH,
-    "w|west|silver shop|silversmith|boutique|silver boutique|boutique silversmith|boutique silver shop",
-    emitOthers,
-    `${name} walks into a silversmith's shop.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_ALCHEMY_SHOP,
-    "s|south|alchemist|alchemy shop",
-    emitOthers,
-    `${name} fades into the darkness of a mysterious alchemy shop.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_DECORATIVE_ARMORY,
-    "sw|southwest|armory|decorative armory|armorer|decorative armorer",
-    emitOthers,
-    `${name} walks into the decorative armory.`,
-  )) return true;
-
+  // normal travel, concise
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTH_PROMENADE,
-    "e|east|promenade|south promenade|southern promenade",
+    'n|north|promenade|south promenade|southern promenade',
     emitOthers,
-    `${name} walks away eastward, onto the marketplace's south promenade.`,
+    `${name} leaves the bookshop, exiting to the promenade.`,
   )) return true;
 
   return false;

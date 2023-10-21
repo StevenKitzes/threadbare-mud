@@ -153,7 +153,8 @@ export const Game = (): JSX.Element => {
                 .replace(/\[([^\]]+)\]/g, '<strong class="command-hint">[$1]</strong>')
                 .replace(/\+([^\]]+)\+/g, '<strong class="good-hint">$1</strong>')
                 .replace(/\=([^\]]+)\=/g, '<strong class="bad-hint">$1</strong>')
-                .replace(/\{([^\]]+)\}/g, '<strong class="emphasize-hint">$1</strong>');
+                .replace(/\{([^\]]+)\}/g, '<strong class="emphasize-hint">$1</strong>')
+                .replace(/\~([^\]]+)\~/g, '<strong class="highlight">$1</strong>');
             return (
               <div
                 className={classStrings.join(' ')}

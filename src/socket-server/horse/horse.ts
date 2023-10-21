@@ -47,6 +47,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
 
   if (!horseAllowed(character, emitOthers, emitSelf)) return true;
 
+  // look at horse, including what they are carrying
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES, `${REGEX_HORSE_ALIASES}|${character.horse.name.toLowerCase()}`))) {
     emitOthers(`${character.name} rifles through their horse's saddlebags.`);
 

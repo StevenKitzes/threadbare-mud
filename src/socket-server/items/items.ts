@@ -42,6 +42,7 @@ export enum ItemTypes {
   rangedWeapon = "rangedWeapon",
   consumable = "consumable",
   saddlebags = "saddlebags",
+  book = "book",
 };
 
 export enum DamageType {
@@ -125,6 +126,11 @@ export enum ItemIds {
   FLORAL_WOODEN_SHIELD = "72",
   SHIELD_WITH_FILIGREE = "73",
   BASIC_PAINTED_SHIELD = "74",
+  THE_FIVE_REALMS_BOOK = "75",
+  IMPERIAL_GUIDE_BOOK = "76",
+  PERSONAL_GROWTH_BOOK = "77",
+  REALM_GUIDE_BOOK = "78",
+  FILSTREDS_GUIDE_BOOK = "79",
 }
 
 readItemCsv(() => {
@@ -202,6 +208,11 @@ readItemCsv(() => {
   import('./floral-wooden-shield').then(item => items.set(item.id, item));
   import('./shield-with-filigree').then(item => items.set(item.id, item));
   import('./basic-painted-shield').then(item => items.set(item.id, item));
+  import('./the-five-realms-book').then(item => items.set(item.id, item));
+  import('./imperial-guide-book').then(item => items.set(item.id, item));
+  import('./personal-growth-book').then(item => items.set(item.id, item));
+  import('./realm-guide-book').then(item => items.set(item.id, item));
+  import('./filstreds-guide-book').then(item => items.set(item.id, item));
 });
 
 setInterval(() => {

@@ -104,6 +104,12 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   if (handleCharacterCommand(handlerOptions)) return;
 
   // check if any of the character's carried items can handle the command
+  if (items.get(character.headgear)?.handleItemCommand?.(handlerOptions)) return;
+  if (items.get(character.armor)?.handleItemCommand?.(handlerOptions)) return;
+  if (items.get(character.gloves)?.handleItemCommand?.(handlerOptions)) return;
+  if (items.get(character.legwear)?.handleItemCommand?.(handlerOptions)) return;
+  if (items.get(character.footwear)?.handleItemCommand?.(handlerOptions)) return;
+  if (items.get(character.weapon)?.handleItemCommand?.(handlerOptions)) return;
   if (items.get(character.offhand)?.handleItemCommand?.(handlerOptions)) return;
   for (let i = 0; i < character.inventory.length; i++) {
     const item: Item | undefined = items.get( character.inventory[i] );
