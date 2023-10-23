@@ -40,6 +40,7 @@ export enum SceneIds {
   PARLIAMENT_NORTHEAST_MARKET = "17",
   PARLIAMENT_SOUTH_PROMENADE = "18",
   FROM_TALES_TO_TOMES = "19",
+  PARLIAMENT_MARKET_GATE = "20",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
