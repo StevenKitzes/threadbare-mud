@@ -1,4 +1,3 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
@@ -6,7 +5,7 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories, npcFactory } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';

@@ -24,7 +24,7 @@ export function augment_stablemaster(npc: NPC): NPC {
       // In case of mercantile activity
       if (npc.getSaleItems() !== undefined) {
         actorText.push(...npc.getSaleItems()
-        .map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`));
+        .map(item => `- ${item.title} (${item.type}) {${item.getValue()} coin${item.getValue() === 1 ? '' : 's'}}`));
         actorText.push(`You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`);
       }
       

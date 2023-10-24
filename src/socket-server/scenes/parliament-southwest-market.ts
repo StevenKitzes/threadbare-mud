@@ -5,7 +5,7 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
@@ -31,10 +31,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       command: 'look'
     })
   }
-
-  // Only relevant to scenes with npcs, delete otherwise
-  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
-  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around at the marketplace.`);

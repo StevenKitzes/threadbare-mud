@@ -1,15 +1,14 @@
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, navigate, SceneIds } from './scenes';
+import { navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactory, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
-import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
+import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { npcImports } from '../npcs/csvNpcImport';
 

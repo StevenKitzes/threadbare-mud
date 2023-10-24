@@ -103,8 +103,6 @@ export type NPC = {
   handleNpcCommand: (handlerOptions: HandlerOptions) => boolean;
 };
 
-export const npcFactories: Map<string, () => NPC> = new Map<string, () => NPC>();
-
 export enum ArmorType {
   strongVsSlashing = "strongVsSlashing",
   strongVsPiercing = "strongVsPiercing",
@@ -173,10 +171,10 @@ export function makePurchase(
       npc.getSaleItems().find((saleItem: Item) => buyMatch.match(makeMatcher(saleItem.keywords.join('|'))));
     
     if (item !== undefined) {
-      if (character.money >= item.value) {
+      if (character.money >= item.getValue()) {
         let characterUpdate: CharacterUpdateOpts = {
           inventory: [ ...character.inventory, item.id ],
-          money: character.money - item.value
+          money: character.money - item.getValue()
         };
         if (writeCharacterData(character.id, characterUpdate)) {
           Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
@@ -371,7 +369,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
       // In case of mercantile activity
       if (npc.getSaleItems() !== undefined) {
         actorText.push(...npc.getSaleItems()
-        .map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`));
+        .map(item => `- ${item.title} (${item.type}) {${item.getValue()} coin${item.getValue() === 1 ? '' : 's'}}`));
         actorText.push(`You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`);
       }
       

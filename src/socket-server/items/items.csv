@@ -1,80 +1,80 @@
-id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount;keywords
-1;a good luck charm;trinket;1;1;;;;;;
-2;a black headband;headgear;3;1;1;;;;;head band
-3;a loose black tunic;armor;10;2;1;;;;;shirt top
-4;a pair of loose, black pants;legwear;10;2;1;;;;;leggings
-5;a pair of soft, black boots;footwear;10;2;1;;;;;
-6;a simple dagger;lightWeapon;25;2;;5;2;;;
-7;Audric's coin pouch;trinket;50;1;;;;;;
-8;a small anvil;trinket;0;15;;;;;;
-9;a medium anvil;trinket;0;35;;;;;;
-10;a large anvil;trinket;0;65;;;;;;
-11;a huge anvil;trinket;0;85;;;;;;
-12;a colossal anvil;trinket;0;115;;;;;;
-13;a tasty sweetroll;consumable;3;1;;;;;10;sweet roll
-14;a fresh loaf of bread;consumable;5;1;;;;;15;
-15;a tasty cake;consumable;8;1;;;;;10;
-16;a shiny, red apple;consumable;3;1;;;;;10;
-17;an orange;consumable;4;1;;;;;10;
-18;a plum;consumable;3;1;;;;;8;
-19;an avocado;consumable;8;1;;;;;15;
-20;an elegant doublet;armor;250;2;1;;;;;shirt top
-21;a fashionable beret;headgear;100;1;1;;;;;hat
-22;supple leather gloves;gloves;150;1;1;;;;;
-23;soft woolen leggings;legwear;200;2;1;;;;;pants
-24;a pair of stylish boots;footwear;250;2;2;;;;;
-25;modest saddlebags;saddlebags;30;15;;;;;;saddle bags
-26;leather saddlebags;saddlebags;200;40;;;;;;saddle bags
-27;reinforced saddlebags;saddlebags;500;100;;;;;;saddle bags
-28;a standard broadsword;heavyWeapon;150;4;;15;1;;;sword blade
-29;a standard rapier;lightWeapon;120;3;;7;2;;;sword blade
-30;little throwing daggers;rangedWeapon;100;4;;10;2;;;
-31;a standard mace;heavyWeapon;120;5;;15;3;;;
-32;a light leather cap;headgear;30;2;2;;;;;hat
-33;padded leather armor;armor;65;10;7;;;;;
-34;sturdy leather gloves;gloves;30;2;2;;;;;
-35;splinted leather leggings;legwear;55;10;5;;;;;pants
-36;a pair of heavy, leather boots;footwear;40;4;2;;;;;
-37;a small vial of healing potion;consumable;35;1;;;;;100;
-38;a mysterious, light blue potion;consumable;1000;2;;;;;;
-39;an intriguing, muddy concoction;consumable;1000;2;;;;;;potion
-40;a wondrous, glittering golden potion;consumable;1000;2;;;;;;
-41;a swirling, silvery potion;consumable;1000;2;;;;;;
-42;a dull, gray sludge;consumable;1000;2;;;;;;potion
-43;a bright, yellow potion;consumable;1000;2;;;;;;
-44;a silver crown;headgear;350;1;;;;;;
-45;a set of silver rings;gloves;200;1;;;;;;
-46;an inspiring silver scepter;offhand;500;5;;;;;;
-47;a shining silver dagger;lightWeapon;40;2;;6;2;;;
-48;a Parliamentary great helm;headgear;1500;10;7;;;;;helmet
-49;Parliamentary upper armor with attached cape;armor;3000;25;25;;;;;
-50;a set of Parliamentary plate gauntlets;gloves;2000;4;6;;;;;
-51;a set of Parliamentary greaves;legwear;2500;25;25;;;;;leggings
-52;a set of Parliamentary plated boots;footwear;2000;6;6;;;;;
-53;a decorative Parliamentary longsword;heavyWeapon;1250;3;;10;1;;;long sword blade
-54;a bottle of beer;consumable;5;1;;;;;10;
-55;a bottle of grain spirit;consumable;20;2;;;;;5;
-56;a bottle of cheap grain spirit;consumable;10;2;;;;;5;
-57;a Parliamentary peacekeeper's longsword;lightWeapon;90;3;;10;1;;;long sword blade
-58;a cheap bow for basic hunting;rangedWeapon;80;3;;10;2;;;
-59;a basic hunting bow;rangedWeapon;150;3;;15;2;;;
-60;a hunting crossbow;rangedWeapon;250;5;;25;2;;;cross bow
-61;Flickwrist Bracers;gloves;1200;2;2;;;;;
-62;Stout Stance Boots;footwear;1200;3;2;;;;;
-63;Eagle Eye Spectacles;headgear;500;1;;;;;;glasses
-64;Quickstep Trousers;legwear;1000;2;1;;;;;pants leggings
-65;a Strongsleeves Coat;armor;1500;7;4;;;;;strong sleeves jacket
-66;a Thinking Cap;headgear;750;1;1;;;;;hat
-67;Foesbane Gloves;gloves;1200;2;2;;;;;
-68;Truestrike Gloves;gloves;1200;2;2;;;;;
-69;a Protection Charm;offhand;750;1;;;;;;
-70;Deftstep Boots;footwear;1200;2;2;;;;;
-71;a Scaleskin Jacket;armor;1500;10;12;;;;;
-72;a wooden shield with bright floral decoration;offhand;50;8;5;;;;;
-73;a silver and gold filigreed shield;offhand;800;15;5;;;;;
-74;a basic shield;offhand;250;10;7;;;;;
-75;A Guide to the Five Realms of the Drear;book;20;1;;;;;;tome volume
-76;A Field Guide for Soldiers of the Empire of the Sky;book;5;1;;;;;;tome volume
-77;Personal Growth: The Lifelight and You;book;20;1;;;;;;tome volume
-78;A Contemporary Discussion of the Realms;book;20;1;;;;;;tome volume
-79;Filstred’s Guide to Life on the Continent;book;15;1;;;;;;tome volume
+id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount;keywords;description
+1;a good luck charm;trinket;1;1;;;;;;;A tiny, rustic, hand-made good luck charm that fits in the palm of your hand.  Hopefully this little trinket will always bring luck to whoever carries it.
+2;a black headband;headgear;3;1;1;;;;;head band;A black headband, no more than a simple strip of black cloth to tie around the head.
+3;a loose black tunic;armor;10;2;1;;;;;shirt top;A loose-fitting, comfortable, black tunic.  The sleeves of this loose black tunic are bound tightly to the wrists with strips of gray cloth wrappings.
+4;a pair of loose, black pants;legwear;10;2;1;;;;;leggings;A loose-fitting, comfortable pair of black trousers.  The ankles of these loose black pants are bound snugly with strips of gray cloth wrappings.
+5;a pair of soft, black boots;footwear;10;2;1;;;;;;A pair of soft black boots made of supple leather.  They are very comfortable and stride atop soft soles that fall quietly.
+6;a simple dagger;lightWeapon;25;2;;5;piercing;;;;A simple dagger made of plain steel.  It is about the length of a forearm and has a simple leather wrap around the grip.
+7;Audric's coin pouch;trinket;50;1;;;;;;;A small, canvas pouch, stuffed with a handful of coin.
+8;a small anvil;trinket;0;15;;;;;;;This tiny anvil would be good for working on jewelry.
+9;a medium anvil;trinket;0;35;;;;;;;This medium anvil would be good for working on small trinkets.
+10;a large anvil;trinket;0;65;;;;;;;This large anvil would be good for working on armor and weapons.
+11;a huge anvil;trinket;0;85;;;;;;;This enormous anvil would be good for working on oversized projects.
+12;a colossal anvil;trinket;0;115;;;;;;;This anvil is so enormous that you can't imagine what its purpose must be.
+13;a tasty sweetroll;consumable;3;1;;;;;10;sweet roll;A tasty looking sweetroll.
+14;a fresh loaf of bread;consumable;5;1;;;;;15;;A freshly baked loaf of bread, just firm enough and just fluffy enough, and it smells great.
+15;a tasty cake;consumable;8;1;;;;;10;;A freshly baked cake, sweet and covered with little bits of fruit and a sugar glaze.
+16;a shiny, red apple;consumable;3;1;;;;;10;;A shiny, juicy, delicious red apple, with a little stem sticking out the top with a leaf.
+17;an orange;consumable;4;1;;;;;10;;A nice, round, juicy, delicious orange, ready to peel and eat.
+18;a plum;consumable;3;1;;;;;8;;A purple plum, just ripe enough, just juicy enough, just sweet enough.
+19;an avocado;consumable;8;1;;;;;15;;A rare delicacy, this avocado is ripe and just the right texture.
+20;an elegant doublet;armor;250;2;1;;;;;shirt top;This fitted, elegant doublet features black, silken sleeves and a bodice that is beautifully embroidered with a motif of golden foliage.
+21;a fashionable beret;headgear;100;1;1;;;;;hat;This fashionable beret is made of fine wool and has a round, flat crown.  It is stitched with accents of golden thread.
+22;supple leather gloves;gloves;150;1;1;;;;;;These beautiful, supple leather gloves are lined with soft, warm cashmere inside.
+23;soft woolen leggings;legwear;200;2;1;;;;;pants;Intricate, golden embroidery in a foliage motif spans the outer length of both legs of these soft woolen leggings.
+24;a pair of stylish boots;footwear;250;2;2;;;;;;These stylish boots feature premium leather and slightly raised heels.
+25;modest saddlebags;saddlebags;30;15;;;;;;saddle bags;A set of modest saddlebags, made of sturdy cloth with a simple rope harness.  The will allow your horse to carry a little bit of extra gear.
+26;leather saddlebags;saddlebags;200;40;;;;;;saddle bags;A simple set of leather saddlebags, with buckles and straps to secure them.  With them, your horse can help you carry a good amount of extra cargo.
+27;reinforced saddlebags;saddlebags;500;100;;;;;;saddle bags;A fine set of reinforced saddlebags, supported with iron framing to strengthen them.  They look like they can carry a lot of cargo.
+28;a standard broadsword;heavyWeapon;150;4;;15;slashing;;;sword blade;A standard broadsword, suitable for typical combat conditions.  It is sharp, and seems sturdy enough.
+29;a standard rapier;lightWeapon;120;3;;7;piercing;;;sword blade;A standard rapier, suitable for duels and light combat.  It has a sharp tip and a flexible blade.
+30;little throwing daggers;rangedWeapon;100;4;;10;piercing;;;;A simple, but effective, set of little throwing daggers for the deft of hand.  They are made of plain steel, tip to butt.
+31;a standard mace;heavyWeapon;120;5;;15;bashing;;;;A standard mace, typical of the sort of thing you would see the town guard carrying around.
+32;a light leather cap;headgear;30;2;2;;;;;hat;A light leather cap, unadorned, made to shield the wearer from the elements as much as anything else. Provides a tiny bit of protection to the head.
+33;padded leather armor;armor;65;10;7;;;;;;"This padded leather armor provides a very basic level of protection from harm to the wearer.  It is a little bulky and awkward, made of tough leather panels over a heavy cloth backing; but it's better than nothing if you expect to get into a scrap."
+34;sturdy leather gloves;gloves;30;2;2;;;;;;A pair of sturdy leather gloves, these provide modest protection to the hands, but not much feel for the wearer.
+35;splinted leather leggings;legwear;55;10;5;;;;;pants;This set of splinted leather leggings is composed of a tough, padded lining, covered by protective bands of hardened leather.
+36;a pair of heavy, leather boots;footwear;40;4;2;;;;;;A pair of heavy leather boots made of thick, hardened hide.  Not comfortable for a long march, but very protective.
+37;a small vial of healing potion;consumable;35;1;;;;;100;;A small vial of opaque, purple liquid, corked at the top.  The potion fizzes, and mist floats in the empty space at the top of the vial.  You recognize this as a healing draught.
+38;a mysterious, light blue potion;consumable;1000;2;;;;;;;A light blue potion in a fist-sized vial, fizzing madly beneath its cork.
+39;an intriguing, muddy concoction;consumable;1000;2;;;;;;potion;A muddy concoction in a bulbous vial, releasing a wisp of smoke under the cork though it is not hot.
+40;a wondrous, glittering golden potion;consumable;1000;2;;;;;;;A glittering golden potion in a long, thin vial, sparkling in the light.
+41;a swirling, silvery potion;consumable;1000;2;;;;;;;A swirling silvery potion in a conical vial, shimmering gently in the light.
+42;a dull, gray sludge;consumable;1000;2;;;;;;potion;A dull gray sludge in an oblong vial, so thick it hardly moves under the cork as you tilt the container.
+43;a bright, yellow potion;consumable;1000;2;;;;;;;A bright yellow potion in a cylindrical vial, emitting steam and glowing despite resting cool in your hand.
+44;a silver crown;headgear;350;1;;;;;;;A silver crown, purely decorative, intended to show off the wearer's status and wealth.
+45;a set of silver rings;gloves;200;1;;;;;;;A set of various ornamented silver rings, just for show, intended to demonstrate the wearer's wealth and taste.
+46;an inspiring silver scepter;offhand;500;5;;;;;;;An inspiring silver scepter, about the length of your arm and covered with ornate etchings.  Carrying such a thing would add to the owner's air of authority.
+47;a shining silver dagger;lightWeapon;40;2;;6;piercing;;;;A shining, silver dagger, polished to gleam in the light.  A mark of prestige, while still demonstrating some bite to match any bark.
+48;a Parliamentary great helm;headgear;1500;10;7;;;;;helmet;A shining, immaculately polished great helm with bright plumage in the colors of the Realm of Ixpanne: blue, gold, and purple.  It has a visor that can be closed over the face for extra protection.
+49;Parliamentary upper armor with attached cape;armor;3000;25;25;;;;;;A gleaming set of polished plate armor with a cape and tabard depicting the crest of the Realm of Ixpanne, in the appropriate colors of blue, gold, and purple.  It looks to offer good protection, but might not be up to the standards of a war-hardened soldier.
+50;a set of Parliamentary plate gauntlets;gloves;2000;4;6;;;;;;A beautiful, polished set of plate gauntlets etched with the livery of the town of Parliament, capital of Ixpanne.
+51;a set of Parliamentary greaves;legwear;2500;25;25;;;;;leggings;A fine set of polished plate greaves to protect the legs, etched with the livery of the Realm of Ixpanne.
+52;a set of Parliamentary plated boots;footwear;2000;6;6;;;;;;A sparkling set of polished plated boots, embossed with the crest of the town of Parliament, capital of the Realm of Ixpanne.
+53;a decorative Parliamentary longsword;heavyWeapon;1250;3;;10;slashing;;;long sword blade;"A mirror-polished decorative longsword, with the crest of the capital city of Parliament engraved into the hilt.  It is combat ready, if only just; more meant for show."
+54;a bottle of beer;consumable;5;1;;;;;10;;A decent bottle of beer, kept corked in a brown bottle for travel.
+55;a bottle of grain spirit;consumable;20;2;;;;;5;;A decent bottle of clear grain spirit, kept corked in a clear bottle for travel.
+56;a bottle of cheap grain spirit;consumable;10;2;;;;;5;;A cheap bottle of clear grain spirit, kept corked in a dirty bottle.
+57;a Parliamentary peacekeeper's longsword;lightWeapon;90;3;;10;slashing;;;long sword blade;A peacekeeper longsword lies here, unremarkable but for the crest of Parliament engraved upon the hilt.
+58;a cheap bow for basic hunting;rangedWeapon;80;3;;10;piercing;;;;A cheap bow, made of cheap wood.  Not the best you can get, but will get the job done for simple archery.
+59;a basic hunting bow;rangedWeapon;150;3;;15;piercing;;;;A basic hunting bow, made of sound wood.  A capable enough piece of equipment that it may even hold its own on the battlefield, though it isn't intended for that purpose.
+60;a hunting crossbow;rangedWeapon;250;5;;25;piercing;;;cross bow;A hunting crossbow, of sound build.  Not meant for combat, it is clunky and difficult to reload and manage on the battlefield, but it will fire straight and true.
+61;Flickwrist Bracers;gloves;1200;2;2;;;;;;A set of pristine, leather Flickwrist Bracers to be worn on the wrists, these are said to improve the wearer's effectiveness at fighting with light weapons.
+62;Stout Stance Boots;footwear;1200;3;2;;;;;;A pair of slick, black Stout Stance Boots, said to stabilize the wearer's balance to enable more skilled attacks with heavy weapons.
+63;Eagle Eye Spectacles;headgear;500;1;;;;;;glasses;A pair of Eagle Eye Spectacles, that despite their rather bookish appearance are said to enable improved marksmanship through sharpened eyesight.
+64;Quickstep Trousers;legwear;1000;2;1;;;;;pants leggings;A pair of blue and light blue striped Quickstep Trousers.  They are said to lighten the wearer on their feet.
+65;a Strongsleeves Coat;armor;1500;7;4;;;;;strong sleeves jacket;This Strongsleeves Coat is made of thick, heavy fabric to protect the wearer somewhat, like a light gambeson, and is said to energize the wearer's muscles.
+66;a Thinking Cap;headgear;750;1;1;;;;;hat;A cheekily named Thinking Cap, this festively colored, woven beret is said to clear the wearer's thoughts.
+67;Foesbane Gloves;gloves;1200;2;2;;;;;;A pair of ambitiously named Foesbane Gloves, made of stout leather and said to enable the wearer to fight more effectively.
+68;Truestrike Gloves;gloves;1200;2;2;;;;;;A pair of black, leather Truestrike Gloves, these are said to make it easier to strike an opponent in a fight.
+69;a Protection Charm;offhand;750;1;;;;;;;A small charm wrought of semi-precious metals, this Protection Charm is said to be imbued with magic that will protect whosoe'er carries it from harm.
+70;Deftstep Boots;footwear;1200;2;2;;;;;;A set of thin, leather Deftstep Boots, said to quicken the wearer's step and make them harder to hit in a fight.
+71;a Scaleskin Jacket;armor;1500;10;12;;;;;;A leather Scaleskin Jacket, taking its name from the embossed reptile scale pattern over its surface.  It is said to grant more protection to the wearer than just the leather normally would.
+72;a wooden shield with bright floral decoration;offhand;50;8;5;;;;;;A wooden shield, painted with a lovely floral design in many bright, beautiful colors.  It seems sturdy enough for play fighting might not be meant for combat duty.
+73;a silver and gold filigreed shield;offhand;800;15;5;;;;;;A silver and gold filigreed shield, this work of art depicts a floral scene.  It is polished to a mirror shine and meant to demonstrate wealth rather than prowess, though you could get some limited mileage out of it in light battle.
+74;a basic shield;offhand;250;10;7;;;;;;A basic shield of reinforced metal, this piece is combat-ready and would serve a typical footsoldier nicely.  This otherwise simple shield is painted with some interesting geometric shapes in primary colors.
+75;A Guide to the Five Realms of the Drear;book;20;1;;;;;;tome volume;A book titled A Guide to the Five Realms of the Drear.  It looks to be on the newer side, suggesting it was recently enough printed to be of relevance.
+76;A Field Guide for Soldiers of the Empire of the Sky;book;5;1;;;;;;tome volume;A book titled A Field Guide for Soldiers of the Empire of the Sky.  It is beaten and worn, the spine threatening to let go of several pages, and has clearly been flipped through many, many times.
+77;Personal Growth: The Lifelight and You;book;20;1;;;;;;tome volume;A book titled Personal Growth: The Lifelight and You.  To your surprise, a quick rifle through the pages gives the impression of some very useful information.
+78;A Contemporary Discussion of the Realms;book;20;1;;;;;;tome volume;A book titled A Contemporary Discussion of the Realms.  It looks to be on the newer side, suggesting it was recently enough printed to be of relevance.
+79;Filstred’s Guide to Life on the Continent;book;15;1;;;;;;tome volume;An outsized book, with a heavy wooden hardcover, titled Filstred’s Guide to Life on the Continent.  There is something fishy about it, like it doesn't fit in your hands properly.  No, more like it doesn't fit in your eyes properly.  No, it's something else...

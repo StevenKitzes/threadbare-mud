@@ -24,7 +24,7 @@ export function augment_talesToTomesOwner(npc: NPC): NPC {
           character.job === ClassTypes.skyguard ? '"What kind of material might grasp the attention of a battle-hardened Skyguard such as yourself?"' :
           character.job === ClassTypes.weaver ? '"What types of works might inspire the mind of a traveling Weaver such as yourself?"' :
           '"What might I have that would capture your imagination?"',
-        ...npc.getSaleItems().map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`),
+        ...npc.getSaleItems().map(item => `- ${item.title} (${item.type}) {${item.getValue()} coin${item.getValue() === 1 ? '' : 's'}}`),
         `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);
       return true;

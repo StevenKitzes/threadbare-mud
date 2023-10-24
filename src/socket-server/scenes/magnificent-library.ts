@@ -3,13 +3,12 @@ import { SceneSentiment } from "../../types";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
-import jStr from "../../utils/jStr";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { ItemIds } from "../items/items";
 import { augment_audric } from "../npcs/audric";
 import { npcImports } from "../npcs/csvNpcImport";
-import { NPC, NpcIds, npcFactories, npcFactory } from "../npcs/npcs";
+import { NPC, NpcIds, npcFactory } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
 import { SceneIds, navigate } from "./scenes";
 

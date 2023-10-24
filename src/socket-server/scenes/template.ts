@@ -8,7 +8,7 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, npcFactories } from '../npcs/npcs';
+import { NPC } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
@@ -42,7 +42,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get()() ]);
+      characterNpcs.set(character.id, [ - ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {

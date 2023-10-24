@@ -5,7 +5,7 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories, npcFactory } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { makeMatcher } from '../../utils/makeMatcher';

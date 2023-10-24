@@ -1,11 +1,13 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { ITEM_VALUE_RANDOMIZER_TIMER, REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
-import { CharacterUpdateOpts, StatEffect, TemporaryEffect } from "../../types";
+import { CharacterUpdateOpts, EffectStat, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
-import { commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
+import { commandMatchesKeywordsFor } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
+import { augment_statPotion, augment_consumable } from "./consumable";
 
-import { itemImports, readItemCsv } from "./csvItemImport";
+import { readItemCsv } from "./csvItemImport";
+import { augment_book, augment_durable } from "./durable";
 
 export type Item = {
   id: ItemIds;
@@ -13,7 +15,7 @@ export type Item = {
   title: string;
   description: string;
   keywords: string[];
-  value: number;
+  getValue: () => number;
   randomizeValue: () => number;
   weight: number;
   armorValue?: number;
@@ -46,9 +48,9 @@ export enum ItemTypes {
 };
 
 export enum DamageType {
-  slashing = 1,
-  piercing = 2,
-  bashing = 3
+  slashing = "slashing",
+  piercing = "piercing",
+  bashing = "bashing"
 }
 
 export enum ItemIds {
@@ -134,85 +136,203 @@ export enum ItemIds {
 }
 
 readItemCsv(() => {
-  import('./good-luck-charm').then(item => items.set(item.id, item));
-  import('./black-headband').then(item => items.set(item.id, item));
-  import('./loose-black-tunic').then(item => items.set(item.id, item));
-  import('./loose-black-pants').then(item => items.set(item.id, item));
-  import('./soft-black-boots').then(item => items.set(item.id, item));
-  import('./simple-dagger').then(item => items.set(item.id, item));
-  import('./audrics-coin-pouch').then(item => items.set(item.id, item));
-  import('./small-anvil').then(item => items.set(item.id, item));
-  import('./medium-anvil').then(item => items.set(item.id, item));
-  import('./large-anvil').then(item => items.set(item.id, item));
-  import('./huge-anvil').then(item => items.set(item.id, item));
-  import('./colossal-anvil').then(item => items.set(item.id, item));
-  import('./sweetroll').then(item => items.set(item.id, item));
-  import('./bread-loaf').then(item => items.set(item.id, item));
-  import('./cake').then(item => items.set(item.id, item));
-  import('./apple').then(item => items.set(item.id, item));
-  import('./orange').then(item => items.set(item.id, item));
-  import('./plum').then(item => items.set(item.id, item));
-  import('./avocado').then(item => items.set(item.id, item));
-  import('./elegant-doublet').then(item => items.set(item.id, item));
-  import('./fashionable-beret').then(item => items.set(item.id, item));
-  import('./supple-leather-gloves').then(item => items.set(item.id, item));
-  import('./soft-woolen-leggings').then(item => items.set(item.id, item));
-  import('./stylish-boots').then(item => items.set(item.id, item));
-  import('./modest-saddlebags').then(item => items.set(item.id, item));
-  import('./leather-saddlebags').then(item => items.set(item.id, item));
-  import('./reinforced-saddlebags').then(item => items.set(item.id, item));
-  import('./standard-broadsword').then(item => items.set(item.id, item));
-  import('./standard-rapier').then(item => items.set(item.id, item));
-  import('./little-throwing-daggers').then(item => items.set(item.id, item));
-  import('./standard-mace').then(item => items.set(item.id, item));
-  import('./light-leather-cap').then(item => items.set(item.id, item));
-  import('./padded-leather-armor').then(item => items.set(item.id, item));
-  import('./sturdy-leather-gloves').then(item => items.set(item.id, item));
-  import('./splinted-leather-leggings').then(item => items.set(item.id, item));
-  import('./heavy-leather-boots').then(item => items.set(item.id, item));
-  import('./small-healing-potion').then(item => items.set(item.id, item));
-  import('./agility-potion').then(item => items.set(item.id, item));
-  import('./strength-potion').then(item => items.set(item.id, item));
-  import('./savvy-potion').then(item => items.set(item.id, item));
-  import('./light-attack-potion').then(item => items.set(item.id, item));
-  import('./heavy-attack-potion').then(item => items.set(item.id, item));
-  import('./ranged-attack-potion').then(item => items.set(item.id, item));
-  import('./silver-crown').then(item => items.set(item.id, item));
-  import('./silver-rings').then(item => items.set(item.id, item));
-  import('./inspiring-silver-scepter').then(item => items.set(item.id, item));
-  import('./silver-dagger').then(item => items.set(item.id, item));
-  import('./parliament-great-helm').then(item => items.set(item.id, item));
-  import('./parliament-armor').then(item => items.set(item.id, item));
-  import('./parliament-gauntlets').then(item => items.set(item.id, item));
-  import('./parliament-greaves').then(item => items.set(item.id, item));
-  import('./parliament-boots').then(item => items.set(item.id, item));
-  import('./parliament-decorative-sword').then(item => items.set(item.id, item));
-  import('./cool-beer').then(item => items.set(item.id, item));
-  import('./bottle-of-grain-spirit').then(item => items.set(item.id, item));
-  import('./bottle-of-cheap-grain-spirit').then(item => items.set(item.id, item));
-  import('./peacekeeper-longsword').then(item => items.set(item.id, item));
-  import('./budget-hunting-bow').then(item => items.set(item.id, item));
-  import('./hunting-bow').then(item => items.set(item.id, item));
-  import('./hunting-crossbow').then(item => items.set(item.id, item));
-  import('./flickwrist-bracers').then(item => items.set(item.id, item));
-  import('./stout-stance-boots').then(item => items.set(item.id, item));
-  import('./eagle-eye-spectacles').then(item => items.set(item.id, item));
-  import('./quickstep-trousers').then(item => items.set(item.id, item));
-  import('./strongsleeves-coat').then(item => items.set(item.id, item));
-  import('./thinking-cap').then(item => items.set(item.id, item));
-  import('./foesbane-gloves').then(item => items.set(item.id, item));
-  import('./truestrike-gloves').then(item => items.set(item.id, item));
-  import('./protection-charm').then(item => items.set(item.id, item));
-  import('./deftstep-boots').then(item => items.set(item.id, item));
-  import('./scaleskin-jacket').then(item => items.set(item.id, item));
-  import('./floral-wooden-shield').then(item => items.set(item.id, item));
-  import('./shield-with-filigree').then(item => items.set(item.id, item));
-  import('./basic-painted-shield').then(item => items.set(item.id, item));
-  import('./the-five-realms-book').then(item => items.set(item.id, item));
-  import('./imperial-guide-book').then(item => items.set(item.id, item));
-  import('./personal-growth-book').then(item => items.set(item.id, item));
-  import('./realm-guide-book').then(item => items.set(item.id, item));
-  import('./filstreds-guide-book').then(item => items.set(item.id, item));
+  // augmentation of simple consumable items
+  augment_consumable(items.get(ItemIds.APPLE), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.AVOCADO), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.BOTTLE_OF_BEER), REGEX_DRINK_ALIASES, [
+    {
+      amount: -2,
+      duration: 300000,
+      name: "the mental affects of alcohol",
+      stat: EffectStat.savvy
+    },
+    {
+      amount: -2,
+      duration: 600000,
+      name: "the physical affects of alcohol",
+      stat: EffectStat.agility
+    }
+  ]);
+  augment_consumable(items.get(ItemIds.BOTTLE_OF_CHEAP_GRAIN_SPIRIT), REGEX_DRINK_ALIASES, [
+    {
+      amount: -4,
+      duration: 1200000,
+      name: "the mental affects of cheap spirit",
+      stat: EffectStat.savvy
+    },
+    {
+      amount: -4,
+      duration: 1800000,
+      name: "the physical affects of cheap spirit",
+      stat: EffectStat.agility
+    }
+  ]);
+  augment_consumable(items.get(ItemIds.BOTTLE_OF_GRAIN_SPIRIT), REGEX_DRINK_ALIASES, [
+    {
+      amount: -4,
+      duration: 600000,
+      name: "the mental affects of grain spirit",
+      stat: EffectStat.savvy
+    },
+    {
+      amount: -4,
+      duration: 1200000,
+      name: "the physical affects of grain spirit",
+      stat: EffectStat.agility
+    }
+  ]);
+  augment_consumable(items.get(ItemIds.BREAD_LOAF), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.CAKE), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.ORANGE), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.PLUM), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.SMALL_HEALING_POTION), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.SWEETROLL), REGEX_EAT_ALIASES);
+  
+  // augmentation of books
+  augment_book(items.get(ItemIds.FILSTREDS_GUIDE_BOOK));
+  augment_book(items.get(ItemIds.IMPERIAL_GUIDE_BOOK));
+  
+  // augmentation of durable items
+  augment_durable(items.get(ItemIds.AUDRICS_COIN_POUCH), { quest: true });
+  augment_durable(items.get(ItemIds.BUDGET_HUNTING_BOW), {
+    statEffects: [
+      {
+        stat: EffectStat.agility,
+        amount: -2
+      },
+      {
+        stat: EffectStat.defense,
+        amount: 2
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.DEFTSTEP_BOOTS), {
+    statEffects: [
+      {
+        stat: EffectStat.dodge,
+        amount: 1
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.FLICKWRIST_BRACERS), {
+    statEffects: [
+      {
+        stat: EffectStat.lightAttack,
+        amount: 1
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.FOESBANE_GLOVES), {
+    statEffects: [
+      {
+        stat: EffectStat.damage,
+        amount: 1
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.EAGLE_EYE_SPECTACLES), {
+    statEffects: [
+      {
+        stat: EffectStat.rangedAttack,
+        amount: 1
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.HUNTING_BOW), {
+    statEffects: [
+      {
+        stat: EffectStat.agility,
+        amount: -2
+      },
+      {
+        stat: EffectStat.defense,
+        amount: 2
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.HUNTING_CROSSBOW), {
+    statEffects: [
+      {
+        stat: EffectStat.agility,
+        amount: -4
+      }, {
+        stat: EffectStat.defense,
+        amount: +4
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.INSPIRING_SILVER_SCEPTER), {
+    statEffects: [
+      {
+        stat: EffectStat.savvy,
+        amount: 2,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.PROTECTION_CHARM), {
+    statEffects: [
+      {
+        stat: EffectStat.defense,
+        amount: 1,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.QUICKSTEP_TROUSERS), {
+    statEffects: [
+      {
+        stat: EffectStat.agility,
+        amount: 1,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.SCALESKIN_JACKET), {
+    statEffects: [
+      {
+        stat: EffectStat.armor,
+        amount: 1,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.STOUT_STANCE_BOOTS), {
+    statEffects: [
+      {
+        stat: EffectStat.heavyAttack,
+        amount: 1,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.STRONGSLEEVES_COAT), {
+    statEffects: [
+      {
+        stat: EffectStat.strength,
+        amount: 1,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.THINKING_CAP), {
+    statEffects: [
+      {
+        stat: EffectStat.savvy,
+        amount: 1,
+      },
+    ]
+  });
+  augment_durable(items.get(ItemIds.TRUESTRIKE_GLOVES), {
+    statEffects: [
+      {
+        stat: EffectStat.accuracy,
+        amount: 1,
+      },
+    ]
+  });
+
+  // augmentation of special items
+  augment_statPotion(items.get(ItemIds.AGILITY_POTION), "agility", 100, 1, "When the sensation subsides, you feel your reflexes are sharper than before.");
+  augment_statPotion(items.get(ItemIds.HEAVY_ATTACK_POTION), "heavy_attack", 100, 1, "When the sensation subsides, you feel your hands yearning to swing heavier weapons.");
+  augment_statPotion(items.get(ItemIds.LIGHT_ATTACK_POTION), "light_attack", 100, 1, "When the sensation subsides, your hands feel eager to swing lighter weapons.");
+  augment_statPotion(items.get(ItemIds.RANGED_ATTACK_POTION), "ranged_attack", 100, 1, "When the sensation subsides, your eyes seem more ready to pick out ranged targets at a distance.");
+  augment_statPotion(items.get(ItemIds.SAVVY_POTION), "savvy", 100, 1, "When the sensation subsides, you feel your mind is a little more clear than before.");
+  augment_statPotion(items.get(ItemIds.STRENGTH_POTION), "strength", 100, 1, "When the sensation subsides, you feel your muscles are more powerful than before.");
 });
 
 setInterval(() => {
@@ -221,11 +341,9 @@ setInterval(() => {
 }, ITEM_VALUE_RANDOMIZER_TIMER);
 
 export type ConsumeItemOpts = {
+  item: Item,
   handlerOptions: HandlerOptions;
   actionAliases: string;
-  keywords: string[];
-  itemId: ItemIds;
-  itemTitle: string;
   extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
   extraEffectsOpts?: any;
   healAmount?: number;
@@ -233,11 +351,9 @@ export type ConsumeItemOpts = {
 }
 
 export function consumeItem({
+  item,
   handlerOptions,
   actionAliases,
-  keywords,
-  itemId,
-  itemTitle,
   extraEffects,
   extraEffectsOpts,
   healAmount,
@@ -246,11 +362,11 @@ export function consumeItem({
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
-  if ( commandMatchesKeywordsFor(command, keywords, actionAliases) ) {
+  if ( commandMatchesKeywordsFor(command, item.keywords, actionAliases) ) {
     let characterUpdate: CharacterUpdateOpts = {};
     characterUpdate.health = Math.min(character.health_max, character.health + healAmount);
     characterUpdate.inventory = [ ...character.inventory ];
-    characterUpdate.inventory.splice(character.inventory.indexOf(itemId), 1);
+    characterUpdate.inventory.splice(character.inventory.indexOf(item.id), 1);
     if (consumeEffects !== undefined) {
       characterUpdate.temporaryEffects = [];
       consumeEffects.forEach((effect: TemporaryEffect) => {
@@ -277,13 +393,12 @@ export function consumeItem({
 
     if (writeCharacterData(character.id, characterUpdate)) {
       Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
-      emitOthers(`${name} eats ${itemTitle}.`);
-
+      
       let actionString: string;
       if (actionAliases === REGEX_DRINK_ALIASES) actionString = 'drink';
       if (actionAliases === REGEX_EAT_ALIASES) actionString = 'eat';
       if (actionAliases === REGEX_USE_ALIASES) actionString = 'use';
-
+      
       let healString: string;
       if (healAmount < character.health_max * 0.1) healString = 'a little rejuvenated';
       else if (healAmount < character.health_max * 0.2) healString = 'quite rejuvenated';
@@ -296,8 +411,9 @@ export function consumeItem({
       else if (healAmount < character.health_max * 0.9) healString = 'your health almost completely restored';
       else if (healAmount < character.health_max) healString = 'fully reinvigorated';
       else healString = 'the Lifelight rushing into you, repairing all damage to your body';
-
-      emitSelf(`You ${actionString} ${itemTitle} and feel ${healString}.`);
+      
+      emitOthers(`${name} ${actionString}s ${item.title}.`);
+      emitSelf(`You ${actionString} ${item.title} and feel ${healString}.`);
       return true;
     }
   }

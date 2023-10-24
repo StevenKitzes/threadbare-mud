@@ -1,6 +1,9 @@
 import { parse } from 'csv-parse';
 import { createReadStream } from 'fs';
-import { DamageType, ItemIds, ItemTypes } from './items';
+import { items, DamageType, ItemIds, ItemTypes, Item } from './items';
+import { csvItemToKeywords } from '../../utils/csvPropsToKeywords';
+import { itemPriceRandomizer } from '../../utils/itemPriceRandomizer';
+import { HandlerOptions } from '../server';
 
 export type ItemImport = {
   id: ItemIds,
@@ -14,6 +17,7 @@ export type ItemImport = {
   hitBonus: number | undefined,
   healAmount: number | undefined,
   keywords: string | undefined,
+  description: string,
 };
 
 enum Column {
@@ -28,11 +32,10 @@ enum Column {
   hitBonus = 8,
   healAmount = 9,
   keywords = 10,
+  description = 11,
 }
 
-export const itemImports: Map<ItemIds, ItemImport> = new Map<ItemIds, ItemImport>();
-
-export function readItemCsv(callback: () => void) {
+export function readItemCsv(callback?: () => void) {
   createReadStream('./src/socket-server/items/items.csv')
     .pipe(parse({ delimiter: ';' }))
     .on('data', (data) => {
@@ -45,15 +48,55 @@ export function readItemCsv(callback: () => void) {
         weight: parseInt(data[Column.weight]),
         armorValue: parseInt(data[Column.armorValue]) || undefined,
         damageValue: parseInt(data[Column.damageValue]) || undefined,
-        damageType: parseInt(data[Column.damageType]) || undefined,
+        damageType: data[Column.damageType],
         hitBonus: parseInt(data[Column.hitBonus]) || undefined,
         healAmount: parseInt(data[Column.healAmount]) || undefined,
         keywords: data[Column.keywords],
+        description: data[Column.description],
       };
-      itemImports.set(itemImport.id, itemImport);
+      itemFactory(itemImport);
     })
     .on('end', () => {
       console.log('Items imported.');
-      callback();
+      if (callback) callback();
     });
+}
+
+function itemFactory (csvData: ItemImport): Item {
+  let value: number;
+
+  const randomizeValue = (): number => {
+    value = itemPriceRandomizer(csvData.value);
+    return value;
+  }
+
+  value = randomizeValue();
+
+  const getValue = (): number => {
+    return value;
+  }
+
+  const item: Item = {
+    id: csvData.id,
+    type: csvData.type,
+    title: csvData.title,
+    description: csvData.description,
+    keywords: csvItemToKeywords(csvData),
+    getValue,
+    randomizeValue,
+    weight: csvData.weight,
+    armorValue: csvData.armorValue,
+    damageValue: csvData.damageValue,
+    damageType: csvData.damageType,
+    hitBonus: csvData.hitBonus,
+    handleItemCommand: (handlerOptions: HandlerOptions) => false,
+    quest: false,
+    healAmount: csvData.healAmount,
+    consumeEffects: [],
+    statEffects: [],
+  }
+
+  items.set(item.id, item);
+
+  return item;
 }
