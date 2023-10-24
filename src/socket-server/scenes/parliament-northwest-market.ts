@@ -11,6 +11,7 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { npcImports } from '../npcs/csvNpcImport';
+import { augment_stablemaster } from '../npcs/stablemaster';
 
 const id: SceneIds = SceneIds.PARLIAMENT_NORTHWEST_MARKET;
 const title: string = "Parliament Northwestern Marketplace";
@@ -41,7 +42,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
             ItemIds.STANDARD_MACE,
           ],
         }),
-        npcFactory({
+        augment_stablemaster(npcFactory({
           csvData: npcImports.get(NpcIds.STABLEMASTER),
           character,
           vendorInventory: [
@@ -49,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
             ItemIds.LEATHER_SADDLEBAGS,
             ItemIds.REINFORCED_SAGGLEBAGS,
           ],
-        }),
+        })),
         npcFactory({
           csvData: npcImports.get(NpcIds.LEATHER_WORKER),
           character,

@@ -12,6 +12,7 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { npcImports } from '../npcs/csvNpcImport';
+import { augment_gruffInnkeeper } from '../npcs/gruff-innkeeper';
 
 const id: SceneIds = SceneIds.PARLIAMENT_MARKET_INN;
 const title: string = "The Parliament Market Inn";
@@ -32,7 +33,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactory({
+        augment_gruffInnkeeper(npcFactory({
           csvData: npcImports.get(NpcIds.GRUFF_INNKEEPER),
           character,
           vendorInventory: [
@@ -41,7 +42,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
             ItemIds.BOTTLE_OF_CHEAP_GRAIN_SPIRIT,
             ItemIds.BREAD_LOAF,
           ],
-        }),
+        })),
       ]);
     }
 
