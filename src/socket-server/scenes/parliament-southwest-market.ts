@@ -26,18 +26,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
   if (command === 'enter') {
-    // Only relevant to scenes with npcs, to set up npc state
-    if (!characterNpcs.has(character.id)) {
-      // Populate NPCs
-      characterNpcs.set(character.id, [
-      ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
-    }
-
     return handleSceneCommand({
       ...handlerOptions,
       command: 'look'
@@ -59,8 +47,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
-    // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
 
     emitSelf(actorText);
 

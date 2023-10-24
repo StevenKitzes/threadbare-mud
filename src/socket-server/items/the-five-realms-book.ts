@@ -1,6 +1,7 @@
 import { REGEX_READ_ALIASES } from "../../constants";
 import getEmitters from "../../utils/emitHelper";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { captureFrom } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
@@ -11,7 +12,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = `A book titled [${title}].  It looks to be on the newer side, suggesting it was recently enough printed to be of relevance.`;
-const keywords: string[] = ['book', 'the five realms', 'five realms', 'guide to the five realms'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

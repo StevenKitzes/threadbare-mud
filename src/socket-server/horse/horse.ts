@@ -8,7 +8,7 @@ import { OptsType } from "../../utils/getGameTextObject";
 import items, { Item, ItemIds } from "../items/items";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { getEncumbranceString } from "../../utils/encumbrance";
-import { firstCharToUpper } from "../../utils/firstCharToUpper";
+import { firstUpper } from "../../utils/firstUpper";
 
 // capacity mapping
 export const saddlebagCapacityMap: Map<ItemIds, number> = new Map<ItemIds, number>();
@@ -64,7 +64,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
 
   const renameMatch: string = captureFrom(command, `${REGEX_RENAME_ALIASES}) (?:${REGEX_HORSE_ALIASES}`);
   if (renameMatch !== null) {
-    const formattedRenameMatch: string = firstCharToUpper(renameMatch.trim());
+    const formattedRenameMatch: string = firstUpper(renameMatch.trim());
     if (formattedRenameMatch.length < 3) {
       emitSelf(`That name is too short.  Your horse deserves a longer name (3 characters at least)!`);
       return true;
@@ -142,7 +142,6 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
             inventory: newHorseInventory
           }
         })) {
-          console.log('wrote character data')
           character.inventory = newInventory;
           character.horse.inventory = newHorseInventory;
           emitSelf([

@@ -1,4 +1,5 @@
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
@@ -7,7 +8,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A small, canvas pouch, stuffed with a handful of coin.";
-const keywords: string[] = ['pouch', 'coin pouch', 'canvas pouch'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 const quest: boolean = true;

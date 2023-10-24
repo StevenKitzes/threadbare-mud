@@ -2,6 +2,7 @@
 
 import getEmitters from "../../utils/emitHelper";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { itemPropsToKeywords } from "../../utils/itemPropsToKeywords";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
@@ -11,7 +12,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = ;
-const keywords: string[] = ;
+const keywords: string[] = itemPropsToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

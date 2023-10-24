@@ -2,6 +2,7 @@ import { REGEX_USE_ALIASES } from "../../constants";
 import { EffectStat, StatEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
@@ -12,7 +13,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A tiny, rustic, hand-made [good luck charm] that fits in the palm of your hand.  Hopefully this little trinket will always bring luck to whoever carries it.";
-const keywords: string[] = ['good luck charm', 'lucky charm','charm'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

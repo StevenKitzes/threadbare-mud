@@ -9,6 +9,13 @@ export function startMatcher (actionAliases: string): RegExp {
   return new RegExp(`^(?:${actionAliases}) `);
 }
 
+export function commandMatchesKeywordsFor (command: string, keywords: string[], regex: string): boolean {
+  const capture: string | null = captureFrom(command, regex);
+  if (capture === null) return false;
+  if (capture.split(' ').every(word => keywords.includes(word))) return true;
+  return false;
+}
+
 export function captureFrom (command: string, actionAliases: string): string | null {
   const matches: string[] | null = command.match(new RegExp(`^(?:${actionAliases}) (.+)$`));
   if (matches === null) return null;

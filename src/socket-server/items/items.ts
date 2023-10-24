@@ -2,7 +2,7 @@ import { writeCharacterData } from "../../../sqlite/sqlite";
 import { ITEM_VALUE_RANDOMIZER_TIMER, REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
 import { CharacterUpdateOpts, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
-import { makeMatcher } from "../../utils/makeMatcher";
+import { commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 
 import { itemImports, readItemCsv } from "./csvItemImport";
@@ -223,7 +223,7 @@ setInterval(() => {
 export type ConsumeItemOpts = {
   handlerOptions: HandlerOptions;
   actionAliases: string;
-  targetAliases: string;
+  keywords: string[];
   itemId: ItemIds;
   itemTitle: string;
   extraEffects?: (hanlerOptions: HandlerOptions, extraEffectsOpts: any) => CharacterUpdateOpts;
@@ -235,7 +235,7 @@ export type ConsumeItemOpts = {
 export function consumeItem({
   handlerOptions,
   actionAliases,
-  targetAliases,
+  keywords,
   itemId,
   itemTitle,
   extraEffects,
@@ -246,10 +246,7 @@ export function consumeItem({
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
-  if (
-    command.match(makeMatcher(actionAliases, targetAliases)) &&
-    character.inventory.includes(itemId)
-  ) {
+  if ( commandMatchesKeywordsFor(command, keywords, actionAliases) ) {
     let characterUpdate: CharacterUpdateOpts = {};
     characterUpdate.health = Math.min(character.health_max, character.health + healAmount);
     characterUpdate.inventory = [ ...character.inventory ];

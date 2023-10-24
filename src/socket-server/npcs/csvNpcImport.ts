@@ -1,6 +1,7 @@
 import { parse } from 'csv-parse';
 import { createReadStream } from 'fs';
 import { NpcIds } from './npcs';
+import { Faction } from '../../types';
 
 export type NpcImport = {
   id: NpcIds,
@@ -13,6 +14,11 @@ export type NpcImport = {
   savvy: number,
   damageValue: number,
   armor: number,
+  keywords: string,
+  description: string,
+  talkText: string,
+  attackDescription: string,
+  faction: Faction,
 };
 
 enum Column {
@@ -26,11 +32,16 @@ enum Column {
   savvy = 7,
   damageValue = 8,
   armor = 9,
+  keywords = 10,
+  description = 11,
+  talkText = 12,
+  attackDescription = 13,
+  faction = 14,
 }
 
 export const npcImports: Map<NpcIds, NpcImport> = new Map<NpcIds, NpcImport>();
 
-export function readNpcCsv(callback: () => void) {
+export function readNpcCsv(callback?: () => void) {
   createReadStream('./src/socket-server/npcs/npcs.csv')
     .pipe(parse({ delimiter: ';' }))
     .on('data', (data) => {
@@ -46,11 +57,16 @@ export function readNpcCsv(callback: () => void) {
         savvy: parseInt(data[Column.savvy]) || undefined,
         damageValue: parseInt(data[Column.damageValue]) || undefined,
         armor: parseInt(data[Column.armor]) || undefined,
+        keywords: data[Column.keywords],
+        description: data[Column.description],
+        talkText: data[Column.talkText],
+        attackDescription: data[Column.attackDescription],
+        faction: data[Column.faction],
       };
       npcImports.set(npcImport.id, npcImport);
     })
     .on('end', () => {
       console.log('NPCs imported.');
-      callback();
+      if (callback) callback();
     });
 }

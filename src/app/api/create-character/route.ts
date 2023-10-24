@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { v4 } from 'uuid';
 
-import { transact, writeNewCharacter } from '../../../../sqlite/sqlite';
+import { transact, writeActiveCharacter, writeActiveCharacterTransactable, writeNewCharacter } from '../../../../sqlite/sqlite';
 import { ConfirmedUser } from '@/types';
 import killCookieResponse from '@/utils/killCookieResponse';
 import { err400, err401, err500, success200 } from '@/utils/apiResponses';
@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
     const { name } = await req.clone().json();
     
     transact([
-      writeNewCharacter(charId, userId, name)
+      writeNewCharacter(charId, userId, name),
+      ...writeActiveCharacterTransactable(userId, charId),
     ]);
     
     return new NextResponse(jStr(success200("New character created successfully")), {

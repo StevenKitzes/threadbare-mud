@@ -5,13 +5,14 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
-import { firstCharToUpper } from '../../utils/firstCharToUpper';
+import { firstUpper } from '../../utils/firstUpper';
 import { handleFactionAggro } from '../../utils/combat';
+import { npcImports } from '../npcs/csvNpcImport';
 
 const id: SceneIds = SceneIds.PARLIAMENT_WEST_MARKET;
 const title: string = "Parliament Western Marketplace";
@@ -26,21 +27,47 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
+  console.log('handleSceneCommand', command)
 
   if (command === 'enter') {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.BAKER)(),
-        npcFactories.get(NpcIds.FRUIT_VENDOR)(),
-        npcFactories.get(NpcIds.LUXURY_CLOTHIER)(),
-        npcFactories.get(NpcIds.GLOWERING_PEACEKEEPER)(),
+        npcFactory({
+          csvData: npcImports.get(NpcIds.BAKER),
+          character,
+          vendorInventory: [
+            ItemIds.BREAD_LOAF, ItemIds.SWEETROLL, ItemIds.CAKE
+          ],
+        }),
+        npcFactory({
+          csvData: npcImports.get(NpcIds.FRUIT_VENDOR),
+          character,
+          vendorInventory: [
+            ItemIds.ORANGE, ItemIds.AVOCADO, ItemIds.PLUM, ItemIds.APPLE
+          ],
+        }),
+        npcFactory({
+          csvData: npcImports.get(NpcIds.LUXURY_CLOTHIER),
+          character,
+          vendorInventory: [
+            ItemIds.FASHIONABLE_BERET,
+            ItemIds.ELEGANT_DOUBLET,
+            ItemIds.SUPPLE_LEATHER_GLOVES,
+            ItemIds.SOFT_WOOLEN_LEGGINGS,
+            ItemIds.STYLISH_BOOTS,
+          ],
+        }),
+        npcFactory({
+          csvData: npcImports.get(NpcIds.GLOWERING_PEACEKEEPER),
+          character,
+        }),
       ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
+        if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
 
@@ -67,7 +94,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

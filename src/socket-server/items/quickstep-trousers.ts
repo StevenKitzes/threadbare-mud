@@ -1,5 +1,6 @@
 import { EffectStat, StatEffect } from "../../types";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
@@ -8,7 +9,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A pair of blue and light blue striped [Quickstep Trousers].  They are said to lighten the wearer on their feet.";
-const keywords: string[] = ['trousers', 'magic trousers', 'quickstep trousers', 'pants', 'magic pants', 'quickstep'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

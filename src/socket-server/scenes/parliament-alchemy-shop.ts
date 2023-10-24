@@ -5,11 +5,12 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { npcImports } from '../npcs/csvNpcImport';
 
 const id: SceneIds = SceneIds.PARLIAMENT_ALCHEMY_SHOP;
 const title: string = "An ominous alchemy shop in Parliament";
@@ -29,12 +30,21 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS)() ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
+      characterNpcs.set(character.id, [
+        npcFactory({
+          csvData: npcImports.get(NpcIds.ALCHEMIST_GNARLED_BEYOND_HIS_YEARS),
+          character,
+          vendorInventory: [
+            ItemIds.SMALL_HEALING_POTION,
+            ItemIds.STRENGTH_POTION,
+            ItemIds.RANGED_ATTACK_POTION,
+            ItemIds.HEAVY_ATTACK_POTION,
+            ItemIds.AGILITY_POTION,
+            ItemIds.SAVVY_POTION,
+            ItemIds.LIGHT_ATTACK_POTION,
+          ],
+        }),
+      ]);
     }
 
     return handleSceneCommand({
@@ -58,7 +68,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

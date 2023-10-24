@@ -1,4 +1,5 @@
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
@@ -7,7 +8,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A [light leather cap], unadorned, made to shield the wearer from the elements as much as anything else. Provides a tiny bit of protection to the head.";
-const keywords: string[] = ['light leather cap', 'leather cap', 'light cap', 'cap'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

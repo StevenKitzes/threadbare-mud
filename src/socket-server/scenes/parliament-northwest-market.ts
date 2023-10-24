@@ -5,11 +5,12 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { npcImports } from '../npcs/csvNpcImport';
 
 const id: SceneIds = SceneIds.PARLIAMENT_NORTHWEST_MARKET;
 const title: string = "Parliament Northwestern Marketplace";
@@ -30,15 +31,37 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactories.get(NpcIds.HUMBLE_BLACKSMITH)(),
-        npcFactories.get(NpcIds.STABLEMASTER)(),
-        npcFactories.get(NpcIds.LEATHER_WORKER)()
+        npcFactory({
+          csvData: npcImports.get(NpcIds.HUMBLE_BLACKSMITH),
+          character,
+          vendorInventory: [
+            ItemIds.STANDARD_BROADSWORD,
+            ItemIds.STANDARD_RAPIER,
+            ItemIds.LITTLE_THROWING_DAGGERS,
+            ItemIds.STANDARD_MACE,
+          ],
+        }),
+        npcFactory({
+          csvData: npcImports.get(NpcIds.STABLEMASTER),
+          character,
+          vendorInventory: [
+            ItemIds.MODEST_SADDLEBAGS,
+            ItemIds.LEATHER_SADDLEBAGS,
+            ItemIds.REINFORCED_SAGGLEBAGS,
+          ],
+        }),
+        npcFactory({
+          csvData: npcImports.get(NpcIds.LEATHER_WORKER),
+          character,
+          vendorInventory: [
+            ItemIds.LIGHT_LEATHER_CAP,
+            ItemIds.PADDED_LEATHER_ARMOR,
+            ItemIds.STURDY_LEATHER_GLOVES,
+            ItemIds.SPLINTED_LEATHER_LEGGINGS,
+            ItemIds.HEAVY_LEATHER_BOOTS,
+          ],
+        }),
       ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
     }
 
     return handleSceneCommand({
@@ -62,7 +85,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

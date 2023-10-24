@@ -6,11 +6,12 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { npcImports } from '../npcs/csvNpcImport';
 
 const id: SceneIds = SceneIds.PARLIAMENT_MARKET_INN;
 const title: string = "The Parliament Market Inn";
@@ -30,12 +31,18 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.GRUFF_INNKEEPER)() ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
+      characterNpcs.set(character.id, [
+        npcFactory({
+          csvData: npcImports.get(NpcIds.GRUFF_INNKEEPER),
+          character,
+          vendorInventory: [
+            ItemIds.BOTTLE_OF_BEER,
+            ItemIds.BOTTLE_OF_GRAIN_SPIRIT,
+            ItemIds.BOTTLE_OF_CHEAP_GRAIN_SPIRIT,
+            ItemIds.BREAD_LOAF,
+          ],
+        }),
+      ]);
     }
 
     return handleSceneCommand({
@@ -59,7 +66,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

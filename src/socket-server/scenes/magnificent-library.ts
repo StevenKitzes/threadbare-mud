@@ -3,10 +3,13 @@ import { SceneSentiment } from "../../types";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
+import jStr from "../../utils/jStr";
 import lookSceneItem from "../../utils/lookSceneItem";
 import { makeMatcher } from "../../utils/makeMatcher";
 import { ItemIds } from "../items/items";
-import { NPC, NpcIds, npcFactories } from "../npcs/npcs";
+import { augment_audric } from "../npcs/audric";
+import { npcImports } from "../npcs/csvNpcImport";
+import { NPC, NpcIds, npcFactories, npcFactory } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
 import { SceneIds, navigate } from "./scenes";
 
@@ -29,12 +32,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.AUDRIC)() ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
+      characterNpcs.set(character.id, [
+        augment_audric(npcFactory({
+          csvData: npcImports.get(NpcIds.AUDRIC),
+          character,
+        })),
+      ]);
     }
 
     return handleSceneCommand({
@@ -55,8 +58,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     actorText.push("Aside from the [heavy wooden door] you first used to enter this room, there are a few others, but for now they are all locked.  You can also go down a curving stone [staircase].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
-    
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
+
     emitSelf(actorText);
 
     return true;

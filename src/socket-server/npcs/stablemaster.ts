@@ -1,6 +1,7 @@
 import getEmitters from "../../utils/emitHelper";
 import getRandomHorseName from '../../utils/getRandomHorseName';
 import { HandlerOptions } from "../server";
+import { csvNpcToKeywords } from "../../utils/csvPropsToKeywords";
 import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_HORSE_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
@@ -16,14 +17,14 @@ export function make(): NPC {
   const npc: NPC = {
     id,
     name: csvData.name,
-    description: "A [stablemaster] is hard at work, bent over the hoof of a horse he is shoeing.",
-    keywords: ['stablemaster', 'groom'],
-    regexAliases: 'stablemaster|groom',
+    description: "",
+    keywords: csvNpcToKeywords(csvData),
+
 
     saleItems: [
-      items.get(ItemIds.MODEST_SADDLEBAGS),
-      items.get(ItemIds.LEATHER_SADDLEBAGS),
-      items.get(ItemIds.REINFORCED_SAGGLEBAGS),
+      items.get(
+      items.get(
+      items.get(
     ],
 
     getDescription: () => '',
@@ -49,7 +50,7 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        `You watch as ${npc.name} nods respectfully at your approach.  He wraps up his current task, then wipes his hands on a dusty rag.  "Welcome, friend.  Got some fine steeds available for purchase, if you've the coin.  They ain't cheap at 1,000 coins, but I'll throw in a [modest saddle] if you ride off on one.  If you just need a saddle, here's what I got."`,
+        ``,
         ...npc.saleItems.map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`),
         `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);

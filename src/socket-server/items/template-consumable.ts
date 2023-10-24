@@ -10,7 +10,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = ;
-const keywords: string[] = ;
+const keywords: string[] = itemPropsToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 const healAmount: number = csvData.healAmount;
@@ -27,7 +27,7 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
     handlerOptions,
     actionAliases: ,
-    targetAliases: keywords.join('|'),
+    keywords,
     itemId: id,
     itemTitle: title,
     healAmount,

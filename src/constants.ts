@@ -1,3 +1,5 @@
+import { Faction } from "./types";
+
 export const SESSION_TIMEOUT: number = 60 * 60 * 24 * 30;  // 30 days
 
 export const ITEM_VALUE_RANDOMIZER_TIMER: number = 1000 * 60 * 10;
@@ -23,3 +25,6 @@ export const REGEX_SELF_ALIASES: string = 'self|me|myself';
 export const REGEX_TALK_ALIASES: string = 'talk|speak|chat|talk to|speak with|chat with';
 export const REGEX_UNEQUIP_ALIASES: string = 'remove|unequip|take off|unwield';
 export const REGEX_USE_ALIASES: string = 'use|activate';
+
+export const factionNames: Map<Faction, string> = new Map<Faction, string>();
+factionNames.set(Faction.PARLIAMENT, 'the people of Parliament');

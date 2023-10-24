@@ -6,11 +6,12 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { scenes, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactory, npcFactories } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { npcImports } from '../npcs/csvNpcImport';
 
 const id: SceneIds = SceneIds.PARLIAMENT_DECORATIVE_ARMORY;
 const title: string = "Fine Parliamentary Armor";
@@ -30,12 +31,20 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.PARLIAMENTARY_DECORATIVE_SMITH)() ]);
-    } else {
-      // Respawn logic
-      characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
-      })
+      characterNpcs.set(character.id, [
+        npcFactory({
+          csvData: npcImports.get(NpcIds.PARLIAMENTARY_DECORATIVE_SMITH),
+          character,
+          vendorInventory: [
+            ItemIds.PARLIAMENT_GREAT_HELM,
+            ItemIds.PARLIAMENT_ARMOR,
+            ItemIds.PARLIAMENT_GAUNTLETS,
+            ItemIds.PARLIAMENT_GREAVES,
+            ItemIds.PARLIAMENT_BOOTS,
+            ItemIds.PARLIAMENT_DECORATIVE_SWORD,
+          ],
+        }),
+      ]);
     }
 
     return handleSceneCommand({
@@ -59,7 +68,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

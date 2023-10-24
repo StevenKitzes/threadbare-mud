@@ -1,5 +1,6 @@
 import { EffectStat, StatEffect } from "../../types";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
 
@@ -8,7 +9,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A set of thin, leather [Deftstep Boots], said to quicken the wearer's step and make them harder to hit in a fight.";
-const keywords: string[] = ['boots', 'magic boots', 'deftstep boots'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

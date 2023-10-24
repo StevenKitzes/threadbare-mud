@@ -1,6 +1,7 @@
 import { REGEX_READ_ALIASES } from "../../constants";
 import getEmitters from "../../utils/emitHelper";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { captureFrom } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
@@ -11,7 +12,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = `An outsized book, with a heavy wooden hardcover, titled [${title}].  There is something fishy about it, like it doesn't fit in your hands properly.  No, more like it doesn't fit in your eyes properly.  No, it's something else...`;
-const keywords: string[] = ['book', 'filstreds guide', 'guide', 'guide to life', 'life on the continent', 'guide to life on the continent'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

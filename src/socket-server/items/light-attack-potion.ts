@@ -3,7 +3,8 @@ import { REGEX_DRINK_ALIASES } from "../../constants";
 import { CharacterUpdateOpts } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
-import { makeMatcher } from "../../utils/makeMatcher";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
+import { commandMatchesKeywordsFor } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes } from "./items";
@@ -13,7 +14,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A [swirling silvery potion] in a conical vial, shimmering gently in the light.";
-const keywords: string[] = ['swirling silvery potion', 'silver potion', 'silvery potion'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 
@@ -21,10 +22,7 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
-  if (
-    command.match(makeMatcher(REGEX_DRINK_ALIASES, keywords.join("|"))) &&
-    character.inventory.includes(id)
-  ) {
+  if ( commandMatchesKeywordsFor(command, keywords, REGEX_DRINK_ALIASES) ) {
     if (character.health_max <= 200) {
       emitOthers(`${character.name} takes a long, hard look at ${title}, but thinks better of it.`);
       emitSelf(`Looking into the depths of ${title}, you don't feel your body is strong enough to endure its effects.`);

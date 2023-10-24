@@ -86,6 +86,7 @@ export type Database = {
   readUserBySession: (token: string) => User | undefined;
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
+  writeActiveCharacterTransactable: (userId: string, characterId: string) => TransactBundle[];
   writeCharacterData: (charId: string, opts: {
     job?: string,
     health?: number,
@@ -243,6 +244,24 @@ export const writeActiveCharacter = (userId: string, characterId: string): boole
   } catch (err: any) {
     console.error("Error updating active character", characterId, "for user:", userId, err.toString());
     return false;
+  }
+}
+
+export const writeActiveCharacterTransactable = (userId: string, characterId: string): TransactBundle[] => {
+  try {
+    const statements: TransactBundle[] = [];
+    statements.push({
+      statement: db.prepare("UPDATE characters SET active = 0 WHERE user_id = ? AND active = 1;"),
+      runValues: [userId]
+    })
+    statements.push({
+      statement: db.prepare("UPDATE characters SET active = 1 WHERE id = ?;"),
+      runValues: [characterId]
+    })
+    return statements;
+  } catch (err: any) {
+    console.error("Error updating active character", characterId, "for user:", userId, err.toString());
+    return [];
   }
 }
 
@@ -431,6 +450,7 @@ const database: Database = {
   readUserBySession,
   transact,
   writeActiveCharacter,
+  writeActiveCharacterTransactable,
   writeCharacterData,
   writeCharacterInventory,
   writeCharacterSceneStates,

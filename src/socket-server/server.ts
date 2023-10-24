@@ -211,7 +211,7 @@ io.on('connection', (socket) => {
           socket,
           character: connectedCharacter,
           characterList: characters,
-          command: payload.gameAction.toLowerCase()
+          command: payload.gameAction.toLowerCase().replace(/[,:’'-]/g, '')
         });
       });    
 

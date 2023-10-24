@@ -1,5 +1,6 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
+import { csvNpcToKeywords } from "../../utils/csvPropsToKeywords";
 import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_REST_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
@@ -15,15 +16,15 @@ export function make(): NPC {
   const npc: NPC = {
     id,
     name: csvData.name,
-    description: "A [gruff innkeeper], his face peppered with stubble and his clothing sized a little too small for his stout physique.  His apron, though, is clean and pressed, lending him an air of diligence and trustworthiness.",
-    keywords: ['innkeeper', 'innkeep', 'barkeep', 'barkeeper', 'gruff innkeeper', 'gruff innkeep', 'gruff barkeep', 'gruff barkeeper'],
-    regexAliases: 'innkeeper|innkeep|barkeep|barkeeper|gruff innkeeper|gruff innkeep|gruff barkeep|gruff barkeeper',
+    description: "",
+    keywords: csvNpcToKeywords(csvData),
+
 
     saleItems: [
-      items.get(ItemIds.BOTTLE_OF_BEER),
-      items.get(ItemIds.BOTTLE_OF_GRAIN_SPIRIT),
-      items.get(ItemIds.BOTTLE_OF_CHEAP_GRAIN_SPIRIT),
-      items.get(ItemIds.BREAD_LOAF),
+      items.get(
+      items.get(
+      items.get(
+      items.get(
     ],
 
     getDescription: () => '',
@@ -49,7 +50,7 @@ export function make(): NPC {
     if (command.match(makeMatcher(REGEX_TALK_ALIASES, npc.regexAliases))) {
       emitOthers(`${name} talks with ${npc.name}.`);
       emitSelf([
-        `At the counter stands a [gruff innkeeper], wiping a mug dry with a rag, as innkeepers tend to do.  He spots you straight away.  "What'll it be, stranger?  I have a few things to drink, bottled for travel if you like.  You can also [rest] here.  The rate is 20 coins a night.  Whaddya say?"`,
+        ``,
         ...npc.saleItems.map(item => `- ${item.title} (${item.type}) {${item.value} coin${item.value === 1 ? '' : 's'}}`),
         `You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`
       ]);

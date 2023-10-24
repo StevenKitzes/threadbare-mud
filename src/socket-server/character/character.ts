@@ -1,7 +1,7 @@
 import { HandlerOptions } from '../server';
 import { characterHealthText } from '../../utils/characterHealthText';
 import { getEmitters } from '../../utils/emitHelper';
-import { firstCharToUpper } from '../../utils/firstCharToUpper';
+import { firstUpper } from '../../utils/firstUpper';
 import { Item, ItemIds, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
@@ -26,7 +26,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   
     emitOthers(`${character.name} is admiring themselves.`);
 
-    const job: string = firstCharToUpper(character.job);
+    const job: string = firstUpper(character.job);
     const actorText: string[] = [];
 
     switch (character.job) {
@@ -89,7 +89,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     });
 
     character.factionAnger.forEach(fa => {
-      actorText.push(`${firstCharToUpper(fa.faction)} remember how you've wronged them, and will attack on sight.`);
+      actorText.push(`${firstUpper(fa.faction)} remember how you've wronged them, and you may be attacked on sight.`);
     })
 
     actorText.push("Try [evaluate skills] to check on your skills and abilities.");
@@ -381,7 +381,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       actorText.push(...[
         "Among your belongings you find:",
         ...itemDescriptions.map(i => `${i.desc}${i.count > 1 ? ` {x${i.count}}` : ''} (${i.type})`),
-        "(Try [inspect (item)] for a closer inspection.)"
+        "(Try [inspect +item+] for a closer inspection.)"
       ])
     }
 

@@ -1,6 +1,7 @@
 import { REGEX_DRINK_ALIASES } from "../../constants";
 import { EffectStat, TemporaryEffect } from "../../types";
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { HandlerOptions } from "../server";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { ItemIds, ItemTypes, consumeItem } from "./items";
@@ -10,7 +11,7 @@ const csvData: ItemImport = itemImports.get(id);
 const type: ItemTypes = csvData.type;
 const title: string = csvData.title;
 const description: string = "A cheap bottle of clear [grain spirit], kept corked in a dirty bottle.";
-const keywords: string[] = ['cheap spirit', 'cheap grain spirit'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 const healAmount: number = csvData.healAmount;
@@ -33,7 +34,7 @@ const handleItemCommand = (handlerOptions: HandlerOptions): boolean => {
   if (consumeItem({
     handlerOptions,
     actionAliases: REGEX_DRINK_ALIASES,
-    targetAliases: keywords.join('|'),
+    keywords,
     itemId: id,
     itemTitle: title,
     healAmount,

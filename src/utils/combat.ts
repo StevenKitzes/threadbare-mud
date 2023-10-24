@@ -11,7 +11,8 @@ import { OptsType } from "./getGameTextObject";
 
 import research from "./research";
 import { Character, CharacterUpdateOpts, Faction, FactionAnger } from "../types";
-import { firstCharToUpper } from "./firstCharToUpper";
+import { firstUpper } from "./firstUpper";
+import { factionNames } from "../constants";
 
 const COMBAT_TIMER: number = 1900;
 const COMBAT_RANDOMIZATION: number = 200;
@@ -22,26 +23,26 @@ function npcReady(
   emitSelf: (text: string | string[], opts?: OptsType | undefined) => void
 ): boolean {
   let ready: boolean = true;
-  if ( npc.agility === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing agility stat for combat.`); }
-  if ( npc.armor === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing armor stat for combat.`); }
-  if ( npc.armorType === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing armorType list for combat.`); }
-  if ( npc.attackDescription === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing attackDescription for combat.`); }
-  if ( npc.cashLoot === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing cashLoot for combat.`); }
-  if ( npc.combatInterval === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing combatInterval for combat.`); }
-  if ( npc.damageValue === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing damageValue stat for combat.`); }
-  if ( npc.deathTime === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing deathTime tracker for combat.`); }
-  if ( npc.health === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing health stat for combat.`); }
-  if ( npc.healthMax === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing healthMax stat for combat.`); }
-  if ( npc.itemLoot === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing itemLoot list for combat.`); }
-  if ( npc.savvy === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing savvy stat for combat.`); }
-  if ( npc.setCombatInterval === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing setCombatInterval setter for combat.`); }
-  if ( npc.setDeathTime === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing setDeathTime setter for combat.`); }
-  if ( npc.setHealth === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing setHealth setter for combat.`); }
-  if ( npc.strength === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing strength stat for combat.`); }
-  if ( npc.xp === undefined ) { ready = false; console.error(`NPC ${npc.name} was missing xp stat for combat.`); }
+  if ( npc.getAgility() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing agility stat for combat.`); }
+  if ( npc.getArmor() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing armor stat for combat.`); }
+  if ( npc.getArmorType() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing armorType list for combat.`); }
+  if ( npc.getAttackDescription() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing attackDescription for combat.`); }
+  if ( npc.getCashLoot() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing cashLoot for combat.`); }
+  if ( npc.getCombatInterval() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing combatInterval for combat.`); }
+  if ( npc.getDamageValue() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing damageValue stat for combat.`); }
+  if ( npc.getDeathTime() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing deathTime tracker for combat.`); }
+  if ( npc.getHealth() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing health stat for combat.`); }
+  if ( npc.getHealthMax() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing healthMax stat for combat.`); }
+  if ( npc.getItemLoot() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing itemLoot list for combat.`); }
+  if ( npc.getSavvy() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing savvy stat for combat.`); }
+  if ( npc.setCombatInterval === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing setCombatInterval setter for combat.`); }
+  if ( npc.setDeathTime === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing setDeathTime setter for combat.`); }
+  if ( npc.setHealth === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing setHealth setter for combat.`); }
+  if ( npc.getStrength() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing strength stat for combat.`); }
+  if ( npc.getXp() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing xp stat for combat.`); }
 
   if (!ready) {
-    emitSelf(`You are ready to fight, but ${npc.name} is not.`);
+    emitSelf(`You are ready to fight, but ${npc.getName()} is not.`);
     return false;
   }
 
@@ -55,10 +56,10 @@ export function handleAggro(
 ): void {
   // Aggro enemies attack!
   characterNpcs.get(character.id)?.forEach(c => {
-    if (c.health && c.health > 0 && c.aggro) {
+    if (c.getHealth() && c.getHealth() > 0 && c.getAggro()) {
       c.handleNpcCommand({
         ...handlerOptions,
-        command: `fight ${c.keywords[0]}`
+        command: `fight ${c.getKeywords().join(' ')}`
       });
     }
   });
@@ -73,12 +74,12 @@ export function handleFactionAggro(
 ): void {
   // Angered faction enemies attack!
   characterNpcs.get(character.id)?.forEach(c => {
-    if (c.health && c.health > 0 && character.factionAnger.find(fa => fa.faction === c.faction)) {
-      emitOthers(`${firstCharToUpper(c.name)} remembers ${name} as an enemy of ${c.faction} and attacks!`);
-      emitSelf(`${firstCharToUpper(c.name)} {recognizes you} as an enemy of ${c.faction} and =attacks you=!`);
+    if (c.getHealth() && c.getHealth() > 0 && character.factionAnger.find(fa => fa.faction === c.getFaction())) {
+      emitOthers(`${firstUpper(c.getName())} remembers ${character.name} as an enemy of ${factionNames.get(c.getFaction())} and attacks!`);
+      emitSelf(`${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and =attacks you=!`);
       c.handleNpcCommand({
         ...handlerOptions,
-        command: `fight ${c.keywords[0]}`
+        command: `fight ${c.getKeywords().join(' ')}`
       });
     }
   });
@@ -96,10 +97,10 @@ function fightAllInSceneExcept(
   if (npcs === undefined) return;
   
   npcs.forEach(c => {
-    if (c.health && c.health > 0 && c.faction === npcFaction && c.id !== npcId) {
+    if (c.getHealth() && c.getHealth() > 0 && c.getFaction() === npcFaction && c.getId() !== npcId) {
       c.handleNpcCommand({
         ...handlerOptions,
-        command: `fight ${c.keywords[0]}`
+        command: `fight ${c.getKeywords().join(' ')}`
       });
     }
   });
@@ -110,19 +111,19 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   const combatScene: string = character.scene_id;
 
-  if (npc.faction) {
+  if (npc.getFaction()) {
     // if character has not already angered this faction
-    if (!character.factionAnger.find(fa => fa.faction === npc.faction)) {
+    if (!character.factionAnger.find(fa => fa.faction === npc.getFaction())) {
       const characterUpdate: CharacterUpdateOpts = {};
       characterUpdate.factionAnger = [
         ...character.factionAnger,
-        { faction: npc.faction, expiry: Date.now() + FACTION_ANGER_DURATION } as FactionAnger
+        { faction: npc.getFaction(), expiry: Date.now() + FACTION_ANGER_DURATION } as FactionAnger
       ];
       if (writeCharacterData(character.id, characterUpdate)) {
         character.factionAnger = characterUpdate.factionAnger;
-        emitOthers(`${character.name} has enraged ${npc.faction}!`);
-        emitSelf(`=You have enraged {${npc.faction}} and they will now +attack you on sight+!=`);
-        fightAllInSceneExcept(character, npc.faction, npc.id, handlerOptions);
+        emitOthers(`${character.name} has enraged ${npc.getFaction()}!`);
+        emitSelf(`=You have enraged {${npc.getFaction()}} and you may be +attacked on sight+!=`);
+        fightAllInSceneExcept(character, npc.getFaction(), npc.getId(), handlerOptions);
       }
     }
   }
@@ -132,38 +133,40 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   
   function isCombatOver(): boolean {
     // this line needed for ts linting
-    if (!(npc.setCombatInterval !== undefined && npc.health !== undefined && npc.setDeathTime !== undefined && npc.cashLoot !== undefined && npc.itemLoot !== undefined && npc.xp !== undefined)) return true;
+    if (!(npc.setCombatInterval !== undefined && npc.getHealth() !== undefined && npc.setDeathTime !== undefined && npc.getCashLoot() !== undefined && npc.getItemLoot() !== undefined && npc.getXp() !== undefined)) return true;
 
     // If character has fled or died/gone to checkpoint
     if (character.scene_id !== combatScene) {
-      if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
+      const interval: NodeJS.Timeout | null = npc.getCombatInterval();
+      if (interval !== null) clearInterval(interval);
       npc.setCombatInterval(null);
     }
 
     // if NPC is dead
-    if (npc.health < 1) {
-      if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
+    if (npc.getHealth() < 1) {
+      const interval: NodeJS.Timeout | null = npc.getCombatInterval();
+      if (interval !== null) clearInterval(interval);
       npc.setCombatInterval(null);
 
       npc.setDeathTime(Date.now());
 
-      const actorText: string[] = [`You see the Lifelight fade from the eyes of ${npc.name}.`];
-      emitOthers(`${character.name} has defeated ${npc.name}.`);
+      const actorText: string[] = [`You see the Lifelight fade from the eyes of ${npc.getName()}.`];
+      emitOthers(`${character.name} has defeated ${npc.getName()}.`);
       if (writeCharacterData(character.id, {
-        money: character.money + npc.cashLoot,
-        inventory: [ ...character.inventory, ...npc.itemLoot ],
-        xp: character.xp + npc.xp
+        money: character.money + npc.getCashLoot(),
+        inventory: [ ...character.inventory, ...npc.getItemLoot() ],
+        xp: character.xp + npc.getXp()
       })) {
-        character.money += npc.cashLoot;
-        character.inventory = [ ...character.inventory, ...npc.itemLoot ];
-        character.xp += npc.xp;
-        actorText.push(`You feel ${xpAmountString(npc.xp)} of the Lifelight's energy coursing through you.`);
-        if (npc.cashLoot > 0) actorText.push(`You collect ${npc.cashLoot} coins from ${npc.name}'s body.`);
-        else actorText.push(`There are no coins to collect from ${npc.name}.`);
-        npc.itemLoot.forEach(item => {
-          actorText.push(`You collect {${items.get(item)?.title || 'nothing'}} from ${npc.name}'s body.`);
+        character.money += npc.getCashLoot();
+        character.inventory = [ ...character.inventory, ...npc.getItemLoot() ];
+        character.xp += npc.getXp();
+        actorText.push(`You feel ${xpAmountString(npc.getXp())} of the Lifelight's energy coursing through you.`);
+        if (npc.getCashLoot() > 0) actorText.push(`You collect ${npc.getCashLoot()} coins from ${npc.getName()}'s body.`);
+        else actorText.push(`There are no coins to collect from ${npc.getName()}.`);
+        npc.getItemLoot().forEach(item => {
+          actorText.push(`You collect {${items.get(item)?.title || 'nothing'}} from ${npc.getName()}'s body.`);
         });
-        if (npc.itemLoot.length === 0) actorText.push(`You find no loot on ${npc.name}.`);
+        if (npc.getItemLoot().length === 0) actorText.push(`You find no loot on ${npc.getName()}.`);
       }
       emitSelf(actorText);
       return true;
@@ -171,10 +174,11 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
     // if character is dead
     if (character.health < 1) {
-      if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
+      const interval: NodeJS.Timeout | null = npc.getCombatInterval();
+      if (interval !== null) clearInterval(interval);
       npc.setCombatInterval(null);
-      emitOthers(`${character.name} was killed by ${npc.name}!  You see their body fade away into the Lifelight.`);
-      emitSelf(`You fall to ${npc.name}.  You hear a chorus of singing voices and see the Lifelight bleeding into your vision...`);
+      emitOthers(`${character.name} was killed by ${npc.getName()}!  You see their body fade away into the Lifelight.`);
+      emitSelf(`You fall to ${npc.getName()}.  You hear a chorus of singing voices and see the Lifelight bleeding into your vision...`);
       const newHealth: number = Math.ceil(character.health_max * 0.6);
       if (writeCharacterData(character.id, {
         health: newHealth, scene_id: character.checkpoint_id, xp: 0
@@ -199,7 +203,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
   function characterAttack(): void {
     // this line needed for ts linting
-    if (!(npc.armorType !== undefined && npc.armor !== undefined && npc.agility !== undefined && npc.savvy !== undefined && npc.setHealth !== undefined && npc.health !== undefined && npc.healthMax !== undefined && character.getAccuracyEffect !== null && character.getAgility !== null && character.getDamageEffect !== null && character.getHeavyAttack !== null && character.getLightAttack !== null && character.getRangedAttack !== null && character.getSavvy !== null && character.getStrength !== null)) return;
+    if (!(npc.getArmorType() !== undefined && npc.getArmor() !== undefined && npc.getAgility() !== undefined && npc.getSavvy() !== undefined && npc.setHealth !== undefined && npc.getHealth() !== undefined && npc.getHealthMax() !== undefined && character.getAccuracyEffect !== null && character.getAgility !== null && character.getDamageEffect !== null && character.getHeavyAttack !== null && character.getLightAttack !== null && character.getRangedAttack !== null && character.getSavvy !== null && character.getStrength !== null)) return;
 
     // Initialize with getters
     let attack = character.getAccuracyEffect ? character.getAccuracyEffect() : 0;
@@ -235,51 +239,51 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       }
       // Adjust attack based on weapon affinity vs npc armor type
       if (weapon.damageType === DamageType.slashing) {
-        if (npc.armorType.includes(ArmorType.strongVsSlashing)) {
+        if (npc.getArmorType().includes(ArmorType.strongVsSlashing)) {
           attack -= 3;
-          actorText.push(`...${weapon.title} is weak against ${npc.name}'s defenses.`);
+          actorText.push(`...${weapon.title} is weak against ${npc.getName()}'s defenses.`);
         }
-        if (npc.armorType.includes(ArmorType.weakVsSlashing)) {
+        if (npc.getArmorType().includes(ArmorType.weakVsSlashing)) {
           attack += 3;
-          actorText.push(`...${weapon.title} is strong against ${npc.name}'s defenses.`);
+          actorText.push(`...${weapon.title} is strong against ${npc.getName()}'s defenses.`);
         }
       }
       if (weapon.damageType === DamageType.piercing) {
-        if (npc.armorType.includes(ArmorType.strongVsPiercing)) {
+        if (npc.getArmorType().includes(ArmorType.strongVsPiercing)) {
           attack -= Math.random() * 5;
-          actorText.push(`...${weapon.title} is weak against ${npc.name}'s defenses.`);
+          actorText.push(`...${weapon.title} is weak against ${npc.getName()}'s defenses.`);
         }
-        if (npc.armorType.includes(ArmorType.weakVsPiercing)) {
+        if (npc.getArmorType().includes(ArmorType.weakVsPiercing)) {
           attack += Math.random() * 5;
-          actorText.push(`...${weapon.title} is strong against ${npc.name}'s defenses.`);
+          actorText.push(`...${weapon.title} is strong against ${npc.getName()}'s defenses.`);
         }
       }
       if (weapon.damageType === DamageType.bashing) {
-        if (npc.armorType.includes(ArmorType.strongVsBashing)) {
+        if (npc.getArmorType().includes(ArmorType.strongVsBashing)) {
           attack -= Math.random() * 5;
-          actorText.push(`...${weapon.title} is weak against ${npc.name}'s defenses.`);
+          actorText.push(`...${weapon.title} is weak against ${npc.getName()}'s defenses.`);
         }
-        if (npc.armorType.includes(ArmorType.weakVsBashing)) {
+        if (npc.getArmorType().includes(ArmorType.weakVsBashing)) {
           attack += Math.random() * 5;
-          actorText.push(`...${weapon.title} is strong against ${npc.name}'s defenses.`);
+          actorText.push(`...${weapon.title} is strong against ${npc.getName()}'s defenses.`);
         }
       }
     } else {
       // Using bare hands
       attack += Math.random() * ((character.getAgility() + character.getStrength()) / 2);
       damage += Math.random() * character.getStrength();
-      if (npc.armorType.includes(ArmorType.strongVsBashing)) {
+      if (npc.getArmorType().includes(ArmorType.strongVsBashing)) {
         attack -= Math.random() * 5;
-        actorText.push(`...your martial arts are weak against ${npc.name}'s defenses.`);
+        actorText.push(`...your martial arts are weak against ${npc.getName()}'s defenses.`);
       }
-      if (npc.armorType.includes(ArmorType.weakVsBashing)) {
+      if (npc.getArmorType().includes(ArmorType.weakVsBashing)) {
         attack += Math.random() * 5;
-        actorText.push(`...your martial arts are strong against ${npc.name}'s defenses.`);
+        actorText.push(`...your martial arts are strong against ${npc.getName()}'s defenses.`);
       }
     }
 
     // Adjust defense based on NPC stats
-    defense += npc.armor;
+    defense += npc.getArmor();
 
     // handle multiple attacks for dextrous characters with light weapons
     let attacks: number = 1;
@@ -289,7 +293,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     for (let i = 0; i < attacks; i++) {
       // Final values
       defense = Math.random() * defense;
-      defenseWithDodge = defense + (Math.random() * ((npc.agility + npc.savvy) / 2));
+      defenseWithDodge = defense + (Math.random() * ((npc.getAgility() + npc.getSavvy()) / 2));
 
       attack = Math.random() * attack;
       damage = Math.ceil(Math.random() * damage);
@@ -300,49 +304,49 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       const weaponName: string = item === undefined ? 'an unarmed strike' : item.title;
       if (attack > defenseWithDodge) {
         // handle hit
-        npc.setHealth(npc.health - damage);
-        if (damage < npc.healthMax * 0.1) {
+        npc.setHealth(npc.getHealth() - damage);
+        if (damage < npc.getHealthMax() * 0.1) {
           actorText.push(`+Your attack hits+, but ${weaponName} only does negligible damage.`);
-          otherText.push(`${character.name} does negligible damage to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.2) {
+          otherText.push(`${character.name} does negligible damage to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.2) {
           actorText.push(`+Your attack hits+, inflicting light damage with ${weaponName}.`);
-          otherText.push(`${character.name} does light damage to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.3) {
+          otherText.push(`${character.name} does light damage to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.3) {
           actorText.push(`+Your attack hits+, doing noticeable harm with ${weaponName}.`);
-          otherText.push(`${character.name} does noticeable harm to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.4) {
+          otherText.push(`${character.name} does noticeable harm to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.4) {
           actorText.push(`+Your attack hits+, causing significant damage with ${weaponName}.`);
-          otherText.push(`${character.name} causes significant damage to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.5) {
+          otherText.push(`${character.name} causes significant damage to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.5) {
           actorText.push(`+Your attack hits+ well enough to cause lasting injury with ${weaponName}.`);
-          otherText.push(`${character.name} causes lasting injury to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.6) {
-          actorText.push(`+Your attack hits+ hard enough with ${weaponName} to put ${npc.name} off balance.`);
-          otherText.push(`${character.name} hits hard enough with ${weaponName} to put ${npc.name} off balance.`);
-        } else if (damage < npc.healthMax * 0.7) {
+          otherText.push(`${character.name} causes lasting injury to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.6) {
+          actorText.push(`+Your attack hits+ hard enough with ${weaponName} to put ${npc.getName()} off balance.`);
+          otherText.push(`${character.name} hits hard enough with ${weaponName} to put ${npc.getName()} off balance.`);
+        } else if (damage < npc.getHealthMax() * 0.7) {
           actorText.push(`+Your attack hits+, doing substantial damage with ${weaponName}.`);
-          otherText.push(`${character.name} does substantial damage to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.8) {
-          actorText.push(`+Your attack hits+, doing heavy damage and staggering ${npc.name} with ${weaponName}.`);
-          otherText.push(`${character.name} does heavy damage and staggers ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax * 0.9) {
+          otherText.push(`${character.name} does substantial damage to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.8) {
+          actorText.push(`+Your attack hits+, doing heavy damage and staggering ${npc.getName()} with ${weaponName}.`);
+          otherText.push(`${character.name} does heavy damage and staggers ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax() * 0.9) {
           actorText.push(`+Your attack hits+, causing massive damage with ${weaponName}.`);
-          otherText.push(`${character.name} causes massive damage to ${npc.name} with ${weaponName}.`);
-        } else if (damage < npc.healthMax) {
-          actorText.push(`+Your attack hits+ almost hard enough with ${weaponName} to kill ${npc.name} with a single strike.`);
-          otherText.push(`${character.name} hits almost hard enough with ${weaponName} to kill ${npc.name} in one strike.`);
+          otherText.push(`${character.name} causes massive damage to ${npc.getName()} with ${weaponName}.`);
+        } else if (damage < npc.getHealthMax()) {
+          actorText.push(`+Your attack hits+ almost hard enough with ${weaponName} to kill ${npc.getName()} with a single strike.`);
+          otherText.push(`${character.name} hits almost hard enough with ${weaponName} to kill ${npc.getName()} in one strike.`);
         } else {
-          actorText.push(`+Your attack hits+ with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
-          otherText.push(`${character.name} hits with enough force to kill ${npc.name} in a single strike with ${weaponName}!`);
+          actorText.push(`+Your attack hits+ with enough force to kill ${npc.getName()} in a single strike with ${weaponName}!`);
+          otherText.push(`${character.name} hits with enough force to kill ${npc.getName()} in a single strike with ${weaponName}!`);
         }
       } else if (attack > defense) {
         // handle dodge
-        actorText.push(`Your attack with ${weaponName} goes wide as {${npc.name} evades}.`);
-        otherText.push(`${character.name} attacks with ${weaponName} but ${npc.name} evades.`);
+        actorText.push(`Your attack with ${weaponName} goes wide as {${npc.getName()} evades}.`);
+        otherText.push(`${character.name} attacks with ${weaponName} but ${npc.getName()} evades.`);
       } else {
         // handle miss
         actorText.push(`Your attack with ${weaponName} {misses}.`);
-        otherText.push(`${character.name} attacks ${npc.name} with ${weaponName} but misses the mark.`);
+        otherText.push(`${character.name} attacks ${npc.getName()} with ${weaponName} but misses the mark.`);
       }
     }
     emitOthers(otherText);
@@ -351,7 +355,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
   function npcAttack() {
     // this line needed for ts linting
-    if (!(npc.agility !== undefined && npc.strength !== undefined && npc.savvy !== undefined && npc.damageValue !== undefined && npc.healthMax !== undefined && character.getDefenseEffect !== null && character.getDodgeEffect !== null && character.getArmorEffect !== null)) return true;
+    if (!(npc.getAgility() !== undefined && npc.getStrength() !== undefined && npc.getSavvy() !== undefined && npc.getDamageValue() !== undefined && npc.getHealthMax() !== undefined && character.getDefenseEffect !== null && character.getDodgeEffect !== null && character.getArmorEffect !== null)) return true;
 
     // Initialize
     let attack = 0;
@@ -361,10 +365,10 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     const actorText: string[] = [];
     
     // Calculate attack
-    attack += Math.random() * ((npc.agility + npc.strength + npc.savvy) / 3);
+    attack += Math.random() * ((npc.getAgility() + npc.getStrength() + npc.getSavvy()) / 3);
     
     // Calculate damage
-    damage += Math.random() * (npc.damageValue);
+    damage += Math.random() * npc.getDamageValue();
 
     // Calculate player defense
     defense += items.get(character.headgear || '')?.armorValue || 0;
@@ -379,7 +383,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
     // Final values
     damage = Math.ceil(Math.random() * damage);
-    research.npcAttack.push([npc.name, attack, damage, defense, defenseWithDodge].join(';'));
+    research.npcAttack.push([npc.getName(), attack, damage, defense, defenseWithDodge].join(';'));
 
     // if this is a hit, how much should max health increase?
     const healthBoost: number = Math.floor(damage / (character.health_max / 10))
@@ -393,47 +397,47 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       character.health -= damage;
       character.health_max += healthBoost;
       if (damage < character.health_max * 0.1) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, but only endure negligible damage.`);
-        emitOthers(`${character.name} endures negligible damage from ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, but only endure negligible damage.`);
+        emitOthers(`${character.name} endures negligible damage from ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.2) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring light damage.`);
-        emitOthers(`${character.name} endures light damage from ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, enduring light damage.`);
+        emitOthers(`${character.name} endures light damage from ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.3) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring noticeable harm.`);
-        emitOthers(`${character.name} endures noticeable harm from ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, enduring noticeable harm.`);
+        emitOthers(`${character.name} endures noticeable harm from ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.4) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring significant damage.`);
-        emitOthers(`${character.name} endures significant damage from ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, enduring significant damage.`);
+        emitOthers(`${character.name} endures significant damage from ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.5) {
-        actorText.push(`=You are hit= by ${npc.attackDescription} hard enough to endure lasting injury.`);
-        emitOthers(`${character.name} endures lasting injury from ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()} hard enough to endure lasting injury.`);
+        emitOthers(`${character.name} endures lasting injury from ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.6) {
-        actorText.push(`=You are hit= by ${npc.attackDescription} hard enough to be thrown off balance.`);
-        emitOthers(`${character.name} is thrown off balance by ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()} hard enough to be thrown off balance.`);
+        emitOthers(`${character.name} is thrown off balance by ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.7) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring substantial damage.`);
-        emitOthers(`${character.name} endures substantial damage from ${npc.attackDescription}.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, enduring substantial damage.`);
+        emitOthers(`${character.name} endures substantial damage from ${npc.getAttackDescription()}.`);
       } else if (damage < character.health_max * 0.8) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring heavy enough damage that your are staggered.`);
-        emitOthers(`${character.name} endures heavy enough damage to be staggered by ${npc.attackDescription}.`);
-      } else if (damage < npc.healthMax * 0.9) {
-        actorText.push(`=You are hit= by ${npc.attackDescription}, enduring massive damage.`);
-        emitOthers(`${character.name} endures massive damage from ${npc.attackDescription}.`);
-      } else if (damage < npc.healthMax) {
-        actorText.push(`=You are hit= by ${npc.attackDescription} almost hard enough to be killed with a single strike.`);
-        emitOthers(`${character.name} is hit by ${npc.attackDescription} almost hard enough to be killed in one strike.`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, enduring heavy enough damage that your are staggered.`);
+        emitOthers(`${character.name} endures heavy enough damage to be staggered by ${npc.getAttackDescription()}.`);
+      } else if (damage < character.health_max * 0.9) {
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()}, enduring massive damage.`);
+        emitOthers(`${character.name} endures massive damage from ${npc.getAttackDescription()}.`);
+      } else if (damage < character.health_max) {
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()} almost hard enough to be killed with a single strike.`);
+        emitOthers(`${character.name} is hit by ${npc.getAttackDescription()} almost hard enough to be killed in one strike.`);
       } else {
-        actorText.push(`=You are hit= by ${npc.attackDescription} with enough force to kill you in a single strike!`);
-        emitOthers(`${character.name} is hit by ${npc.attackDescription} with enough force to be killed in a single strike!`);
+        actorText.push(`=You are hit= by ${npc.getAttackDescription()} with enough force to kill you in a single strike!`);
+        emitOthers(`${character.name} is hit by ${npc.getAttackDescription()} with enough force to be killed in a single strike!`);
       }
     } else if (attack > defense) {
       // handle dodge
-      actorText.push(`You are nearly struck by ${npc.attackDescription} but {you are able to evade} the attack.`);
-      emitOthers(`${character.name} dodges ${npc.attackDescription}.`);
+      actorText.push(`You are nearly struck by ${npc.getAttackDescription()} but {you are able to evade} the attack.`);
+      emitOthers(`${character.name} dodges ${npc.getAttackDescription()}.`);
     } else {
       // handle miss
-      actorText.push(`An attack by ${npc.attackDescription} {misses you}.`);
-      emitOthers(`${character.name} hardly seems worried as an attack by ${npc.attackDescription} misses the mark.`);
+      actorText.push(`An attack by ${npc.getAttackDescription()} {misses you}.`);
+      emitOthers(`${character.name} hardly seems worried as an attack by ${npc.getAttackDescription()} misses the mark.`);
     }
     emitSelf(actorText);
   }
@@ -441,20 +445,22 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   if (npc.setCombatInterval === undefined) return;
   npc.setCombatInterval(setInterval(() => {
     // this garbage needed to satisfy ts linting
-    if (!(npc.agility !== undefined && npc.health !== undefined && npc.healthMax !== undefined && npc.setCombatInterval !== undefined)) {
-      if (npc.combatInterval) clearInterval(npc.combatInterval);
+    if (!(npc.getAgility() !== undefined && npc.getHealth() !== undefined && npc.getHealthMax() !== undefined && npc.setCombatInterval !== undefined)) {
+      const interval: NodeJS.Timeout | null = npc.getCombatInterval();
+      if (interval !== null) clearInterval(interval);
       return;
     }
 
     // If character has fled or died/gone to checkpoint
     if (character.scene_id !== combatScene) {
-      if (npc.combatInterval !== null) clearInterval(npc.combatInterval);
+      const interval: NodeJS.Timeout | null = npc.getCombatInterval();
+      if (interval !== null) clearInterval(interval);
       npc.setCombatInterval(null);
       return;
     }
 
     // determine who hits first
-    if (Math.random() * character.agility > Math.random() * npc.agility) {
+    if (Math.random() * character.agility > Math.random() * npc.getAgility()) {
       characterAttack();
       if (isCombatOver()) return;
       npcAttack();
@@ -466,7 +472,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       if (isCombatOver()) return;
     }
     emitSelf([
-      npcHealthText(npc.name, npc.health, npc.healthMax),
+      npcHealthText(npc.getName(), npc.getHealth(), npc.getHealthMax()),
       characterHealthText(character),
       `= - = - = - = - = - =`
     ]);

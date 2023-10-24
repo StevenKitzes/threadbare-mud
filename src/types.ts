@@ -110,7 +110,7 @@ export enum SceneSentiment {
 };
 
 export enum Faction {
-  PARLIAMENT_PEACEKEEPER = 'the Parliament city guard',
+  PARLIAMENT = 'parliament',
 };
 
 // App type definitions

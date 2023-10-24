@@ -1,5 +1,6 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
+import { csvNpcToKeywords } from "../../utils/csvPropsToKeywords";
 import { NpcIds, NPC, look, makePurchase } from "./npcs";
 import { captureFrom, makeMatcher } from "../../utils/makeMatcher";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
@@ -14,16 +15,16 @@ export function make(): NPC {
   const npc: NPC = {
     id,
     name: csvData.name,
-    description: "The [owner] of From Tales to Tomes is a woman in her early middle years, wearing glasses, and fine-yet-understated clothing.  She has a calm, pleasant demeanor.",
-    keywords: ['owner', 'bookstore owner', 'bookseller', 'book seller'],
-    regexAliases: 'owner|bookstore owner|bookseller|book seller',
+    description: "",
+    keywords: csvNpcToKeywords(csvData),
+
 
     saleItems: [
-      items.get(ItemIds.THE_FIVE_REALMS_BOOK),
-      items.get(ItemIds.IMPERIAL_GUIDE_BOOK),
-      items.get(ItemIds.PERSONAL_GROWTH_BOOK),
-      items.get(ItemIds.REALM_GUIDE_BOOK),
-      items.get(ItemIds.FILSTREDS_GUIDE_BOOK),
+      items.get(
+      items.get(
+      items.get(
+      items.get(
+      items.get(
     ],
 
     getDescription: () => '',

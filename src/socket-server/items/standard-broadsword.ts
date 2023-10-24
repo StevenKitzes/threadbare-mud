@@ -1,4 +1,5 @@
 import { itemPriceRandomizer } from "../../utils/itemPriceRandomizer";
+import { csvItemToKeywords } from "../../utils/csvPropsToKeywords";
 import { ItemImport, itemImports } from "./csvItemImport";
 import { DamageType, ItemIds, ItemTypes } from "./items";
 
@@ -8,7 +9,7 @@ const type: ItemTypes = csvData.type;
 const damageType: DamageType = csvData.damageType;
 const title: string = csvData.title;
 const description: string = "A [standard broadsword], suitable for typical combat conditions.  It is sharp, and seems sturdy enough.";
-const keywords: string[] = ['standard broadsword', 'broadsword'];
+const keywords: string[] = csvItemToKeywords(csvData);
 let value: number = itemPriceRandomizer(csvData.value);
 const weight: number = csvData.weight;
 

@@ -5,11 +5,12 @@ import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
-import { NPC, NpcIds, npcFactories } from '../npcs/npcs';
+import { NPC, NpcIds, npcFactories, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { ItemIds } from '../items/items';
+import { npcImports } from '../npcs/csvNpcImport';
 
 const id: SceneIds = SceneIds.NORTH_OF_AUDRICS_TOWER;
 const title: string = "North of Audric's Tower";
@@ -29,11 +30,16 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
-      characterNpcs.set(character.id, [ npcFactories.get(NpcIds.SMALL_RAT)() ]);
+      characterNpcs.set(character.id, [
+        npcFactory({
+          csvData: npcImports.get(NpcIds.SMALL_RAT),
+          character,
+        }),
+      ]);
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
+        if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
 
@@ -58,7 +64,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(`You see ${npc.name} here.`));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

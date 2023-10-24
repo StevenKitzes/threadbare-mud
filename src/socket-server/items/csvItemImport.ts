@@ -13,6 +13,7 @@ export type ItemImport = {
   damageType: DamageType | undefined,
   hitBonus: number | undefined,
   healAmount: number | undefined,
+  keywords: string | undefined,
 };
 
 enum Column {
@@ -26,6 +27,7 @@ enum Column {
   damageType = 7,
   hitBonus = 8,
   healAmount = 9,
+  keywords = 10,
 }
 
 export const itemImports: Map<ItemIds, ItemImport> = new Map<ItemIds, ItemImport>();
@@ -45,7 +47,8 @@ export function readItemCsv(callback: () => void) {
         damageValue: parseInt(data[Column.damageValue]) || undefined,
         damageType: parseInt(data[Column.damageType]) || undefined,
         hitBonus: parseInt(data[Column.hitBonus]) || undefined,
-        healAmount: parseInt(data[Column.healAmount]) || undefined
+        healAmount: parseInt(data[Column.healAmount]) || undefined,
+        keywords: data[Column.keywords],
       };
       itemImports.set(itemImport.id, itemImport);
     })
