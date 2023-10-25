@@ -474,7 +474,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     emitSelf([
       npcHealthText(npc.getName(), npc.getHealth(), npc.getHealthMax()),
       characterHealthText(character),
-      `= - = - = - = - = - =`
+      `=- - - - - - -=`
     ]);
   }, Math.ceil(Math.random() * COMBAT_RANDOMIZATION) + COMBAT_TIMER));
 }

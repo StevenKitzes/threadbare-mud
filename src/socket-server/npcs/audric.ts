@@ -48,13 +48,15 @@ export function augment_audric (npc: NPC): NPC {
       if (character.stories.main === 1 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
         let characterUpdate: CharacterUpdateOpts = {};
         characterUpdate.stories = { ...character.stories, main: 2 };
-        characterUpdate.inventory = [ ...character.inventory, ItemIds.AUDRICS_COIN_POUCH ];
+        characterUpdate.money = character.money + 50;
+        characterUpdate.inventory = [ ...character.inventory, ItemIds.FILSTREDS_GUIDE_BOOK ];
     
         if (writeCharacterData(character.id, characterUpdate)) {
           Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
           const actorText: string[] = [];
-          actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home, in the city of Parliament, capital of the Realm of Ixpanne.  You would surely like to know more about how you've come to be here, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you go to the shop and purchase some traveling supplies?  On my coin, of course!"`);
-          actorText.push(`He hands you a coin pouch and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
+          actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home, in the city of Parliament, capital of the Realm of Ixpanne.  You would surely like to know more about how you've come to be here, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you please buy and bring me a [traveling kit] from the Adventurer's Guild?  They keep their shop in the market.  Oh, yes, on my coin, of course!"`);
+          actorText.push(`He hands you a fistful of coin and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
+          actorText.push(`"Oh!  A moment!  I almost forgot..."  The old man rushes to one of his many stacks of books and returns with a heavy volume.  There is no dust on it.  He must refer to it often.  "You may find this exceedingly helpful on your way."  He hands you the book.  You can check your [inventory] to see it, or try [read book] to read it.`)
           emitOthers(`${character.name} has a quiet conversation with Audric.`);
           emitSelf(actorText);
           return true;
@@ -63,7 +65,7 @@ export function augment_audric (npc: NPC): NPC {
 
       if (character.stories.main === 2 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
         emitOthers(`${character.name} has a quiet conversation with Audric.`);
-        emitSelf("Audric greets you warmly and continues to wait patiently for you to return with traveling supplies.");
+        emitSelf("Audric greets you warmly and continues to wait patiently for you to return with the [traveling kit] he requested.");
         return true;
       }
 
