@@ -5,7 +5,7 @@ import { firstUpper } from '../../utils/firstUpper';
 import { uniqueMatchCount } from '../../utils/uniqueMatchCount';
 import { Item, ItemIds, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
-import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
+import { writeCharacterData } from '../../../sqlite/sqlite';
 import { Character, ClassTypes, Horse, InventoryDescriptionHelper } from '../../types';
 import { getCost, levelRequirementString, xpAmountString } from '../../utils/leveling';
 import { captureFrom, makeMatcher, matchMatchesKeywords } from '../../utils/makeMatcher';
@@ -439,7 +439,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         const newInventory: ItemIds[] = [...character.inventory];
         newInventory.splice(i, 1);
-        if (writeCharacterInventory(character.id, newInventory)) {
+        if (writeCharacterData(character.id, { inventory: newInventory })) {
           character.inventory = newInventory;
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
@@ -625,7 +625,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       const item: Item = items.get(sceneInventory[i]);
       if (matchMatchesKeywords(getMatch, item.keywords)) {
         const newInventory: ItemIds[] = [...character.inventory, item.id];
-        if (writeCharacterInventory(character.id, newInventory)) {
+        if (writeCharacterData(character.id, { inventory: newInventory })) {
           character.inventory = newInventory;
           sceneInventory.splice(i, 1);
           emitSelf([

@@ -1,12 +1,9 @@
-import { navigateCharacter } from '../../../sqlite/sqlite';
-import { REGEX_BUY_ALIASES, REGEX_GO_ALIASES } from '../../constants';
+import { writeCharacterData } from '../../../sqlite/sqlite';
+import { REGEX_GO_ALIASES } from '../../constants';
 import { SceneSentiment } from '../../types';
-import getEmitters from '../../utils/emitHelper';
 import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
-import jStr from '../../utils/jStr';
-import { allTokensMatchKeywords, captureFrom, commandMatchesKeywordsFor, makeMatcher } from '../../utils/makeMatcher';
-import { uniqueMatchCount } from '../../utils/uniqueMatchCount';
+import { allTokensMatchKeywords, commandMatchesKeywordsFor } from '../../utils/makeMatcher';
 import { Item, ItemIds } from '../items/items';
 import { NPC } from '../npcs/npcs';
 import { HandlerOptions } from '../server';
@@ -117,7 +114,7 @@ export function navigate(
       return true;
     }
     
-    if (navigateCharacter(character.id, destination)) {
+    if (writeCharacterData(character.id, { scene_id: destination })) {
       emitOthers(departureString);
       
       socket.leave(character.scene_id);

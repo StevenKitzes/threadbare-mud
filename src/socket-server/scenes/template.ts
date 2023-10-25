@@ -1,6 +1,5 @@
 /* Use this template to create new scenes
 
-import { navigateCharacter, writeCharacterStory } from '../../../sqlite/sqlite';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
@@ -34,7 +33,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!character.scene_states.hasOwnProperty(id)) {
       const newSceneState: any = { ...character.scene_states };
       newSceneState[sceneId] = initialSceneState;
-      if (writeCharacterSceneStates(character.id, newSceneState)) {
+      if (writeCharacterData(character.id, { scene_states: newSceneState })) {
         character.scene_states[id] = initialSceneState;
       }
     }
@@ -73,7 +72,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       // Check current story status
       character.stories. ===  &&
       // Make sure we only proceed if the DB is able to be successfully updated
-      writeCharacterStory(character.id, { ...character.stories, :  })
+      writeCharacterData(character.id, { stories: { ...character.stories, :  } })
     ) {
       character.stories.++;
       actorText.push(-);
@@ -120,7 +119,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       return true;
     }
 
-    if (navigateCharacter(character.id, destination)) {
+    if (writeCharacterData(character.id, { scene_id: destination })) {
       emitOthers(-);
       
       socket.leave(sceneId);

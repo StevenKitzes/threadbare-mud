@@ -1,4 +1,4 @@
-import { navigateCharacter } from "../../../sqlite/sqlite";
+import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from "../../constants";
 import { SceneSentiment } from "../../types";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
@@ -66,7 +66,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       return true;
     }
 
-    if (navigateCharacter(character.id, destination)) {
+    if (writeCharacterData(character.id, { scene_id: destination })) {
       emitOthers(`${name} exits through the heavy, wooden door.`);
       
       socket.leave(sceneId);

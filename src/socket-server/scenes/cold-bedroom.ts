@@ -1,4 +1,4 @@
-import { writeCharacterData, writeCharacterSceneStates, writeCharacterStory } from '../../../sqlite/sqlite';
+import { writeCharacterData } from '../../../sqlite/sqlite';
 import { REGEX_GET_ALIASES, REGEX_LOOK_ALIASES, REGEX_REST_ALIASES } from '../../constants';
 import { SceneSentiment } from '../../types';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
@@ -32,7 +32,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!character.scene_states.hasOwnProperty(id)) {
       const newSceneState: any = { ...character.scene_states };
       newSceneState[sceneId] = initialSceneState;
-      if (writeCharacterSceneStates(character.id, newSceneState)) {
+      if (writeCharacterData(character.id, { scene_states: newSceneState })) {
         character.scene_states[id] = initialSceneState;
       }
     }
@@ -48,7 +48,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [`{${title}}`, '- - -'];
     if (
       character.stories.main === 0 &&
-      writeCharacterStory(character.id, { ...character.stories, main: 1 })
+      writeCharacterData(character.id, { stories: { ...character.stories, main: 1 } })
     ) {
       character.stories.main = 1;
       actorText.push("You awaken to the feeling of satin sheets against your skin and a comfortable mattress beneath you.  You hear voices, a whole grandiose chorus of them, singing a song that seems to fall from its crescendo just as you are coming to your senses.  As your thoughts begin to coalesce, you realize that you have no memory of how you came to be where you are.  In fact, you aren't even sure who you are, beyond a name that rings in the corner of your mind:");

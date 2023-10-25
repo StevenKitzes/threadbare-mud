@@ -58,7 +58,7 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
     horse: intermediary.horse !== null ? JSON.parse(intermediary.horse) : null,
     factionAnger: JSON.parse(intermediary.faction_anger),
 
-     getLightAttack: null,
+    getLightAttack: null,
     getHeavyAttack: null,
     getRangedAttack: null,
     getAgility: null,
@@ -77,7 +77,6 @@ function dbToChar(intermediary: CharacterDBIntermediary): Character {
 
 export type Database = {
   accountHasActiveCharacter: (token: string) => boolean;
-  navigateCharacter: (charId: string, sceneId: SceneIds) => boolean;
   readActiveCharacterBySession: (token: string) => Character | undefined;
   readCharacter: (characterId: string) => Character | undefined;
   readCharactersByUserId: (userId: string) => Character[] | undefined;
@@ -113,9 +112,6 @@ export type Database = {
     horse?: Horse;
     factionAnger?: FactionAnger[];
   }) => boolean;
-  writeCharacterInventory: (charId: string, inventory: ItemIds[]) => boolean;
-  writeCharacterSceneStates: (charId: string, sceneStates: any) => boolean;
-  writeCharacterStory: (charId: string, story: Stories) => boolean;
   writeNewCharacter: (charId: string, userId: string, name: string) => TransactBundle;
   writeSessionToUser: (userId: string, token: string) => boolean;
   writeUser: (id: string, username: string, password: string, email: string) => TransactBundle;
@@ -137,18 +133,6 @@ export const accountHasActiveCharacter = (token: string): boolean => {
     return true;
   } catch (err: any) {
     console.error("Error counting active characters from database by session token . . .", err.toString() || "could not parse error description");
-    return false;
-  }
-}
-
-export const navigateCharacter = (charId: string, sceneIdEnum: SceneIds): boolean => {
-  const sceneId: string = sceneIdEnum.toString();
-  try {
-    db.prepare("UPDATE characters SET scene_id = ? WHERE id = ?;")
-      .run(sceneId, charId);
-    return true;
-  } catch (err: any) {
-    console.error("Error navigating character with id", charId, "to scene with id", sceneId, err.toString());
     return false;
   }
 }
@@ -265,28 +249,6 @@ export const writeActiveCharacterTransactable = (userId: string, characterId: st
   }
 }
 
-export const writeCharacterInventory = (charId: string, inventory: string[]) => {
-  try {
-    db.prepare("UPDATE characters SET inventory = ? WHERE id = ?;")
-      .run(jStr(inventory), charId);
-    return true;
-  } catch (err: any) {
-    console.error("Error updating character inventory for charId:", charId, "with inventory", inventory, err.toString());
-    return false;
-  }
-}
-
-export const writeCharacterSceneStates = (charId: string, sceneStates: any) => {
-  try {
-    db.prepare("UPDATE characters SET scene_states = ? WHERE id = ?;")
-      .run(jStr(sceneStates), charId);
-    return true;
-  } catch (err: any) {
-    console.error("Error updating character scene states for charId:", charId, "with scene states", sceneStates, err.toString());
-    return false;
-  }
-}
-
 export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): boolean => {
   try {
     const updatePrefix: string = "UPDATE characters SET ";
@@ -400,17 +362,6 @@ export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): b
   }
 }
 
-export const writeCharacterStory = (charId: string, stories: Stories): boolean => {
-  try {
-    db.prepare("UPDATE characters SET stories = ? WHERE id = ?;")
-      .run(jStr(stories), charId);
-    return true;
-  } catch (err: any) {
-    console.error("Error updating character story for charId:", charId, "with stories", stories, err.toString());
-    return false;
-  }
-}
-
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
     statement: db.prepare(`
@@ -441,7 +392,6 @@ export const writeUser = (id: string, username: string, password: string, email:
 
 const database: Database = {
   accountHasActiveCharacter,
-  navigateCharacter,
   readActiveCharacterBySession,
   readCharacter,
   readCharactersByUserId,
@@ -452,9 +402,6 @@ const database: Database = {
   writeActiveCharacter,
   writeActiveCharacterTransactable,
   writeCharacterData,
-  writeCharacterInventory,
-  writeCharacterSceneStates,
-  writeCharacterStory,
   writeNewCharacter,
   writeSessionToUser,
   writeUser
