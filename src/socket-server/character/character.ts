@@ -2,15 +2,34 @@ import { HandlerOptions } from '../server';
 import { characterHealthText } from '../../utils/characterHealthText';
 import { getEmitters } from '../../utils/emitHelper';
 import { firstUpper } from '../../utils/firstUpper';
+import { uniqueMatchCount } from '../../utils/uniqueMatchCount';
 import { Item, ItemIds, ItemTypes, items } from '../items/items';
 import { scenes } from '../scenes/scenes';
 import { writeCharacterData, writeCharacterInventory } from '../../../sqlite/sqlite';
-import { ClassTypes, Horse, InventoryDescriptionHelper } from '../../types';
+import { Character, ClassTypes, Horse, InventoryDescriptionHelper } from '../../types';
 import { getCost, levelRequirementString, xpAmountString } from '../../utils/leveling';
-import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
+import { captureFrom, makeMatcher, matchMatchesKeywords } from '../../utils/makeMatcher';
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';
 import { getEncumbranceString } from '../../utils/encumbrance';
 import { saddlebagCapacityMap } from '../horse/horse';
+
+export function getWornItems (character: Character): Item[] {
+  const worn: Item[] = [];
+  if (character.headgear) worn.push(items.get(character.headgear));
+  if (character.armor) worn.push(items.get(character.armor));
+  if (character.gloves) worn.push(items.get(character.gloves));
+  if (character.legwear) worn.push(items.get(character.legwear));
+  if (character.footwear) worn.push(items.get(character.footwear));
+  if (character.weapon) worn.push(items.get(character.weapon));
+  if (character.offhand) worn.push(items.get(character.offhand));
+  return worn;
+}
+
+export function getInventoryAndWorn (character: Character): Item[] {
+  const result: Item[] = [ ...character.inventory.map(i => items.get(i)) ];
+  result.push(...getWornItems(character));
+  return result;
+}
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
   const { character, command, socket } = handlerOptions;
@@ -401,10 +420,18 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       emitSelf("You must finish creating your new character first.");
       return true;
     }
+
+    const count: number = uniqueMatchCount(command, getInventoryAndWorn(character), REGEX_DROP_ALIASES);
+    if (count < 1) return false;
+    if (count > 1) {
+      emitOthers(`${name} wants to drop something, but can't decide what.`);
+      emitSelf(`You have multiple items that could be described as [${dropMatch}].  Be more specific so you don't drop the wrong thing.`);
+      return true;
+    }
   
     for (let i = 0; i < character.inventory.length; i++) {
       const item: Item = items.get(character.inventory[i]);
-      if (item.keywords.includes(dropMatch)) {
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
         if (item.quest) {
           emitOthers(`${character.name} drops ${item.title}, but a magical force returns it to their hand!`);
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
@@ -424,6 +451,154 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
       }
     };
+
+    if (character.headgear) {
+      const item: Item = items.get(character.headgear);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { headgear: null })) {
+          character.headgear = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
+    if (character.armor) {
+      const item: Item = items.get(character.armor);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { armor: null })) {
+          character.armor = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
+    if (character.gloves) {
+      const item: Item = items.get(character.gloves);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { gloves: null })) {
+          character.gloves = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
+    if (character.legwear) {
+      const item: Item = items.get(character.legwear);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { legwear: null })) {
+          character.legwear = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
+    if (character.footwear) {
+      const item: Item = items.get(character.footwear);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { footwear: null })) {
+          character.footwear = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
+    if (character.weapon) {
+      const item: Item = items.get(character.weapon);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { weapon: null })) {
+          character.weapon = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
+    if (character.offhand) {
+      const item: Item = items.get(character.offhand);
+      if (matchMatchesKeywords(dropMatch, item.keywords)) {
+        if (item.quest) {
+          emitOthers(`${character.name} removes and drops ${item.title}, but a magical force returns it to their head!`);
+          emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
+          return true;
+        }
+        if (writeCharacterData(character.id, { offhand: null })) {
+          character.offhand = null;
+          scenes.get(character.scene_id).publicInventory.push(item.id);
+          emitSelf([
+            `You removed and dropped [${item.title}].`,
+            getEncumbranceString(character)
+          ]);
+          emitOthers(`${character.name} dropped ${item.title}.`);
+          return true;
+        }
+      }
+    }
+
     emitSelf(`You do not have any [${dropMatch}] to drop.`);
 
     return true;
@@ -439,19 +614,25 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   
     const sceneInventory: string[] = scenes.get(character.scene_id).publicInventory;
 
+    const count: number = uniqueMatchCount(command, getInventoryAndWorn(character), REGEX_GET_ALIASES);
+    if (count > 1) {
+      emitOthers(`${name} looks around, trying to decide what item to pick up.`);
+      emitSelf(`There are multiple items here that could be described as [${getMatch}].  Be more specific so you don't drop pick up the wrong thing.`);
+      return true;
+    }
+
     for (let i = 0; i < sceneInventory.length; i++) {
-      if (items.get(sceneInventory[i]).keywords.includes(getMatch)) {
-        const itemId: ItemIds = items.get(sceneInventory[i]).id;
-        const itemTitle: string = items.get(sceneInventory[i]).title;
-        const newInventory: ItemIds[] = [...character.inventory, itemId];
+      const item: Item = items.get(sceneInventory[i]);
+      if (matchMatchesKeywords(getMatch, item.keywords)) {
+        const newInventory: ItemIds[] = [...character.inventory, item.id];
         if (writeCharacterInventory(character.id, newInventory)) {
           character.inventory = newInventory;
           sceneInventory.splice(i, 1);
           emitSelf([
-            `You picked up ${itemTitle}.`,
+            `You picked up ${item.title}.`,
             getEncumbranceString(character)
           ]);
-          emitOthers(`${character.name} picked up ${itemTitle}.`);
+          emitOthers(`${character.name} picked up ${item.title}.`);
           return true;
         }
       }
@@ -466,6 +647,13 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       return true;
     }
   
+    const count: number = uniqueMatchCount(command, getInventoryAndWorn(character), REGEX_LOOK_ALIASES);
+    if (count > 1) {
+      emitOthers(`${name} rifles through their stuff, looking a little bewildered.`);
+      emitSelf(`There are multiple items among your effects that could be described as [${lookMatch}].  Be more specific so you don't inspect the wrong thing.`);
+      return true;
+    }
+
     for (let i = 0; i < character.inventory.length; i++) {
       const item: Item = items.get(character.inventory[i]);
       if (item.keywords.includes(lookMatch)) {
@@ -530,6 +718,13 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       return true;
     }
   
+    const count: number = uniqueMatchCount(command, character.inventory.map(i => items.get(i)), REGEX_EQUIP_ALIASES);
+    if (count > 1) {
+      emitOthers(`${name} shuffles through their stuff.`);
+      emitSelf(`You are carrying multiple items that could be described as [${equipMatch}].  Be more specific so you don't equip the wrong thing.`);
+      return true;
+    }
+
     for (let i = 0; i < character.inventory.length; i++) {
       const item: Item = items.get(character.inventory[i]);
       // If this is the item the user is trying to equip
@@ -723,7 +918,14 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       emitSelf("You must finish creating your new character first.");
       return true;
     }
-  
+
+    const count: number = uniqueMatchCount(command, getWornItems(character), REGEX_UNEQUIP_ALIASES);
+    if (count > 1) {
+      emitOthers(`${name} looks around, trying to decide what item to pick up.`);
+      emitSelf(`You are wearing multiple items that could be described as [${unequipMatch}].  Be more specific so you don't drop pick up the wrong thing.`);
+      return true;
+    }
+
     if (character.headgear && items.get(character.headgear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.headgear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.headgear ];

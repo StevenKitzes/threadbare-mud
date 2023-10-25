@@ -33,3 +33,8 @@ export function captureFrom_fromHorse (command: string, horseName: string) : str
   if (matches === null) return null;
   return matches[1];
 }
+
+export function matchMatchesKeywords (match: string, keywords: string[]): boolean {
+  if (match.split(' ').every(word => keywords.includes(word))) return true;
+  return false;
+}

@@ -21,17 +21,21 @@ import {
   REGEX_EVAL_ALIASES,
   REGEX_FIGHT_ALIASES,
   REGEX_GET_ALIASES,
+  REGEX_GIVE_ALIASES,
   REGEX_GO_ALIASES,
   REGEX_LOOK_ALIASES,
+  REGEX_READ_ALIASES,
   REGEX_TALK_ALIASES,
   REGEX_UNEQUIP_ALIASES,
   REGEX_USE_ALIASES
 } from '../constants';
 import { initializeCharacter } from '../utils/initializeCharacter';
 import handleQuestsCommand from './quests/quests';
-import handleCharacterCommand from './character/character';
-import { Scene, scenes } from './scenes/scenes';
+import handleCharacterCommand, { getInventoryAndWorn } from './character/character';
+import { Scene, getItemsForSaleAtScene, scenes } from './scenes/scenes';
 import { handleHorseCommand } from './horse/horse';
+import { firstUpper } from '../utils/firstUpper';
+import { isAmbiguousLookRequest, isAmbiguousPurchaseRequest } from '../utils/ambiguousRequestHelpers';
 
 export type HandlerOptions = {
   io: Server;
@@ -116,7 +120,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
     if (item === undefined) continue;
     if (item.handleItemCommand && item.handleItemCommand(handlerOptions)) return;
   }
-
+  
   // check if there are any scene level input options for this character's scene
   try {
     const scene: Scene | undefined = scenes.get(character.scene_id);
@@ -124,6 +128,13 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       console.error("Could not get character's scene at handleGameAction in server.ts with sceneId:", character.scene_id);
       return;
     }
+    // intercept ambiguous look requests
+    if (isAmbiguousLookRequest(handlerOptions, [
+      ...getInventoryAndWorn(character),
+      ...scene.publicInventory.map(i => items.get(i)),
+      ...getItemsForSaleAtScene(character.id, scene.id)
+    ])) return;
+    if (isAmbiguousPurchaseRequest(handlerOptions, scene)) return;
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {
     console.error('failed loading scene id', character.scene_id, ":", err.toString());
@@ -141,11 +152,13 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   else if (targetName = captureFrom(command, REGEX_DROP_ALIASES)) output = `You aren't carrying any {${targetName}}.`;
   else if (targetName = captureFrom(command, REGEX_EAT_ALIASES)) output = `You don't have any {${targetName}} to eat.`;
   else if (targetName = captureFrom(command, REGEX_EQUIP_ALIASES)) output = `You don't have any {${targetName}} to equip.`;
-  else if (targetName = captureFrom(command, REGEX_EVAL_ALIASES)) output = `There is no {${targetName}} to look inspect.`;
-  else if (targetName = captureFrom(command, REGEX_FIGHT_ALIASES)) output = `There is no {${targetName}} to fight.`;
-  else if (targetName = captureFrom(command, REGEX_GET_ALIASES)) output = `You don't see any {${targetName}} to pick up.`;
-  else if (targetName = captureFrom(command, REGEX_GO_ALIASES)) output = `You don't see a way to reach {${targetName}} from here.`;
-  else if (targetName = captureFrom(command, REGEX_LOOK_ALIASES)) output = `There is no {${targetName}} to look at here.`;
+  else if (targetName = captureFrom(command, REGEX_EVAL_ALIASES)) output = `You find nothing interesting about {${targetName}} beyond the surface.`;
+  else if (targetName = captureFrom(command, REGEX_FIGHT_ALIASES)) output = `There isn't any {${targetName}} worth fighting here.`;
+  else if (targetName = captureFrom(command, REGEX_GET_ALIASES)) output = `You can't get {${targetName}} here.`;
+  else if (targetName = captureFrom(command, REGEX_GIVE_ALIASES)) output = `You can't give {${targetName}} right now.`;
+  else if (targetName = captureFrom(command, REGEX_GO_ALIASES)) output = `{${firstUpper(targetName)}} isn't somewhere you can go right now.`;
+  else if (targetName = captureFrom(command, REGEX_LOOK_ALIASES)) output = `You find nothing interesting about {${targetName}} beyond the surface.`;
+  else if (targetName = captureFrom(command, REGEX_READ_ALIASES)) output = `You are not carrying any {${targetName}} to read.`;
   else if (targetName = captureFrom(command, REGEX_TALK_ALIASES)) output = `You do not see {${targetName}} here to talk to.`;
   else if (targetName = captureFrom(command, REGEX_UNEQUIP_ALIASES)) output = `You don't have any {${targetName}} equipped.`;
   else if (targetName = captureFrom(command, REGEX_USE_ALIASES)) output = `You are not carrying any {${targetName}} you can use.`;

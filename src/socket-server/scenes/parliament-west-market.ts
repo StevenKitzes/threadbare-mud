@@ -26,7 +26,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
-  console.log('handleSceneCommand', command)
 
   if (command === 'enter') {
     // Only relevant to scenes with npcs, to set up npc state

@@ -1,10 +1,13 @@
 import { navigateCharacter } from '../../../sqlite/sqlite';
-import { REGEX_GO_ALIASES } from '../../constants';
+import { REGEX_BUY_ALIASES, REGEX_GO_ALIASES } from '../../constants';
 import { SceneSentiment } from '../../types';
+import getEmitters from '../../utils/emitHelper';
 import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
-import { makeMatcher } from '../../utils/makeMatcher';
-import { ItemIds } from '../items/items';
+import jStr from '../../utils/jStr';
+import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
+import { uniqueMatchCount } from '../../utils/uniqueMatchCount';
+import { Item, ItemIds } from '../items/items';
 import { NPC } from '../npcs/npcs';
 import { HandlerOptions } from '../server';
 
@@ -65,16 +68,42 @@ import('./from-tales-to-tomes').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 
+export function getItemsForSaleAtScene(charId: string, sceneId: string): Item[] {
+  const scene: Scene = scenes.get(sceneId);
+  if (!scene || !scene.getSceneNpcs) return [];
+
+  const sceneNpcs: Map<string, NPC[]> = scene.getSceneNpcs();
+  if (!sceneNpcs) return [];
+
+  const npcs: NPC[] = sceneNpcs.get(charId);
+  if (!npcs) return [];
+
+  const result: Item[] = [];
+
+  for (let i = 0; i < npcs.length; i++) {
+    const npc: NPC = npcs[i];
+    const saleItems: Item[] | undefined = npc.getSaleItems();
+    if (saleItems === undefined) continue;
+
+    result.push(...saleItems);
+  }
+
+  return result;
+}
+
 export function navigate(
   handlerOptions: HandlerOptions,
   destination: SceneIds,
   targetAliases: string,
   emitOthers: (text: string | string[], opts?: OptsType) => void,
   departureString: string,
+  extraAliases?: string,
 ): boolean {
   const { command, character, socket } = handlerOptions;
 
-  if (command.match(makeMatcher(REGEX_GO_ALIASES, targetAliases)) || command.match(makeMatcher(targetAliases))) {
+  const actionAliases: string = `${REGEX_GO_ALIASES}${extraAliases ? `|${extraAliases}` : ''}`;
+
+  if (command.match(makeMatcher(actionAliases, targetAliases)) || command.match(makeMatcher(targetAliases))) {
     // before letting the character try to move, check encumbrance
     if (!characterCanMove(character)) {
       // others
