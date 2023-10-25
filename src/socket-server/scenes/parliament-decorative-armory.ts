@@ -80,7 +80,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    'ne|northeast|market',
+    'ne northeast market'.split(' '),
     emitOthers,
     `${name} leaves the armory to the northeast, returning to the market.`,
   )) return true;

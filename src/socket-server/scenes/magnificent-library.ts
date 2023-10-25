@@ -93,7 +93,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.COLD_BEDROOM,
-    'door|heavy door|wooden door|heavy wooden door',
+    'door heavy wooden'.split(' '),
     emitOthers,
     `${name} departs through a heavy wooden door.`,
   )) return true;
@@ -101,7 +101,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.CURVING_STONE_STAIRCASE,
-    'stairs|stairway|staircase|steps',
+    'stairs stairway staircase steps'.split(' '),
     emitOthers,
     `${name} heads down a curving stone staircase.`,
   )) return true;

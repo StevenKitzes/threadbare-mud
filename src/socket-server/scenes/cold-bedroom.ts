@@ -5,7 +5,7 @@ import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { makeMatcher } from '../../utils/makeMatcher';
+import { commandMatchesKeywordsFor, makeMatcher } from '../../utils/makeMatcher';
 import items, { ItemIds } from '../items/items';
 import { SceneIds, navigate } from '../scenes/scenes';
 import { HandlerOptions } from '../server';
@@ -78,7 +78,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, 'drawer|drawers|chest|chest of drawers'))) {
+  if (commandMatchesKeywordsFor(command, ['drawer', 'drawers', 'chest'], REGEX_LOOK_ALIASES)) {
     emitOthers(`${name} investigates a chest of drawers.`);
 
     const actorText: string[] = [];
@@ -95,7 +95,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   if (
-    command.match(makeMatcher(REGEX_LOOK_ALIASES, 'outfit|clothes|clothing|black outfit|black clothes|black clothing')) &&
+    commandMatchesKeywordsFor(command, ['outfit', 'clothes', 'clothing', 'black'], REGEX_LOOK_ALIASES) &&
     character.scene_states[id].outfitHere
   ) {
     emitOthers(`${name} inspects a black outfit.`);
@@ -109,13 +109,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (command.match(makeMatcher(REGEX_LOOK_ALIASES, 'door|wooden door|heavy door|heavy wooden door'))) {
+  if (commandMatchesKeywordsFor(command, ['door', 'wooden', 'wood', 'heavy'], REGEX_LOOK_ALIASES)) {
     emitOthers(`${name} inspects a heavy wooden door.`);
     emitSelf("The door is near twice as tall as it needs to be for someone to pass comfortably through, and wider than necessary, as well.  A mark of luxury?  You wouldn't think so, considering the crude iron binding that holds it together, or the lack of any ornamentation.");
     return true;
   }
 
-  if (command.match(makeMatcher(REGEX_GET_ALIASES, 'outfit|clothes|clothing|black outfit|black clothes|black clothing'))) {
+  if (commandMatchesKeywordsFor(command, ['outfit', 'clothes', 'clothing', 'black'], REGEX_GET_ALIASES)) {
     if (character.scene_states[id].outfitHere) {
       const newInventory: ItemIds[] = [
         ...character.inventory,
@@ -142,7 +142,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     }
   }
 
-  if (command.match(makeMatcher(REGEX_GET_ALIASES, items.get(ItemIds.SIMPLE_DAGGER).keywords.join('|')))) {
+  if (commandMatchesKeywordsFor(command, items.get(ItemIds.SIMPLE_DAGGER).keywords, REGEX_GET_ALIASES)) {
     if (character.scene_states[id].daggerHere) {
       const newInventory: ItemIds[] = [
         ...character.inventory,
@@ -166,9 +166,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.MAGNIFICENT_LIBRARY,
-    'door|heavy door|wooden door|heavy wooden door',
+    'heavy wooden door library'.split(' '),
     emitOthers,
-    `${name} departs through a heavy wooden door.`
+    `${name} departs through a heavy wooden door.`,
+    'open'
   )) return true;
 
   return false;

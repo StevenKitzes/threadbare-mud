@@ -80,7 +80,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTH_PROMENADE,
-    'n|north|promenade|south promenade|southern promenade',
+    'n north promenade southern'.split(' '),
     emitOthers,
     `${name} leaves the bookshop, exiting to the promenade.`,
   )) return true;

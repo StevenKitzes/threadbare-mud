@@ -79,7 +79,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_NORTH_PROMENADE,
-    's|south|promenade|north promenade|northern promenade',
+    's south northern promenade'.split(' '),
     emitOthers,
     `${name} heads out to the market promenade.`,
   )) return true;

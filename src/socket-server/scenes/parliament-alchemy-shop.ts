@@ -81,7 +81,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    'n|north|market',
+    'n north market'.split(' '),
     emitOthers,
     `${name} leaves the alchemy shop for the market.`,
   )) return true;

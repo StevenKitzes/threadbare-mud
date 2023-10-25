@@ -5,7 +5,7 @@ import getEmitters from '../../utils/emitHelper';
 import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
 import jStr from '../../utils/jStr';
-import { captureFrom, makeMatcher } from '../../utils/makeMatcher';
+import { allTokensMatchKeywords, captureFrom, commandMatchesKeywordsFor, makeMatcher } from '../../utils/makeMatcher';
 import { uniqueMatchCount } from '../../utils/uniqueMatchCount';
 import { Item, ItemIds } from '../items/items';
 import { NPC } from '../npcs/npcs';
@@ -94,16 +94,19 @@ export function getItemsForSaleAtScene(charId: string, sceneId: string): Item[] 
 export function navigate(
   handlerOptions: HandlerOptions,
   destination: SceneIds,
-  targetAliases: string,
+  keywords: string[],
   emitOthers: (text: string | string[], opts?: OptsType) => void,
   departureString: string,
-  extraAliases?: string,
+  extraActionAliases?: string,
 ): boolean {
   const { command, character, socket } = handlerOptions;
 
-  const actionAliases: string = `${REGEX_GO_ALIASES}${extraAliases ? `|${extraAliases}` : ''}`;
+  const actionAliases: string = `${REGEX_GO_ALIASES}${extraActionAliases ? `|${extraActionAliases}` : ''}`;
 
-  if (command.match(makeMatcher(actionAliases, targetAliases)) || command.match(makeMatcher(targetAliases))) {
+  if (
+    commandMatchesKeywordsFor(command, keywords, actionAliases) ||
+    allTokensMatchKeywords(command, keywords)
+  ) {
     // before letting the character try to move, check encumbrance
     if (!characterCanMove(character)) {
       // others

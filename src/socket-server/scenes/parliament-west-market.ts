@@ -104,7 +104,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.OUTSIDE_AUDRICS_TOWER,
-    "w|tower|audric's tower|west",
+    "w tower audrics west".split(' '),
     emitOthers,
     `${name} moves off toward Audric's tower.`,
   )) return true;
@@ -112,7 +112,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_NORTHWEST_MARKET,
-    "n|north",
+    "n north".split(' '),
     emitOthers,
     `${name} moves off northward into another part of the market.`,
   )) return true;
@@ -120,7 +120,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    "s|south",
+    "s south".split(' '),
     emitOthers,
     `${name} moves off southward into another part of the market.`,
   )) return true;

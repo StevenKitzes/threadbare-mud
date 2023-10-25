@@ -5,7 +5,7 @@ import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
 import lookSceneItem from "../../utils/lookSceneItem";
-import { makeMatcher } from "../../utils/makeMatcher";
+import { allTokensMatchKeywords, commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
 import { ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
 import { SceneIds, navigate, scenes } from "./scenes";
@@ -49,14 +49,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.MAGNIFICENT_LIBRARY,
-    'up|library|stairs|stairway|staircase',
+    'up library stairs stairway staircase'.split(' '),
     emitOthers,
     `${name} wanders up the stairs.`
   )) return true;
 
   let destination = SceneIds.OUTSIDE_AUDRICS_TOWER;
-  const doorAliases: string = 'door|heavy door|wooden door|heavy wooden door';
-  if (command.match(makeMatcher(REGEX_GO_ALIASES, doorAliases)) || command.match(makeMatcher(doorAliases))) {
+  const keywords: string[] = 'door heavy wooden market'.split(' ');
+  if (
+    commandMatchesKeywordsFor(command, keywords, `${REGEX_GO_ALIASES}|open`) ||
+    allTokensMatchKeywords(command, keywords)
+  ) {
     if (character.stories.main < 2) {
       emitOthers(`${character.name} fails to open a locked door.`);
       emitSelf('You try the door, but find it locked; not by key and tumbler, but by some unseen force.');

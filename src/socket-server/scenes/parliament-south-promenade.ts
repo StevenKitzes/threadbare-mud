@@ -84,7 +84,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    'w|west',
+    'w west market'.split(' '),
     emitOthers,
     `${name} walks west, to another part of the market.`,
   )) return true;
@@ -93,7 +93,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.FROM_TALES_TO_TOMES,
-    's|south|bookstore|book store|book shop|tales to tomes|from tales to tomes',
+    's south bookstore book store shop tales to tomes from'.split(' '),
     emitOthers,
     `${name} walks into From Tales to Tomes, a book shop.`,
   )) return true;

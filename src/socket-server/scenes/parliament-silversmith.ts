@@ -75,7 +75,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    'e|east|door|front door|market',
+    'e east market'.split(' '),
     emitOthers,
     `${name} leaves the silver shop to return to the market outside.`,
   )) return true;

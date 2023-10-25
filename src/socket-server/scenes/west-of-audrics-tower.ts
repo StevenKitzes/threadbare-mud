@@ -81,7 +81,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.NORTH_OF_AUDRICS_TOWER,
-    'n|north|lane|small lane',
+    'n north lane small'.split(' '),
     emitOthers,
     `${name} leaves the alley to the north.`,
   )) return true;
@@ -89,7 +89,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.SOUTH_OF_AUDRICS_TOWER,
-    's|south|road|larger road',
+    's south road large larger'.split(' '),
     emitOthers,
     `${name} leaves the alley to the south.`,
   )) return true;

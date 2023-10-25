@@ -9,10 +9,15 @@ export function startMatcher (actionAliases: string): RegExp {
   return new RegExp(`^(?:${actionAliases}) `);
 }
 
+export function allTokensMatchKeywords (input: string, keywords: string[]): boolean {
+  if (input.split(' ').every(token => keywords.includes(token))) return true;
+  return false;
+}
+
 export function commandMatchesKeywordsFor (command: string, keywords: string[], regex: string): boolean {
   const capture: string | null = captureFrom(command, regex);
   if (capture === null) return false;
-  if (capture.split(' ').every(word => keywords.includes(word))) return true;
+  if (allTokensMatchKeywords(capture, keywords)) return true;
   return false;
 }
 

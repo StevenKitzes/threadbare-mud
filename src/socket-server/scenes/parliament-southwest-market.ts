@@ -54,7 +54,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_WEST_MARKET,
-    "n|north|western market|west market",
+    "n north market".split(' '),
     emitOthers,
     `${name} moves off north, toward the western part of the market.`,
   )) return true;
@@ -62,7 +62,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SILVERSMITH,
-    "w|west|silver shop|silversmith|boutique|silver boutique|boutique silversmith|boutique silver shop",
+    "w west silver shop silversmith boutique".split(' '),
     emitOthers,
     `${name} walks into a silversmith's shop.`,
   )) return true;
@@ -70,7 +70,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_ALCHEMY_SHOP,
-    "s|south|alchemist|alchemy shop",
+    "s south alchemist alchemy shop".split(' '),
     emitOthers,
     `${name} fades into the darkness of a mysterious alchemy shop.`,
   )) return true;
@@ -78,7 +78,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_DECORATIVE_ARMORY,
-    "sw|southwest|armory|decorative armory|armorer|decorative armorer",
+    "sw southwest armory decorative armorer".split(' '),
     emitOthers,
     `${name} walks into the decorative armory.`,
   )) return true;
@@ -86,7 +86,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_SOUTH_PROMENADE,
-    "e|east|promenade|south promenade|southern promenade",
+    "e east southern promenade".split(' '),
     emitOthers,
     `${name} walks away eastward, onto the marketplace's south promenade.`,
   )) return true;

@@ -98,7 +98,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.CURVING_STONE_STAIRCASE,
-    'w|tower|stairs|staircase|inside|west',
+    'w tower stairs staircase inside west'.split(' '),
     emitOthers,
     `${character.name} disappears into Audric's tower.`,
   )) return true;
@@ -106,7 +106,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.NORTH_OF_AUDRICS_TOWER,
-    'n|north|lane|small lane',
+    'n north lane small'.split(' '),
     emitOthers,
     `${character.name} heads around Audric's tower via a small lane.`,
   )) return true;
@@ -114,7 +114,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.SOUTH_OF_AUDRICS_TOWER,
-    's|south|road|larger road',
+    's south road larger large'.split(' '),
     emitOthers,
     `${character.name} takes the larger road south of Audric's tower.`,
   )) return true;
@@ -122,7 +122,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_WEST_MARKET,
-    'e|east|market|marketplace',
+    'e east market marketplace'.split(' '),
     emitOthers,
     `${character.name} heads east and disappears into the marketplace crowd.`,
   )) return true;

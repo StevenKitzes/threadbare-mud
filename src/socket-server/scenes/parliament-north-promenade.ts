@@ -84,7 +84,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_NORTHWEST_MARKET,
-    'w|west',
+    'w west'.split(' '),
     emitOthers,
     `${name} walks west, to another part of the market.`,
   )) return true;
@@ -92,7 +92,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_NORTHEAST_MARKET,
-    'e|east',
+    'e east'.split(' '),
     emitOthers,
     `${name} walks east, to another part of the market.`,
   )) return true;
@@ -100,7 +100,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.PARLIAMENT_MARKET_INN,
-    'n|north|inn|market inn|parliament market inn',
+    'n north inn market parliament'.split(' '),
     emitOthers,
     `${name} steps into the Parliament Market Inn to the north.`,
   )) return true;
