@@ -51,7 +51,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         actorText.push("When folk catch a glimpse of you, they seem to pause, mesmerized by the shifting colors that glide across your Weaver skin.  You notice there are none like yourself among the crowd.");
         break;
     }
-    actorText.push(`From here, you can return west into Audric's [tower], head east, deeper into the [market], or head round the tower.  You can follow a small lane to the [north] or a larger road to the [south].`);
+    actorText.push(`From here, you can return west into Audric's [tower], head [east], deeper into the market, or head round the tower.  You can follow a small lane to the [northwest] or a larger road to the [southwest].`);
 
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -106,7 +106,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.NORTH_OF_AUDRICS_TOWER,
-    'n north lane small'.split(' '),
+    'nw northwest lane small'.split(' '),
     emitOthers,
     `${character.name} heads around Audric's tower via a small lane.`,
   )) return true;
@@ -114,7 +114,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   if (navigate(
     handlerOptions,
     SceneIds.SOUTH_OF_AUDRICS_TOWER,
-    's south road larger large'.split(' '),
+    'sw southwest road larger large'.split(' '),
     emitOthers,
     `${character.name} takes the larger road south of Audric's tower.`,
   )) return true;

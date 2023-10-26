@@ -67,7 +67,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     // This will be pushed to actor text independent of story
     actorText.push(`Here stands a magnificent archway, a marvel of engineering for its time.  It is decorative, meant only to display the wealth and stature of the township that would one day become Parliament.  In those ancient times, the town border ended at the archway.  Later, the archway became a symbolic marker for the edge of Parliament's market square.  Now, the market spills even beyond the archway into town.`);
     actorText.push(`Also standing here is a small guard post for the peacekeepers.  A [sign] is posted here, with a drawing of a dead rat on it, along with some text.  An [officer] is posted here as well.  He beckons you over to him.`);
-    actorText.push(`To the [north] and [south], the marketplace sprawls onward.  To the [west] lies the spectacular city square.  And [east] of the arch, Parliament's residential quarter begins.`);
+    actorText.push(`To the [north] and [south], the marketplace sprawls onward.  To the [west] lies the spectacular Market Square proper.  And [east] of the arch, Parliament's residential quarter begins.`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
