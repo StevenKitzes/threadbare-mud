@@ -66,7 +66,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push(`The southern promenade of Parliament's marketplace provides a calm, scenic place for folk to stroll and relax.  It is enveloped by a colorful garden and topped by a canopy of lush trees.  The south lies only a single storefront: a [bookstore] with a sign over the top reading "From Tales to Tomes".  The marketplace sprawls to your [east] and [west], and the marvelous [city square] lies to the north.`);
+    actorText.push(`The southern promenade of Parliament's marketplace provides a calm, scenic place for folk to stroll and relax.  It is enveloped by a colorful garden and topped by a canopy of lush trees.  To the south lies only a single storefront: a book store with a sign over the top reading [From Tales to Tomes].  The bustling marketplace sprawls to your [east] and [west], and the marvelous [city square] lies to the north.`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);

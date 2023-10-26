@@ -39,7 +39,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     
     // This will be pushed to actor text independent of story
     actorText.push("The southwestern reach of the marketplace is a den of opulence.  Other corners of the bazaar feature elegant and fancy offerings, certainly; but here stand the most prestigious shops.  In fact, vendors do not stand in the street with carts full of their wares, but rather take up residence in dedicated storefronts.");
-    actorText.push("To the west, a boutique [silversmith] is tucked into the bottom floor of an upscale apartment building.  To the southwest lies an [armorer] specializing in dress and decorative pieces.  To the south you see a mysterious, foreboding storefront, littered with vials and jars of hazy substances, perhaps kept by an [alchemist].  The rest of the marketplace sprawls onward to the [north], and [east] of here is the market's southern promenade.");
+    actorText.push("To the west, a boutique [silversmith] is tucked into the bottom floor of an upscale apartment building.  To the southwest lies an [armorer] specializing in dress and decorative pieces.  To the south you see a mysterious, foreboding storefront, littered with vials and jars of hazy substances, perhaps kept by an [alchemist].  The rest of the marketplace sprawls onward to the [north], and [east] of here is a peaceful promenade.");
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);

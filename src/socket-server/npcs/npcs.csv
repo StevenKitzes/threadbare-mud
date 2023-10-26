@@ -1,8 +1,8 @@
 id;name;cashLoot;xp;healthMax;agility;strength;savvy;damageValue;armor;keywords;description;talkText;attackDescription;faction
 1;Audric;;;;;;;;;old man wizard mage magician;custom;custom;;
-2;a small rat;;1;5;14;2;6;3;1;rodent;A [small rat] with grey-brown fur and beady little eyes scurries about.;A [small rat] squeaks and chitters.;tiny teeth;
-3;a stout rat;;2;100;4;2;4;3;1;rodent;This [stout rat] looks a little more resiliant than your average rodent, but may have paid for it in intelligence.;A [stout rat] squeaks bravely.;stout little teeth;
-4;a rabid rat;;2;10;15;3;2;3;1;rodent;A [rabid rat], chaotic and mad with rage, seethes and thrashes!;A [rabid rat] shrieks, mad with disease.;rabid teeth;
+2;a small rat;0;1;5;14;2;6;3;1;rodent;A [small rat] with grey-brown fur and beady little eyes scurries about.;A [small rat] squeaks and chitters.;tiny teeth;
+3;a stout rat;0;2;100;4;2;4;3;1;rodent;This [stout rat] looks a little more resiliant than your average rodent, but may have paid for it in intelligence.;A [stout rat] squeaks bravely.;stout little teeth;
+4;a rabid rat;0;2;10;15;3;2;3;1;rodent;A [rabid rat], chaotic and mad with rage, seethes and thrashes!;A [rabid rat] shrieks, mad with disease.;rabid teeth;
 5;a baker;;;;;;;;;vendor merchant;A baker displays her goods, with a smile as warm as her freshly baked breads, sweet rolls, and cakes.;"A baker beams at you, eager to share the labor of her work.  ""Good day, friend!  Can I interest you in some tasty treats?  I have much to offer!  Here is what I have for sale.""";;
 6;a fruit vendor;;;;;;;;;merchant;A gentle fellow with a kind demeanor, this [fruit vendor] has quite an assortment, ready for you to enjoy!;"This fruit vendor is almost bouncing with joy over his little produce cart.  He holds up one fruit, then another, eager for you to try them all.  ""The freshest fruit in town!""";;
 7;a luxury clothier;;;;;;;;;vendor merchant;A [luxury clothier], standing with his nose high in the air, selling (and wearing!) clothing that looks fit for royalty.;"The clothier sneers a little, unsure that you are worth his time when he could be selling to the more well-heeled and deep of pocket.  He nevertheless allows you to peruse his offerings.  ""If you can afford them, these are what I have to offer.""";;

@@ -50,22 +50,22 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
 
     switch (character.job) {
       case ClassTypes.peacemaker:
-        actorText.push(`You are ${character.name}, ${job}.  Your skin is ashen gray, your hair inky black.  Your muscles are toned to perfection.`);
+        actorText.push(`You are ${character.name}, ${job}.  Your appear on the surface to be an ordinary human, though your muscles are toned to perfection.`);
         break;
       case ClassTypes.ranger:
-        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human.`);
+        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human with extraordinary capabilities.`);
         break;
       case ClassTypes.rogue:
-        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human.`);
+        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human, your skills and abilities extraordinarily well-balanced.`);
         break;
       case ClassTypes.skyguard:
         actorText.push(`You are ${character.name}, ${job}.  Patches of brightly colored fur bristle over your shoulders, forearms, and calves.  Your muscles are mighty and intimidating.`);
         break;
       case ClassTypes.spymaster:
-        actorText.push(`You are ${character.name}, ${job}.  You are an ordinary human`);
+        actorText.push(`You are ${character.name}, ${job}.  You appear to be an ordinary human, which is how you like it; your gifts are of the mind.`);
         break;
       case ClassTypes.weaver:
-        actorText.push(`You are ${character.name}, ${job}.  Your skin shimmers with animated, iridescent patterns of color.`);
+        actorText.push(`You are ${character.name}, ${job}.  Your skin shimmers with animated, iridescent patterns of color, betraying your magical nature.`);
         break;
     }
 

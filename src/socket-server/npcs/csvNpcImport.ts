@@ -6,14 +6,14 @@ import { Faction } from '../../types';
 export type NpcImport = {
   id: NpcIds,
   name: string,
-  cashLoot: number,
-  xp: number,
-  healthMax: number,
-  agility: number,
-  strength: number,
-  savvy: number,
-  damageValue: number,
-  armor: number,
+  cashLoot: number | undefined,
+  xp: number | undefined,
+  healthMax: number | undefined,
+  agility: number | undefined,
+  strength: number | undefined,
+  savvy: number | undefined,
+  damageValue: number | undefined,
+  armor: number | undefined,
   keywords: string,
   description: string,
   talkText: string,
@@ -49,20 +49,28 @@ export function readNpcCsv(callback?: () => void) {
       const npcImport: NpcImport = {
         id: data[Column.id],
         name: data[Column.name],
-        cashLoot: data[Column.cashLoot],
+        cashLoot: parseInt(data[Column.cashLoot]),
         xp: parseInt(data[Column.xp]),
         healthMax: parseInt(data[Column.healthMax]),
-        agility: parseInt(data[Column.agility]) || undefined,
-        strength: parseInt(data[Column.strength]) || undefined,
-        savvy: parseInt(data[Column.savvy]) || undefined,
-        damageValue: parseInt(data[Column.damageValue]) || undefined,
-        armor: parseInt(data[Column.armor]) || undefined,
+        agility: parseInt(data[Column.agility]),
+        strength: parseInt(data[Column.strength]),
+        savvy: parseInt(data[Column.savvy]),
+        damageValue: parseInt(data[Column.damageValue]),
+        armor: parseInt(data[Column.armor]),
         keywords: data[Column.keywords],
         description: data[Column.description],
         talkText: data[Column.talkText],
         attackDescription: data[Column.attackDescription],
         faction: data[Column.faction],
       };
+      if (isNaN(npcImport.cashLoot)) npcImport.cashLoot = undefined;
+      if (isNaN(npcImport.xp)) npcImport.xp = undefined;
+      if (isNaN(npcImport.healthMax)) npcImport.healthMax = undefined;
+      if (isNaN(npcImport.agility)) npcImport.agility = undefined;
+      if (isNaN(npcImport.strength)) npcImport.strength = undefined;
+      if (isNaN(npcImport.savvy)) npcImport.savvy = undefined;
+      if (isNaN(npcImport.damageValue)) npcImport.damageValue = undefined;
+      if (isNaN(npcImport.armor)) npcImport.armor = undefined;
       npcImports.set(npcImport.id, npcImport);
     })
     .on('end', () => {

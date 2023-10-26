@@ -111,7 +111,7 @@ export function appendSentimentText(job: string, sentiment: SceneSentiment, acto
     case ClassTypes.spymaster:
       switch (sentiment) {
         case SceneSentiment.favorPeacemakers:
-          actorText.push("The fools here treat you with absentminded respect, but at least it is respect.");
+          actorText.push("The unsuspecting folk here treat you with absentminded respect, but at least it is respect.");
           break;
         case SceneSentiment.favorRangers:
           actorText.push("You are ignored, regarded as a common human by the fools here.");

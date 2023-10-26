@@ -49,7 +49,7 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 48;a Parliamentary great helm;headgear;1500;10;7;;;;;helmet;A shining, immaculately polished great helm with bright plumage in the colors of the Realm of Ixpanne: blue, gold, and purple.  It has a visor that can be closed over the face for extra protection.
 49;Parliamentary upper armor with attached cape;armor;3000;25;25;;;;;;A gleaming set of polished plate armor with a cape and tabard depicting the crest of the Realm of Ixpanne, in the appropriate colors of blue, gold, and purple.  It looks to offer good protection, but might not be up to the standards of a war-hardened soldier.
 50;a set of Parliamentary plate gauntlets;gloves;2000;4;6;;;;;;A beautiful, polished set of plate gauntlets etched with the livery of the town of Parliament, capital of Ixpanne.
-51;a set of Parliamentary greaves;legwear;2500;25;25;;;;;leggings;A fine set of polished plate greaves to protect the legs, etched with the livery of the Realm of Ixpanne.
+51;a set of Parliamentary plate greaves;legwear;2500;25;25;;;;;leggings;A fine set of polished plate greaves to protect the legs, etched with the livery of the Realm of Ixpanne.
 52;a set of Parliamentary plated boots;footwear;2000;6;6;;;;;;A sparkling set of polished plated boots, embossed with the crest of the town of Parliament, capital of the Realm of Ixpanne.
 53;a decorative Parliamentary longsword;heavyWeapon;1250;3;;10;slashing;;;long sword blade;"A mirror-polished decorative longsword, with the crest of the capital city of Parliament engraved into the hilt.  It is combat ready, if only just; more meant for show."
 54;a bottle of beer;consumable;5;1;;;;;3;;A decent bottle of beer, kept corked in a brown bottle for travel.

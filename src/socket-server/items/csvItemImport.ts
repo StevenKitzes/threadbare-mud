@@ -2,7 +2,7 @@ import { parse } from 'csv-parse';
 import { createReadStream } from 'fs';
 import { items, DamageType, ItemIds, ItemTypes, Item } from './items';
 import { csvItemToKeywords } from '../../utils/csvPropsToKeywords';
-import { itemPriceRandomizer } from '../../utils/itemPriceRandomizer';
+import { coinValueRandomizer } from '../../utils/coinValueRandomizer';
 import { HandlerOptions } from '../server';
 
 export type ItemImport = {
@@ -66,7 +66,7 @@ function itemFactory (csvData: ItemImport): Item {
   let value: number;
 
   const randomizeValue = (): number => {
-    value = itemPriceRandomizer(csvData.value);
+    value = coinValueRandomizer(csvData.value);
     return value;
   }
 

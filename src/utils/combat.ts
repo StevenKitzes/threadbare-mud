@@ -150,18 +150,21 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
       npc.setDeathTime(Date.now());
 
+      // Call this once rather than as a reference since it generates a random amount relative to npc's cashLoot definition
+      const cashLoot: number = npc.getCashLoot();
+
       const actorText: string[] = [`You see the Lifelight fade from the eyes of ${npc.getName()}.`];
       emitOthers(`${character.name} has defeated ${npc.getName()}.`);
       if (writeCharacterData(character.id, {
-        money: character.money + npc.getCashLoot(),
+        money: character.money + cashLoot,
         inventory: [ ...character.inventory, ...npc.getItemLoot() ],
         xp: character.xp + npc.getXp()
       })) {
-        character.money += npc.getCashLoot();
+        character.money += cashLoot;
         character.inventory = [ ...character.inventory, ...npc.getItemLoot() ];
         character.xp += npc.getXp();
         actorText.push(`You feel ${xpAmountString(npc.getXp())} of the Lifelight's energy coursing through you.`);
-        if (npc.getCashLoot() > 0) actorText.push(`You collect ${npc.getCashLoot()} coins from ${npc.getName()}'s body.`);
+        if (cashLoot > 0) actorText.push(`You collect ${cashLoot} coins from ${npc.getName()}'s body.`);
         else actorText.push(`There are no coins to collect from ${npc.getName()}.`);
         npc.getItemLoot().forEach(item => {
           actorText.push(`You collect {${items.get(item)?.title || 'nothing'}} from ${npc.getName()}'s body.`);

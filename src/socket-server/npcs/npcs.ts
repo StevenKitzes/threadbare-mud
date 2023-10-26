@@ -9,6 +9,7 @@ import { NpcImport, readNpcCsv } from "./csvNpcImport";
 import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import getEmitters from "../../utils/emitHelper";
 import startCombat from "../../utils/combat";
+import { coinValueRandomizer } from "../../utils/coinValueRandomizer";
 
 export type NPC = {
   private: {
@@ -309,7 +310,10 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
   npc.getAttackDescription = () => npc.private.attackDescription;
   npc.setAttackDescription = (a: string) => npc.private.attackDescription = a;
   
-  npc.getCashLoot = () => npc.private.cashLoot;
+  npc.getCashLoot = () => {
+    if (!npc.private.cashLoot) return 0;
+    return coinValueRandomizer(npc.private.cashLoot);
+  }
   npc.setCashLoot = (c: number) => npc.private.cashLoot = c;
   
   // = is not gettable or settable, it is purely internal; only a factory should set it initially
@@ -323,7 +327,11 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
   npc.getDeathTime = () => npc.private.deathTime;
   npc.setDeathTime = (d: number) => npc.private.deathTime = d;
   
-  npc.getDescription = () => npc.private.description;
+  npc.getDescription = () => {
+    const npcHealth: number = npc.getHealth();
+    if (npcHealth === undefined || npcHealth > 0) return npc.private.description;
+    return `The lifeless body of ${npc.getName()} lies here.`;
+  }
   npc.setDescription = (d: string) => npc.private.description = d;
   
   npc.getFaction = () => npc.private.faction;

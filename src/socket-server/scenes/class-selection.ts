@@ -30,13 +30,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push(`Choose a job/background for your character.  You can choose from among Weaver, Peacemaker, Skyguard, Ranger, Spymaster, or Common Rogue.`);
-    actorText.push(`{Weavers} hail from the mysterious realm of Thayzhul.  They perfect their combat through attunement to the Lifelight, melding choreographed elements of song and dance into their techniques.`);
-    actorText.push(`{Peacemakers} come from a wise, nearly extinct culture of pacifists.  They are formidable warriors, owing to an accute mental connection with the Lifelight.`);
-    actorText.push(`{Skyguard} soldiers are the elite unit of the Imperial army, hailing from the Empire of the Sky in the north.  They favor heavy armor and weapons, might over magic.`);
-    actorText.push(`{Rangers} roam the forests of Greenwood.  They boast no magical attunements, but long years of strife along their borders has sharpened their ability to defend their people.`);
-    actorText.push(`{Spymasters}, agents of Ironhenge in the west, have a way of talking themselves into and out of all kinds of trouble.  Handy in a fight, but just as quicky to manipulate their way out of one.`);
-    actorText.push(`{Common rogues} can be found throughout all the realms.  They hold no allegiance and boast not special skills, most often found pursuing nothing more than the next sack of coin.`);
+    actorText.push(`Choose a job/background for your character from among the following:`);
+    actorText.push(`{Weavers} hail from the mysterious, magical realm of Thayzhul.  They perfect their combat through attunement to the Lifelight, melding choreographed elements of song and dance into their techniques.  Their skin shimmers with an iridescent rainbow of magical color.`);
+    actorText.push(`{Peacemakers} come from a wise, nearly extinct culture of pacifists.  They are formidable warriors, owing to an accute, intuitive connection with the Lifelight.  They appear on the surface to be ordinary people.`);
+    actorText.push(`{Skyguard} soldiers are the elite unit of the Imperial army, hailing from the Empire of the Sky in the north.  They favor heavy armor and weapons, might over magic, and are among the fiercest fighters in all the land.`);
+    actorText.push(`{Rangers} roam the forests of Greenwood.  They boast no magical attunements, but long years of strife along their borders has sharpened their ability to defend their people among the trees.  They favor (and are fearsome with) ranged weapon fighting.`);
+    actorText.push(`{Spymasters}, agents of Ironhenge in the west, have a way of talking themselves into and out of all kinds of trouble.  Handy enough in a fight, but more apt to manipulate their way around one.`);
+    actorText.push(`{Rogues} call no nation home, and can be found throughout all the realms.  They hold no allegiance and boast no magical skills, but life on the road has toughened them and taught them to adapt well to a broader variety of situations.`);
     actorText.push(`Which type of character would you like to be?  Type one of these: [weaver], [peacemaker], [skyguard], [ranger], [spymaster], or [rogue].`)
 
     emitSelf(actorText);
