@@ -45,7 +45,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     } else {
       // Respawn logic
       characterNpcs.get(character.id).forEach(c => {
-        if (c.deathTime && Date.now() - new Date(c.deathTime).getTime() > 600000) c.health = c.healthMax;
+        if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
 
@@ -86,7 +86,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription(character)));
+    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 
@@ -95,7 +95,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (command.match(makeMatcher())) {
+  if (commandMatchesKeywordsFor()) {
     emitOthers();
 
     emitSelf();

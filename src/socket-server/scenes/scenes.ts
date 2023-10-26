@@ -62,6 +62,7 @@ import('./parliament-market-inn').then(scene => scenes.set(scene.id, scene));
 import('./parliament-northeast-market').then(scene => scenes.set(scene.id, scene));
 import('./parliament-south-promenade').then(scene => scenes.set(scene.id, scene));
 import('./from-tales-to-tomes').then(scene => scenes.set(scene.id, scene));
+import('./parliament-market-gate').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 

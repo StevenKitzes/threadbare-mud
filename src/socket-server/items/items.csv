@@ -78,3 +78,4 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 77;Personal Growth: The Lifelight and You;book;20;1;;;;;;tome volume;A book titled Personal Growth: The Lifelight and You.  To your surprise, a quick rifle through the pages gives the impression of some very useful information.
 78;A Contemporary Discussion of the Realms;book;20;1;;;;;;tome volume;A book titled A Contemporary Discussion of the Realms.  It looks to be on the newer side, suggesting it was recently enough printed to be of relevance.
 79;Filstred’s Guide to Life on the Continent;book;15;1;;;;;;tome volume;An outsized book, with a heavy wooden hardcover, titled Filstred’s Guide to Life on the Continent.  There is something fishy about it, like it doesn't fit in your hands properly.  No, more like it doesn't fit in your eyes properly.  No, it's something else...
+80;a dead rat;trinket;0;1;;;;;;corpse body;The body of a dead rat, ne’er to squeak or scurry again.

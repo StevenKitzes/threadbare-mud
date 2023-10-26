@@ -33,7 +33,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       characterNpcs.set(character.id, [
         npcFactory({
           csvData: npcImports.get(NpcIds.SMALL_RAT),
-          character
+          character,
+          lootInventory: [ ItemIds.DEAD_RAT ],
         }),
       ]);
     } else {

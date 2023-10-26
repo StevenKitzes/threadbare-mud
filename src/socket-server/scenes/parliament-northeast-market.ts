@@ -105,6 +105,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     `${name} moves off west, toward the market's north promenade.`,
   )) return true;
 
+  if (navigate(
+    handlerOptions,
+    SceneIds.PARLIAMENT_MARKET_GATE,
+    "s south market gate".split(' '),
+    emitOthers,
+    `${name} heads south, toward the Parliament Market Gate.`,
+  )) return true;
+
   return false;
 }
 
