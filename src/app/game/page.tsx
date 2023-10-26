@@ -98,7 +98,8 @@ export const Game = (): JSX.Element => {
     setToken(tokenStr);
 
     // Create socket connection
-    const skt = io('ws://localhost:3030');
+    console.log(process.env.NEXT_PUBLIC_WSS_URL);
+    const skt = io(process.env.NEXT_PUBLIC_WSS_URL);
     setSocket(skt);
 
     // On successful connection . . .
