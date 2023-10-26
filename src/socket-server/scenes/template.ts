@@ -12,6 +12,7 @@ import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.;
 const title: string = ;

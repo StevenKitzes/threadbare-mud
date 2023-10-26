@@ -3,38 +3,43 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { Navigable, navigate, SceneIds } from './scenes';
+import { navigate, Navigable, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
-import { handleFactionAggro } from '../../utils/combat';
 import { npcImports } from '../npcs/csvNpcImport';
+import { handleFactionAggro } from '../../utils/combat';
 import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
-const id: SceneIds = SceneIds.PARLIAMENT_SOUTH_PROMENADE;
-const title: string = "Parliament Southern Promenade";
+const id: SceneIds = SceneIds.PARLIAMENT_MARKET_SQUARE;
+const title: string = "Parliament Market Square";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
 
 const navigables: Navigable[] = [
   {
-    sceneId: SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    keywords: 'w west market'.split(' '),
-    departureDescription: (name: string) => `${name} walks west, to another part of the market.`,
+    sceneId: SceneIds.PARLIAMENT_NORTH_PROMENADE,
+    keywords: 'n north northern promenade'.split(' '),
+    departureDescription: (name: string) => `${name} leaves toward the northern market promenade.`,
   },
   {
-    sceneId: SceneIds.FROM_TALES_TO_TOMES,
-    keywords: 's south bookstore book store shop tales to tomes from'.split(' '),
-    departureDescription: (name: string) => `${name} walks into From Tales to Tomes, a book shop.`,
+    sceneId: SceneIds.PARLIAMENT_WEST_MARKET,
+    keywords: 'w west western market'.split(' '),
+    departureDescription: (name: string) => `${name} leaves toward the western part of the market.`,
   },
   {
-    sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
-    keywords: 'n north market square'.split(' '),
-    departureDescription: (name: string) => `${name} heads north, to the Market Square.`,
+    sceneId: SceneIds.PARLIAMENT_MARKET_GATE,
+    keywords: 'e east eastern market gate'.split(' '),
+    departureDescription: (name: string) => `${name} leaves toward the Market Gate.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_SOUTH_PROMENADE,
+    keywords: 's south southern promenade'.split(' '),
+    departureDescription: (name: string) => `${name} leaves toward the southern market promenade.`
   },
 ];
 
@@ -57,6 +62,11 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
           lootInventory: [ ItemIds.STANDARD_ISSUE_SHORTSWORD ],
         }),
         npcFactory({
+          csvData: npcImports.get(NpcIds.PEACEKEEPER_CAPTAIN),
+          character,
+          lootInventory: [ ItemIds.PEACEKEEPER_LONGSWORD ],
+        }),
+        npcFactory({
           csvData: npcImports.get(NpcIds.SNEERING_PEACEKEEPER),
           character,
           lootInventory: [ ItemIds.SIMPLE_DAGGER ],
@@ -68,11 +78,11 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
-    
+
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
-    })
+    });
 
     handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
 
@@ -84,12 +94,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${name} looks around at the promenade.`);
+    emitOthers(`${name} gazes about the wondrous sights of the Market Square.`);
 
     const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push(`The southern promenade of Parliament's marketplace provides a calm, scenic place for folk to stroll and relax.  It is enveloped by a colorful garden and topped by a canopy of lush trees.  To the south lies only a single storefront: a book store with a sign over the top reading [From Tales to Tomes].  The bustling marketplace sprawls to your [east] and [west], and the marvelous [Market Square] lies to the north.`);
+    actorText.push(`The Parliament Market Square is the ultimate expression of the wealth and grandeur of Ixpanne.  While the wizard towers that stand through the city might be more expensive at the bottom line, the beauty of the Square stands alone.  The gardens, paths, and statuary here are downright palatial, though they are on display here for all to enjoy.  At the center of the Square is a fountain, over which spans a bridge, all cut from marble.  Water, fed by some unseen source, gushes out of the many likenesses of animals and monsters all over the fountain and its bridge.  The Market Square is so expansive that when standing at its center, the hustle and bustle of the surrounding market seems distant, muted.`);
+    actorText.push(`The market proper can be reached either to the [east] or the [west].  You can see Audric's tower rising ever skyward, father to the west.  To the [north] and [south], the Market Square extends into a longer promenade.`)
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
@@ -103,6 +114,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
+  // normal travel, concise
   if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
   for (let i = 0; i < navigables.length; i++) {
     if (navigate(

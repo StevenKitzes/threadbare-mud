@@ -28,6 +28,11 @@ const navigables: Navigable[] = [
     keywords: "n north market marketplace".split(' '),
     departureDescription: (name: string) => `${name} walks off north, toward another part of the market.`,
   },
+  {
+    sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
+    keywords: "w west market square".split(' '),
+    departureDescription: (name: string) => `${name} heads west, into the Market Square.`,
+  },
 ];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -43,7 +48,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [ npcFactory({
-        csvData: npcImports.get(NpcIds.SCOWLING_PEACEKEEPER),
+        csvData: npcImports.get(NpcIds.PEACEKEEPER_CAPTAIN),
         character,
         lootInventory: [ ItemIds.PEACEKEEPER_LONGSWORD ],
       }) ]);

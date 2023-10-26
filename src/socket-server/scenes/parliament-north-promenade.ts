@@ -36,6 +36,11 @@ const navigables: Navigable[] = [
     keywords: 'n north inn market parliament'.split(' '),
     departureDescription: (name: string) => `${name} steps into the Parliament Market Inn to the north.`,
   },
+  {
+    sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
+    keywords: 's south market square'.split(' '),
+    departureDescription: (name: string) => `${name} heads south, to the Market Square.`,
+  },
 ];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -54,10 +59,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         npcFactory({
           csvData: npcImports.get(NpcIds.SNEERING_PEACEKEEPER),
           character,
+          lootInventory: [ ItemIds.SIMPLE_DAGGER ],
         }),
         npcFactory({
           csvData: npcImports.get(NpcIds.SCOWLING_PEACEKEEPER),
           character,
+          lootInventory: [ ItemIds.STANDARD_ISSUE_SHORTSWORD ],
         }),
       ]);
     } else {

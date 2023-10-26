@@ -134,6 +134,7 @@ export enum ItemIds {
   REALM_GUIDE_BOOK = "78",
   FILSTREDS_GUIDE_BOOK = "79",
   DEAD_RAT = "80",
+  STANDARD_ISSUE_SHORTSWORD = "81",
 }
 
 readItemCsv(() => {

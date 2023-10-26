@@ -26,7 +26,7 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 25;modest saddlebags;saddlebags;30;15;;;;;;saddle bags;A set of modest saddlebags, made of sturdy cloth with a simple rope harness.  The will allow your horse to carry a little bit of extra gear.
 26;leather saddlebags;saddlebags;200;40;;;;;;saddle bags;A simple set of leather saddlebags, with buckles and straps to secure them.  With them, your horse can help you carry a good amount of extra cargo.
 27;reinforced saddlebags;saddlebags;500;100;;;;;;saddle bags;A fine set of reinforced saddlebags, supported with iron framing to strengthen them.  They look like they can carry a lot of cargo.
-28;a standard broadsword;heavyWeapon;150;4;;15;slashing;;;sword blade;A standard broadsword, suitable for typical combat conditions.  It is sharp, and seems sturdy enough.
+28;a standard broadsword;heavyWeapon;150;4;;15;slashing;;;broad sword blade;A standard broadsword, suitable for typical combat conditions.  It is sharp, and seems sturdy enough.
 29;a standard rapier;lightWeapon;120;3;;7;piercing;;;sword blade;A standard rapier, suitable for duels and light combat.  It has a sharp tip and a flexible blade.
 30;little throwing daggers;rangedWeapon;100;4;;10;piercing;;;;A simple, but effective, set of little throwing daggers for the deft of hand.  They are made of plain steel, tip to butt.
 31;a standard mace;heavyWeapon;120;5;;15;bashing;;;;A standard mace, typical of the sort of thing you would see the town guard carrying around.
@@ -79,3 +79,4 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 78;A Contemporary Discussion of the Realms;book;20;1;;;;;;tome volume;A book titled A Contemporary Discussion of the Realms.  It looks to be on the newer side, suggesting it was recently enough printed to be of relevance.
 79;Filstred’s Guide to Life on the Continent;book;15;1;;;;;;tome volume;An outsized book, with a heavy wooden hardcover, titled Filstred’s Guide to Life on the Continent.  There is something fishy about it, like it doesn't fit in your hands properly.  No, more like it doesn't fit in your eyes properly.  No, it's something else...
 80;a dead rat;trinket;0;1;;;;;;corpse body;The body of a dead rat, ne’er to squeak or scurry again.
+81;a standard issue shortsword;lightWeapon;75;3;;8;slashing;;;short sword blade;A very plain, basic, minimally effective shortsword.  Typical of rank and file soldiers and guardsmen.
