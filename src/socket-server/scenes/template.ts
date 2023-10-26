@@ -49,13 +49,15 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
+    handleSceneCommand({
+      ...handlerOptions,
+      command: 'look'
+    });
+
     handleAggro(characterNpcs, character, handlerOptions);
     handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
 
-    return handleSceneCommand({
-      ...handlerOptions,
-      command: 'look'
-    })
+    return true;
   }
 
   // Only relevant to scenes with npcs, delete otherwise

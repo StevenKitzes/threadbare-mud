@@ -42,8 +42,11 @@ export type NPC = {
   // these are not settable
   getId: () => NpcIds;
   getName: () => string;
-  getAggro: () => boolean;
   getKeywords: () => string[];
+  
+  // these are settable
+  getAggro: () => boolean;
+  setAggro: (a: boolean) => void;
 
   getAgility: () => number;
   setAgility: (a: number) => void;
@@ -231,8 +234,10 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
 
     getId: undefined,
     getName: undefined,
-    getAggro: undefined,
     getKeywords: undefined,
+    
+    getAggro: undefined,
+    setAggro: undefined,
   
     getAgility: undefined,
     setAgility: undefined,
@@ -295,8 +300,10 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
 
   npc.getId = () => npc.private.id;
   npc.getName = () => npc.private.name;
-  npc.getAggro = () => npc.private.aggro;
   npc.getKeywords = () => npc.private.keywords;
+  
+  npc.getAggro = () => npc.private.aggro;
+  npc.setAggro = (a: boolean) => npc.private.aggro = a;
 
   npc.getAgility = () => npc.private.agility;
   npc.setAgility = (a: number) => npc.private.agility = a;

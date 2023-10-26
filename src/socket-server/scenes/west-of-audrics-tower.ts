@@ -11,6 +11,7 @@ import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { handleAggro } from '../../utils/combat';
 import { npcImports } from '../npcs/csvNpcImport';
+import { augment_aggro } from '../npcs/augment_aggro';
 
 const id: SceneIds = SceneIds.WEST_OF_AUDRICS_TOWER;
 const title: string = "A Quiet Alley West of Audric's Tower";
@@ -35,10 +36,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
           csvData: npcImports.get(NpcIds.SMALL_RAT),
           character,
         }),
-        npcFactory({
+        augment_aggro(npcFactory({
           csvData: npcImports.get(NpcIds.RABID_RAT),
           character,
-        }),
+        })),
       ]);
     } else {
       // Respawn logic
@@ -46,13 +47,15 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
-
-    handleAggro(characterNpcs, character, handlerOptions);
-
-    return handleSceneCommand({
+    
+    handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     })
+
+    handleAggro(characterNpcs, character, handlerOptions);
+
+    return true;
   }
 
   // Only relevant to scenes with npcs, delete otherwise

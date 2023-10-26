@@ -12,7 +12,7 @@ import { OptsType } from "./getGameTextObject";
 import research from "./research";
 import { Character, CharacterUpdateOpts, Faction, FactionAnger } from "../types";
 import { firstUpper } from "./firstUpper";
-import { factionNames } from "../constants";
+import { AGGRO_TIMER, factionNames } from "../constants";
 
 const COMBAT_TIMER: number = 1900;
 const COMBAT_RANDOMIZATION: number = 200;
@@ -54,13 +54,18 @@ export function handleAggro(
   character: Character,
   handlerOptions: HandlerOptions
 ): void {
+  const { emitSelf } = getEmitters(handlerOptions.socket, character.scene_id);
+
   // Aggro enemies attack!
   characterNpcs.get(character.id)?.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && c.getAggro()) {
-      c.handleNpcCommand({
-        ...handlerOptions,
-        command: `fight ${c.getKeywords().join(' ')}`
-      });
+      emitSelf(`={${firstUpper(c.getName())}} looks ready to attack you!  Flee now or you'll enter combat!=`);
+      setTimeout(() => {
+        c.handleNpcCommand({
+          ...handlerOptions,
+          command: `fight ${c.getKeywords().join(' ')}`
+        });
+      }, AGGRO_TIMER);
     }
   });
 }
@@ -76,11 +81,13 @@ export function handleFactionAggro(
   characterNpcs.get(character.id)?.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && character.factionAnger.find(fa => fa.faction === c.getFaction())) {
       emitOthers(`${firstUpper(c.getName())} remembers ${character.name} as an enemy of ${factionNames.get(c.getFaction())} and attacks!`);
-      emitSelf(`${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and =attacks you=!`);
-      c.handleNpcCommand({
-        ...handlerOptions,
-        command: `fight ${c.getKeywords().join(' ')}`
-      });
+      emitSelf(`=${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and prepares to attack!  Flee or you'll enter combat!=`);
+      setTimeout(() => {
+        c.handleNpcCommand({
+          ...handlerOptions,
+          command: `fight ${c.getKeywords().join(' ')}`
+        });
+      }, AGGRO_TIMER);
     }
   });
 }

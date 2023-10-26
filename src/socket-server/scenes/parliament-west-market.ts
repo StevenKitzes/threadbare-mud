@@ -68,13 +68,15 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
-
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
-
-    return handleSceneCommand({
+    
+    handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     })
+
+    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+
+    return true;
   }
 
   // Only relevant to scenes with npcs, delete otherwise
