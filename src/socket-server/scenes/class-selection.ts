@@ -1,6 +1,6 @@
 import { writeCharacterData } from '../../../sqlite/sqlite';
 import getEmitters from '../../utils/emitHelper';
-import { scenes, SceneIds } from './scenes';
+import { scenes, SceneIds, Navigable } from './scenes';
 import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
@@ -12,6 +12,8 @@ const title: string = "Select your character class";
 const horseAllowed: boolean = false;
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, command, socket } = handlerOptions;
@@ -150,5 +152,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand
 };

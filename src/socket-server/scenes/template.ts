@@ -5,7 +5,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { scenes, navigate, SceneIds } from './scenes';
+import { scenes, navigate, Navigable, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -18,6 +18,19 @@ const title: string = ;
 const sentiment: SceneSentiment = SceneSentiment.;
 const horseAllowed: boolean = ;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: 
+    keywords: 
+    departureDescription: (name: string) => 
+  },
+  {
+    sceneId: 
+    keywords: 
+    departureDescription: (name: string) => 
+  },
+];
 
 const initialSceneState: any = {};
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
@@ -100,16 +113,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  // normal travel, concise
-  if (navigate(
-    handlerOptions,
-    SceneIds.-,
-    -targetAliases,
-    emitOthers,
-    -departuretext,
-  )) return true;
-
-  // complex, story-controlled exit example
+  // complex, story-controlled exit example;
+  // place before navigable evaluations to intercept fallback of this example's self definition in navigables list
   let destination = SceneIds.-;
   if (command.match(makeMatcher(REGEX_GO_ALIASES, ))) {
     if (character.stories. < 2) {
@@ -131,6 +136,19 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     }
   }
 
+  // normal travel, concise
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
+
   return false;
 }
 
@@ -140,6 +158,7 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand,
   getSceneNpcs
 };

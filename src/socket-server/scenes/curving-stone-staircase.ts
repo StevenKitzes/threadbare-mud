@@ -1,6 +1,7 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from "../../constants";
 import { SceneSentiment } from "../../types";
+import { isAmbiguousNavRequest } from "../../utils/ambiguousRequestHelpers";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
@@ -8,13 +9,26 @@ import lookSceneItem from "../../utils/lookSceneItem";
 import { allTokensMatchKeywords, commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
 import { ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
-import { SceneIds, navigate, scenes } from "./scenes";
+import { Navigable, SceneIds, navigate, scenes } from "./scenes";
 
 const id: SceneIds = SceneIds.CURVING_STONE_STAIRCASE;
 const title: string = "A curving stone staircase";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = false;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.MAGNIFICENT_LIBRARY,
+    keywords: 'up library stairs stairway staircase'.split(' '),
+    departureDescription: (name: string) => `${name} wanders up the stairs.`,
+  },
+  {
+    sceneId: SceneIds.OUTSIDE_AUDRICS_TOWER,
+    keywords: 'door heavy wooden market'.split(' '),
+    departureDescription: (name: string) => `${name} exits through the heavy, wooden door.`,
+  },
+];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -45,17 +59,9 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   }
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
-  
-  if (navigate(
-    handlerOptions,
-    SceneIds.MAGNIFICENT_LIBRARY,
-    'up library stairs stairway staircase'.split(' '),
-    emitOthers,
-    `${name} wanders up the stairs.`
-  )) return true;
 
-  let destination = SceneIds.OUTSIDE_AUDRICS_TOWER;
-  const keywords: string[] = 'door heavy wooden market'.split(' ');
+  const destination = navigables[1].sceneId;
+  const keywords: string[] = navigables[1].keywords;
   if (
     commandMatchesKeywordsFor(command, keywords, `${REGEX_GO_ALIASES}|open`) ||
     allTokensMatchKeywords(command, keywords)
@@ -78,6 +84,18 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       });
     }
   }
+  
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 }
@@ -88,5 +106,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand
 }

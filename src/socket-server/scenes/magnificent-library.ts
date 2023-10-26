@@ -1,5 +1,6 @@
 import { REGEX_LOOK_ALIASES } from "../../constants";
 import { SceneSentiment } from "../../types";
+import { isAmbiguousNavRequest } from "../../utils/ambiguousRequestHelpers";
 import appendAlsoHereString from "../../utils/appendAlsoHereString";
 import appendItemsHereString from "../../utils/appendItemsHereString";
 import getEmitters from "../../utils/emitHelper";
@@ -10,13 +11,27 @@ import { augment_audric } from "../npcs/audric";
 import { npcImports } from "../npcs/csvNpcImport";
 import { NPC, NpcIds, npcFactory } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
-import { SceneIds, navigate } from "./scenes";
+import { Navigable, SceneIds, navigate } from "./scenes";
 
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = false;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.COLD_BEDROOM,
+    keywords: 'door heavy wooden'.split(' '),
+    departureDescription: (name: string) => `${name} departs through a heavy wooden door.`,
+    extraActionAliases: 'open',
+  },
+  {
+    sceneId: SceneIds.CURVING_STONE_STAIRCASE,
+    keywords: 'stairs stairway staircase steps'.split(' '),
+    departureDescription: (name: string) => `${name} heads down a curving stone staircase.`,
+  },
+];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
@@ -90,21 +105,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (navigate(
-    handlerOptions,
-    SceneIds.COLD_BEDROOM,
-    'door heavy wooden'.split(' '),
-    emitOthers,
-    `${name} departs through a heavy wooden door.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.CURVING_STONE_STAIRCASE,
-    'stairs stairway staircase steps'.split(' '),
-    emitOthers,
-    `${name} heads down a curving stone staircase.`,
-  )) return true;
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 };
@@ -115,6 +126,7 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand,
   getSceneNpcs
 };

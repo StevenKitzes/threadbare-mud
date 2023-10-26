@@ -3,19 +3,48 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { Navigable, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.PARLIAMENT_SOUTHWEST_MARKET;
 const title: string = "Parliament Southwestern Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.PARLIAMENT_WEST_MARKET,
+    keywords: "n north market".split(' '),
+    departureDescription: (name: string) => `${name} moves off north, toward the western part of the market.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_SILVERSMITH,
+    keywords: "w west silver shop silversmith boutique".split(' '),
+    departureDescription: (name: string) => `${name} walks into a silversmith's shop.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_ALCHEMY_SHOP,
+    keywords: "s south alchemist alchemy shop".split(' '),
+    departureDescription: (name: string) => `${name} fades into the darkness of a mysterious alchemy shop.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_DECORATIVE_ARMORY,
+    keywords: "sw southwest armory decorative armorer".split(' '),
+    departureDescription: (name: string) => `${name} walks into the decorative armory.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_SOUTH_PROMENADE,
+    keywords: "e east southern promenade".split(' '),
+    departureDescription: (name: string) => `${name} walks away eastward, onto the marketplace's south promenade.`,
+  },
+];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
@@ -51,45 +80,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_WEST_MARKET,
-    "n north market".split(' '),
-    emitOthers,
-    `${name} moves off north, toward the western part of the market.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_SILVERSMITH,
-    "w west silver shop silversmith boutique".split(' '),
-    emitOthers,
-    `${name} walks into a silversmith's shop.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_ALCHEMY_SHOP,
-    "s south alchemist alchemy shop".split(' '),
-    emitOthers,
-    `${name} fades into the darkness of a mysterious alchemy shop.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_DECORATIVE_ARMORY,
-    "sw southwest armory decorative armorer".split(' '),
-    emitOthers,
-    `${name} walks into the decorative armory.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_SOUTH_PROMENADE,
-    "e east southern promenade".split(' '),
-    emitOthers,
-    `${name} walks away eastward, onto the marketplace's south promenade.`,
-  )) return true;
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 }
@@ -100,6 +101,7 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand,
   getSceneNpcs
 };

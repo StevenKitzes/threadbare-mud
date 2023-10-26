@@ -3,7 +3,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { navigate, SceneIds } from './scenes';
+import { Navigable, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -12,12 +12,31 @@ import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { handleFactionAggro } from '../../utils/combat';
 import { npcImports } from '../npcs/csvNpcImport';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.PARLIAMENT_NORTH_PROMENADE;
 const title: string = "Parliament Northern Promenade";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.PARLIAMENT_NORTHWEST_MARKET,
+    keywords: 'w west market marketplace'.split(' '),
+    departureDescription: (name: string) => `${name} walks west, to another part of the market.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_NORTHEAST_MARKET,
+    keywords: 'e east market marketplace'.split(' '),
+    departureDescription: (name: string) => `${name} walks east, to another part of the market.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_MARKET_INN,
+    keywords: 'n north inn market parliament'.split(' '),
+    departureDescription: (name: string) => `${name} steps into the Parliament Market Inn to the north.`,
+  },
+];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
@@ -82,30 +101,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  // normal travel, concise
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_NORTHWEST_MARKET,
-    'w west'.split(' '),
-    emitOthers,
-    `${name} walks west, to another part of the market.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_NORTHEAST_MARKET,
-    'e east'.split(' '),
-    emitOthers,
-    `${name} walks east, to another part of the market.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_MARKET_INN,
-    'n north inn market parliament'.split(' '),
-    emitOthers,
-    `${name} steps into the Parliament Market Inn to the north.`,
-  )) return true;
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 }
@@ -116,6 +122,7 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand,
   getSceneNpcs
 };

@@ -1,13 +1,14 @@
 import { writeCharacterData } from '../../../sqlite/sqlite';
 import { REGEX_GET_ALIASES, REGEX_LOOK_ALIASES, REGEX_REST_ALIASES } from '../../constants';
 import { SceneSentiment } from '../../types';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
 import { commandMatchesKeywordsFor, makeMatcher } from '../../utils/makeMatcher';
 import items, { ItemIds } from '../items/items';
-import { SceneIds, navigate } from '../scenes/scenes';
+import { Navigable, SceneIds, navigate } from '../scenes/scenes';
 import { HandlerOptions } from '../server';
 
 const id: SceneIds = SceneIds.COLD_BEDROOM;
@@ -19,6 +20,15 @@ const initialSceneState: any = {
   daggerHere: true,
   outfitHere: true
 };
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.MAGNIFICENT_LIBRARY,
+    keywords: 'heavy wooden door library'.split(' '),
+    departureDescription: (name: string) => `${name} departs through a heavy wooden door.`,
+    extraActionAliases: 'open',
+  },
+];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -154,14 +164,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     }
   }
 
-  if (navigate(
-    handlerOptions,
-    SceneIds.MAGNIFICENT_LIBRARY,
-    'heavy wooden door library'.split(' '),
-    emitOthers,
-    `${name} departs through a heavy wooden door.`,
-    'open'
-  )) return true;
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 }
@@ -172,5 +185,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand
 };

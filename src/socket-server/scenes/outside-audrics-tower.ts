@@ -2,18 +2,42 @@ import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { Navigable, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { ClassTypes, SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.OUTSIDE_AUDRICS_TOWER;
 const title: string = "Outside Audric's Tower";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.CURVING_STONE_STAIRCASE,
+    keywords: 'w tower stairs staircase inside west'.split(' '),
+    departureDescription: (name: string) => `${name} disappears into Audric's tower.`,
+  },
+  {
+    sceneId: SceneIds.NORTH_OF_AUDRICS_TOWER,
+    keywords: 'nw northwest lane small'.split(' '),
+    departureDescription: (name: string) => `${name} heads around Audric's tower via a small lane.`,
+  },
+  {
+    sceneId: SceneIds.SOUTH_OF_AUDRICS_TOWER,
+    keywords: 'sw southwest road larger large'.split(' '),
+    departureDescription: (name: string) => `${name} takes the larger road south of Audric's tower.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_WEST_MARKET,
+    keywords: 'e east market marketplace'.split(' '),
+    departureDescription: (name: string) => `${name} heads east and disappears into the marketplace crowd.`,
+  },
+];
 
 const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
@@ -95,38 +119,18 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
 
-  if (navigate(
-    handlerOptions,
-    SceneIds.CURVING_STONE_STAIRCASE,
-    'w tower stairs staircase inside west'.split(' '),
-    emitOthers,
-    `${character.name} disappears into Audric's tower.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.NORTH_OF_AUDRICS_TOWER,
-    'nw northwest lane small'.split(' '),
-    emitOthers,
-    `${character.name} heads around Audric's tower via a small lane.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.SOUTH_OF_AUDRICS_TOWER,
-    'sw southwest road larger large'.split(' '),
-    emitOthers,
-    `${character.name} takes the larger road south of Audric's tower.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_WEST_MARKET,
-    'e east market marketplace'.split(' '),
-    emitOthers,
-    `${character.name} heads east and disappears into the marketplace crowd.`,
-  )) return true;
-
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
+  
   return false;
 }
 
@@ -136,5 +140,6 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand
 };

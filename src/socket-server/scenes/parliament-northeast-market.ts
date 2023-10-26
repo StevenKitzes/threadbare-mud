@@ -3,7 +3,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { Navigable, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -11,12 +11,26 @@ import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
 import { npcImports } from '../npcs/csvNpcImport';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.PARLIAMENT_NORTHEAST_MARKET;
 const title: string = "Parliament Northeastern Marketplace";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.PARLIAMENT_NORTH_PROMENADE,
+    keywords: "w west north promenade".split(' '),
+    departureDescription: (name: string) => `${name} moves off west, toward the market's north promenade.`,
+  },
+  {
+    sceneId: SceneIds.PARLIAMENT_MARKET_GATE,
+    keywords: "s south market gate".split(' '),
+    departureDescription: (name: string) => `${name} heads south, toward the Parliament Market Gate.`,
+  },
+];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
@@ -97,21 +111,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_NORTH_PROMENADE,
-    "w west north promenade".split(' '),
-    emitOthers,
-    `${name} moves off west, toward the market's north promenade.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.PARLIAMENT_MARKET_GATE,
-    "s south market gate".split(' '),
-    emitOthers,
-    `${name} heads south, toward the Parliament Market Gate.`,
-  )) return true;
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 }
@@ -122,6 +132,7 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand,
   getSceneNpcs
 };

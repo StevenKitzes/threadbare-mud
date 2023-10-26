@@ -8,12 +8,20 @@ import { Item, ItemIds } from '../items/items';
 import { NPC } from '../npcs/npcs';
 import { HandlerOptions } from '../server';
 
+export type Navigable = {
+  sceneId: SceneIds;
+  keywords: string[];
+  departureDescription: (name: string) => string;
+  extraActionAliases?: string;
+}
+
 export type Scene = {
   id: SceneIds;
   title: string;
   sentiment: SceneSentiment;
   horseAllowed: boolean;
   publicInventory: ItemIds[];
+  navigables: Navigable[];
   handleSceneCommand: (handlerOptions: HandlerOptions) => boolean;
   getSceneNpcs?: () => Map<string, NPC[]>;
 };

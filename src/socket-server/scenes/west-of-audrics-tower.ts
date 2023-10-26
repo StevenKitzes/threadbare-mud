@@ -2,7 +2,7 @@ import appendAlsoHereString from '../../utils/appendAlsoHereString';
 import appendItemsHereString from '../../utils/appendItemsHereString';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { SceneIds, navigate } from './scenes';
+import { Navigable, SceneIds, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -12,12 +12,26 @@ import { ItemIds } from '../items/items';
 import { handleAggro } from '../../utils/combat';
 import { npcImports } from '../npcs/csvNpcImport';
 import { augment_aggro } from '../npcs/augment_aggro';
+import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.WEST_OF_AUDRICS_TOWER;
 const title: string = "A Quiet Alley West of Audric's Tower";
 const sentiment: SceneSentiment = SceneSentiment.remote;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
+
+const navigables: Navigable[] = [
+  {
+    sceneId: SceneIds.NORTH_OF_AUDRICS_TOWER,
+    keywords: 'n north lane small'.split(' '),
+    departureDescription: (name: string) => `${name} leaves the alley to the north.`,
+  },
+  {
+    sceneId: SceneIds.SOUTH_OF_AUDRICS_TOWER,
+    keywords: 's south road large larger'.split(' '),
+    departureDescription: (name: string) => `${name} leaves the alley to the south.`,
+  },
+];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();
 const getSceneNpcs = (): Map<string, NPC[]> => characterNpcs;
@@ -83,21 +97,17 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
-  if (navigate(
-    handlerOptions,
-    SceneIds.NORTH_OF_AUDRICS_TOWER,
-    'n north lane small'.split(' '),
-    emitOthers,
-    `${name} leaves the alley to the north.`,
-  )) return true;
-
-  if (navigate(
-    handlerOptions,
-    SceneIds.SOUTH_OF_AUDRICS_TOWER,
-    's south road large larger'.split(' '),
-    emitOthers,
-    `${name} leaves the alley to the south.`,
-  )) return true;
+  if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
+  for (let i = 0; i < navigables.length; i++) {
+    if (navigate(
+      handlerOptions,
+      navigables[i].sceneId,
+      navigables[i].keywords,
+      emitOthers,
+      navigables[i].departureDescription(name),
+      navigables[i].extraActionAliases,
+    )) return true;
+  }
 
   return false;
 }
@@ -108,6 +118,7 @@ export {
   sentiment,
   horseAllowed,
   publicInventory,
+  navigables,
   handleSceneCommand,
   getSceneNpcs
 };
