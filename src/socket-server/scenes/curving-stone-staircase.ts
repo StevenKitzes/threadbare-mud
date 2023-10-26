@@ -66,11 +66,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       return true;
     }
 
-    if (writeCharacterData(character.id, { scene_id: destination })) {
+    if (writeCharacterData(character, { scene_id: destination })) {
       emitOthers(`${name} exits through the heavy, wooden door.`);
       
       socket.leave(sceneId);
-      character.scene_id = destination;
       socket.join(destination);
       
       return scenes.get(destination).handleSceneCommand({

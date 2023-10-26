@@ -33,9 +33,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!character.scene_states.hasOwnProperty(id)) {
       const newSceneState: any = { ...character.scene_states };
       newSceneState[sceneId] = initialSceneState;
-      if (writeCharacterData(character.id, { scene_states: newSceneState })) {
-        character.scene_states[id] = initialSceneState;
-      }
+      writeCharacterData(character, { scene_states: newSceneState });
     }
 
     // Only relevant to scenes with npcs, to set up npc state
@@ -74,9 +72,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       // Check current story status
       character.stories. ===  &&
       // Make sure we only proceed if the DB is able to be successfully updated
-      writeCharacterData(character.id, { stories: { ...character.stories, :  } })
+      writeCharacterData(character, { stories: { ...character.stories, :  } })
     ) {
-      character.stories.++;
       actorText.push(-);
     }
 
@@ -121,11 +118,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       return true;
     }
 
-    if (writeCharacterData(character.id, { scene_id: destination })) {
+    if (writeCharacterData(character, { scene_id: destination })) {
       emitOthers(-);
       
       socket.leave(sceneId);
-      character.scene_id = destination;
       socket.join(destination);
       
       return scenes.get(destination).handleSceneCommand({

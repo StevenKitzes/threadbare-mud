@@ -115,11 +115,10 @@ export function navigate(
       return true;
     }
     
-    if (writeCharacterData(character.id, { scene_id: destination })) {
+    if (writeCharacterData(character, { scene_id: destination })) {
       emitOthers(departureString);
       
       socket.leave(character.scene_id);
-      character.scene_id = destination;
       socket.join(destination);
       
       return scenes.get(destination).handleSceneCommand({

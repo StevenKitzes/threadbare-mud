@@ -69,8 +69,7 @@ export function augment_stablemaster(npc: NPC): NPC {
             horse: newHorse,
             money: character.money - 1000
           }
-          if (writeCharacterData(character.id, characterUpdate)) {
-            Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
+          if (writeCharacterData(character, characterUpdate)) {
             emitOthers(`${name} is the proud new owner of ${newHorse.name} the horse.`);
             emitSelf(`You are the proud new owner of ${newHorse.name} the horse!  You can [look] at your new horse to learn more about them and what you can do with them.`);
             return true;

@@ -392,9 +392,7 @@ export function consumeItem({
       characterUpdate = extraEffects(handlerOptions, extraEffectsOpts);
     }
 
-    if (writeCharacterData(character.id, characterUpdate)) {
-      Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
-      
+    if (writeCharacterData(character, characterUpdate)) {
       let actionString: string;
       if (actionAliases === REGEX_DRINK_ALIASES) actionString = 'drink';
       if (actionAliases === REGEX_EAT_ALIASES) actionString = 'eat';

@@ -32,9 +32,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     if (!character.scene_states.hasOwnProperty(id)) {
       const newSceneState: any = { ...character.scene_states };
       newSceneState[sceneId] = initialSceneState;
-      if (writeCharacterData(character.id, { scene_states: newSceneState })) {
-        character.scene_states[id] = initialSceneState;
-      }
+      writeCharacterData(character, { scene_states: newSceneState });
     }
     return handleSceneCommand({
       ...handlerOptions,
@@ -48,9 +46,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     const actorText: string[] = [`{${title}}`, '- - -'];
     if (
       character.stories.main === 0 &&
-      writeCharacterData(character.id, { stories: { ...character.stories, main: 1 } })
+      writeCharacterData(character, { stories: { ...character.stories, main: 1 } })
     ) {
-      character.stories.main = 1;
       actorText.push("You awaken to the feeling of satin sheets against your skin and a comfortable mattress beneath you.  You hear voices, a whole grandiose chorus of them, singing a song that seems to fall from its crescendo just as you are coming to your senses.  As your thoughts begin to coalesce, you realize that you have no memory of how you came to be where you are.  In fact, you aren't even sure who you are, beyond a name that rings in the corner of your mind:");
       actorText.push(`${name}.`);
     } else if (character.stories.main > 0) {
@@ -67,10 +64,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
 
   if (
     command.match(makeMatcher(REGEX_REST_ALIASES)) &&
-    writeCharacterData(character.id, { health: character.health_max, checkpoint_id: id })
+    writeCharacterData(character, { health: character.health_max, checkpoint_id: id })
   ) {
-    character.health = character.health_max;
-    character.checkpoint_id = id;
     emitOthers(`${character.name} rests for a while on a bed with satin sheets.`);
     emitSelf(`You rest a while on a bed with satin sheets, and feel rejuvenated.`);
     return true;
@@ -126,12 +121,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       ];
       const newSceneStates: any = { ...character.scene_states };
       newSceneStates[id] = { ...newSceneStates[id], outfitHere: false };
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         inventory: newInventory,
         scene_states: newSceneStates
       })) {
-        character.inventory = newInventory;
-        character.scene_states = newSceneStates;
         emitOthers(`${character.name} digs a black outfit out of the chest of drawers.`);
         emitSelf([
           'You retrieve the outfit from the chest of drawers.',
@@ -150,12 +143,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       ];
       const newSceneStates: any = { ...character.scene_states };
       newSceneStates[id] = { ...newSceneStates[id], daggerHere: false };
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         inventory: newInventory,
         scene_states: newSceneStates
       })) {
-        character.inventory = newInventory;
-        character.scene_states = newSceneStates;
         emitOthers(`${character.name} pulls a simple dagger out of the chest of drawers.`);
         emitSelf('You retrieve the simple dagger from the chest of drawers.');
         return true;

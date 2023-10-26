@@ -126,8 +126,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
         ...character.factionAnger,
         { faction: npc.getFaction(), expiry: Date.now() + FACTION_ANGER_DURATION } as FactionAnger
       ];
-      if (writeCharacterData(character.id, characterUpdate)) {
-        character.factionAnger = characterUpdate.factionAnger;
+      if (writeCharacterData(character, characterUpdate)) {
         emitOthers(`${character.name} has enraged ${npc.getFaction()}!`);
         emitSelf(`=You have enraged {${npc.getFaction()}} and you may be +attacked on sight+!=`);
         fightAllInSceneExcept(character, npc.getFaction(), npc.getId(), handlerOptions);
@@ -162,14 +161,11 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
       const actorText: string[] = [`You see the Lifelight fade from the eyes of ${npc.getName()}.`];
       emitOthers(`${character.name} has defeated ${npc.getName()}.`);
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         money: character.money + cashLoot,
         inventory: [ ...character.inventory, ...npc.getItemLoot() ],
         xp: character.xp + npc.getXp()
       })) {
-        character.money += cashLoot;
-        character.inventory = [ ...character.inventory, ...npc.getItemLoot() ];
-        character.xp += npc.getXp();
         actorText.push(`You feel ${xpAmountString(npc.getXp())} of the Lifelight's energy coursing through you.`);
         if (cashLoot > 0) actorText.push(`You collect ${cashLoot} coins from ${npc.getName()}'s body.`);
         else actorText.push(`There are no coins to collect from ${npc.getName()}.`);
@@ -190,14 +186,10 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       emitOthers(`${character.name} was killed by ${npc.getName()}!  You see their body fade away into the Lifelight.`);
       emitSelf(`You fall to ${npc.getName()}.  You hear a chorus of singing voices and see the Lifelight bleeding into your vision...`);
       const newHealth: number = Math.ceil(character.health_max * 0.6);
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         health: newHealth, scene_id: character.checkpoint_id, xp: 0
       })) {
-        character.health = newHealth;
-        character.xp = 0;
-
         socket.leave(combatScene);
-        character.scene_id = character.checkpoint_id;
         socket.join(character.checkpoint_id);
         
         scenes.get(character.checkpoint_id)?.handleSceneCommand({
@@ -399,13 +391,11 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     const healthBoost: number = Math.floor(damage / (character.health_max / 10))
 
     // Handle result and output
-    if (attack > defenseWithDodge && writeCharacterData(character.id, {
+    if (attack > defenseWithDodge && writeCharacterData(character, {
       health: character.health - damage,
       health_max: character.health_max + healthBoost
     })) {
       // handle hit
-      character.health -= damage;
-      character.health_max += healthBoost;
       if (damage < character.health_max * 0.1) {
         actorText.push(`=You are hit= by ${npc.getAttackDescription()}, but only endure negligible damage.`);
         emitOthers(`${character.name} endures negligible damage from ${npc.getAttackDescription()}.`);

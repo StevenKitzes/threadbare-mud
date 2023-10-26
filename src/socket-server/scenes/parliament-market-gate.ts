@@ -117,9 +117,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       }
     }
     
-    if (writeCharacterData(character.id, { inventory: newInventory, money: character.money + (5 * ratCount) })) {
-      character.inventory = newInventory;
-      character.money = character.money + (5 * ratCount);
+    if (writeCharacterData(character, {
+      inventory: newInventory,
+      money: character.money + (5 * ratCount) })
+    ) {
       emitOthers(`${name} approaches the guard post to hand in some dead rats.`);
       emitSelf(`You hand in ${ratCount} dead rat${ratCount !== 1 ? 's' : ''}, and in exchange, the peacekeeper officer hands you ${ratCount * 5} coins.`);
       return true;

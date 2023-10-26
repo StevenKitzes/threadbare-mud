@@ -39,8 +39,7 @@ export function augment_gruffInnkeeper(npc: NPC): NPC {
       characterUpdate.health = character.health_max;
       characterUpdate.checkpoint_id = character.scene_id;
       if (character.money >= 20) {
-        if (writeCharacterData(character.id, characterUpdate)) {
-          Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
+        if (writeCharacterData(character, characterUpdate)) {
           emitOthers(`${name} hands ${npc.getName()} some coin and heads upstairs to rest for the night.`);
           emitSelf(`You hand some coin to ${npc.getName()} and head upstairs to rest for the night.`);
           return true;

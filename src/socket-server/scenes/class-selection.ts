@@ -53,7 +53,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   let destination: SceneIds = SceneIds.COLD_BEDROOM;
 
   if (command === 'weaver') {
-    if (writeCharacterData(character.id, {
+    if (writeCharacterData(character, {
       job: ClassTypes.weaver,
       scene_id: destination,
       light_attack: 6,
@@ -63,17 +63,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       strength: 8,
       savvy: 10
     })) {
-      character.job = ClassTypes.weaver;
-      character.light_attack  = 6;
-      character.heavy_attack  = 10;
-      character.ranged_attack = 14;
-      character.agility       = 12;
-      character.strength      = 8;
-      character.savvy         = 10;
       emitSelf(`Welcome, Weaver ${character.name}.  May the Lifelight shine upon you along your journey.`);
     }
   } else if (command === 'peacemaker') {
-    if (writeCharacterData(character.id, {
+    if (writeCharacterData(character, {
       job: ClassTypes.peacemaker,
       scene_id: destination,
       light_attack: 10,
@@ -83,17 +76,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       strength: 10,
       savvy: 14
     })) {
-      character.job = ClassTypes.peacemaker;
-      character.light_attack  = 10;
-      character.heavy_attack  = 8;
-      character.ranged_attack = 6;
-      character.agility       = 12;
-      character.strength      = 10;
-      character.savvy         = 14;
       emitSelf(`Welcome, ${character.name}, wise Peacemaker.  May you uplift the downtrodden along your journey.`);
     }
   } else if (command === 'skyguard') {
-    if (writeCharacterData(character.id, {
+    if (writeCharacterData(character, {
       job: ClassTypes.skyguard,
       scene_id: destination,
       light_attack: 8,
@@ -103,17 +89,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       strength: 12,
       savvy: 10
     })) {
-      character.job = ClassTypes.skyguard;
-      character.light_attack  = 8;
-      character.heavy_attack  = 14;
-      character.ranged_attack = 10;
-      character.agility       = 6;
-      character.strength      = 12;
-      character.savvy         = 10;
       emitSelf(`Welcome, Master ${character.name}.  May you bring honor and glory to the Empire of the Sky!`);
     }
   } else if (command === 'ranger') {
-    if (writeCharacterData(character.id, {
+    if (writeCharacterData(character, {
       job: ClassTypes.ranger,
       scene_id: destination,
       light_attack: 8,
@@ -123,17 +102,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       strength: 10,
       savvy: 6
     })) {
-      character.job = ClassTypes.ranger;
-      character.light_attack  = 8;
-      character.heavy_attack  = 10;
-      character.ranged_attack = 14;
-      character.agility       = 12;
-      character.strength      = 10;
-      character.savvy         = 6;
       emitSelf(`Welcome, ${character.name}.  May your hand hold evil at bay.`);
     }
   } else if (command === 'spymaster') {
-    if (writeCharacterData(character.id, {
+    if (writeCharacterData(character, {
       job: ClassTypes.spymaster,
       scene_id: destination,
       light_attack: 12,
@@ -143,17 +115,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       strength: 6,
       savvy: 14
     })) {
-      character.job = ClassTypes.spymaster;
-      character.light_attack  = 12;
-      character.heavy_attack  = 8;
-      character.ranged_attack = 10;
-      character.agility       = 10;
-      character.strength      = 6;
-      character.savvy         = 14;
       emitSelf(`Welcome, ${character.name}.  May your endeavors go unnoticed.`);
     }
   } else if (command === 'rogue') {
-    if (writeCharacterData(character.id, {
+    if (writeCharacterData(character, {
       job: ClassTypes.rogue,
       scene_id: destination,
       light_attack: 10,
@@ -163,13 +128,6 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       strength: 14,
       savvy: 6
     })) {
-      character.job = ClassTypes.rogue;
-      character.light_attack  = 10;
-      character.heavy_attack  = 12;
-      character.ranged_attack = 8;
-      character.agility       = 10;
-      character.strength      = 14;
-      character.savvy         = 6;
       emitSelf(`Welcome, ${character.name}.  May you find coin under every stone you turn.`);
     }
   } else {

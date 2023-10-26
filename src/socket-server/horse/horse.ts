@@ -72,13 +72,12 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
       emitSelf(`That name is too long.  Your horse won't be able to remember it (20 characters at most)!`);
       return true;
     } else {
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         horse: {
           ...character.horse,
           name: formattedRenameMatch
         }
       })) {
-        character.horse.name = formattedRenameMatch;
         emitSelf(`Your horse will now answer to the name {${formattedRenameMatch}}.`);
         return true;
       }
@@ -104,15 +103,13 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
         const newInventory: ItemIds[] = [...character.inventory];
         const newHorseInventory: ItemIds[] = [...character.horse.inventory];
         newHorseInventory.push(newInventory.splice(i, 1)[0]);
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           inventory: newInventory,
           horse: {
             ...character.horse,
             inventory: newHorseInventory
           }
         })) {
-          character.inventory = newInventory;
-          character.horse.inventory = newHorseInventory;
           emitSelf([
             `You put ${item.title} away in ${items.get(character.horse.saddlebagsId).title}.`,
             getHorseEncumbranceString(character.horse),
@@ -135,15 +132,13 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
         const newInventory: ItemIds[] = [...character.inventory];
         const newHorseInventory: ItemIds[] = [...character.horse.inventory];
         newInventory.push(newHorseInventory.splice(i, 1)[0]);
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           inventory: newInventory,
           horse: {
             ...character.horse,
             inventory: newHorseInventory
           }
         })) {
-          character.inventory = newInventory;
-          character.horse.inventory = newHorseInventory;
           emitSelf([
             `You grabbed ${item.title} out of ${items.get(character.horse.saddlebagsId).title}.`,
             getHorseEncumbranceString(character.horse),

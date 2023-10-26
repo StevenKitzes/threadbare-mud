@@ -180,8 +180,7 @@ export function makePurchase(
           inventory: [ ...character.inventory, item.id ],
           money: character.money - item.getValue()
         };
-        if (writeCharacterData(character.id, characterUpdate)) {
-          Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
+        if (writeCharacterData(character, characterUpdate)) {
           emitOthers(`${character.name} buys ${item.title} from ${npc.getName()}.`);
           emitSelf(`You buy ${item.title} from ${npc.getName()}.`);
           return true;

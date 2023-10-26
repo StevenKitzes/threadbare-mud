@@ -255,12 +255,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'agility') {
       const cost: number = getCost(character.agility);
       if (character.xp >= cost) {
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           agility: character.agility + 1,
           xp: character.xp - cost
         })) {
-          character.agility += 1;
-          character.xp -= cost;
           emitOthers(`The Lifelight surges through ${name}!`);
           emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little quicker than before.`);
           return true;
@@ -275,12 +273,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'strength') {
       const cost: number = getCost(character.strength);
       if (character.xp >= cost) {
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           strength: character.strength + 1,
           xp: character.xp - cost
         })) {
-          character.strength += 1;
-          character.xp -= cost;
           emitOthers(`The Lifelight surges through ${name}!`);
           emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little stronger than before.`);
           return true;
@@ -295,12 +291,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'savvy') {
       const cost: number = getCost(character.savvy);
       if (character.xp >= cost) {
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           savvy: character.savvy + 1,
           xp: character.xp - cost
         })) {
-          character.savvy += 1;
-          character.xp -= cost;
           emitOthers(`The Lifelight surges through ${name}!`);
           emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel your mind is a little sharper than before.`);
           return true;
@@ -315,12 +309,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'light') {
       const cost: number = getCost(character.light_attack);
       if (character.xp >= cost) {
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           light_attack: character.light_attack + 1,
           xp: character.xp - cost
         })) {
-          character.light_attack += 1;
-          character.xp -= cost;
           emitOthers(`The Lifelight surges through ${name}!`);
           emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using light weapons than before.`);
           return true;
@@ -335,12 +327,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'heavy') {
       const cost: number = getCost(character.heavy_attack);
       if (character.xp >= cost) {
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           heavy_attack: character.heavy_attack + 1,
           xp: character.xp - cost
         })) {
-          character.heavy_attack += 1;
-          character.xp -= cost;
           emitOthers(`The Lifelight surges through ${name}!`);
           emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using heavy weapons than before.`);
           return true;
@@ -355,12 +345,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'ranged') {
       const cost: number = getCost(character.ranged_attack);
       if (character.xp >= cost) {
-        if (writeCharacterData(character.id, {
+        if (writeCharacterData(character, {
           ranged_attack: character.ranged_attack + 1,
           xp: character.xp - cost
         })) {
-          character.ranged_attack += 1;
-          character.xp -= cost;
           emitOthers(`The Lifelight surges through ${name}!`);
           emitSelf(`You feel the Lifelight surging through you, and once it is done, you feel a little better about using ranged weapons than before.`);
           return true;
@@ -439,8 +427,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         const newInventory: ItemIds[] = [...character.inventory];
         newInventory.splice(i, 1);
-        if (writeCharacterData(character.id, { inventory: newInventory })) {
-          character.inventory = newInventory;
+        if (writeCharacterData(character, { inventory: newInventory })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You dropped ${item.title}.`,
@@ -460,8 +447,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { headgear: null })) {
-          character.headgear = null;
+        if (writeCharacterData(character, { headgear: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -481,8 +467,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { armor: null })) {
-          character.armor = null;
+        if (writeCharacterData(character, { armor: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -502,8 +487,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { gloves: null })) {
-          character.gloves = null;
+        if (writeCharacterData(character, { gloves: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -523,8 +507,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { legwear: null })) {
-          character.legwear = null;
+        if (writeCharacterData(character, { legwear: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -544,8 +527,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { footwear: null })) {
-          character.footwear = null;
+        if (writeCharacterData(character, { footwear: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -565,8 +547,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { weapon: null })) {
-          character.weapon = null;
+        if (writeCharacterData(character, { weapon: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -586,8 +567,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character.id, { offhand: null })) {
-          character.offhand = null;
+        if (writeCharacterData(character, { offhand: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -625,8 +605,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       const item: Item = items.get(sceneInventory[i]);
       if (matchMatchesKeywords(getMatch, item.keywords)) {
         const newInventory: ItemIds[] = [...character.inventory, item.id];
-        if (writeCharacterData(character.id, { inventory: newInventory })) {
-          character.inventory = newInventory;
+        if (writeCharacterData(character, { inventory: newInventory })) {
           sceneInventory.splice(i, 1);
           emitSelf([
             `You picked up ${item.title}.`,
@@ -756,12 +735,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           newInventory.splice(i, 1);
           newHorse.saddlebagsId = item.id;
 
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             horse: newHorse,
             inventory: newInventory
           })) {
-            character.horse = newHorse;
-            character.inventory = newInventory;
             emitOthers(`${character.name} removes ${removedItemTitle} and puts ${item.title} on their horse.`);
             emitSelf(`You remove ${removedItemTitle} and put ${item.title} on ${newHorse.name}.`);
             return true;
@@ -776,12 +753,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.headgear).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             headgear: item.id,
             inventory: newInventory
           })) {
-            character.headgear = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` removes ${removedItemTitle} and` : ''} wears ${item.title} on their head.`);
             emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} wear ${item.title} on your head.`);
             return true;
@@ -796,12 +771,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.armor).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             armor: item.id,
             inventory: newInventory
           })) {
-            character.armor = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` removes ${removedItemTitle} and` : ''} dons ${item.title} upon their person.`);
             emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} wear ${item.title} on your body.`);
             return true;
@@ -816,12 +789,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.gloves).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             gloves: item.id,
             inventory: newInventory
           })) {
-            character.gloves = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` removes ${removedItemTitle} and` : ''} slips ${item.title} onto their hands.`);
             emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} slip your hands into ${item.title}.`);
             return true;
@@ -836,12 +807,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.legwear).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             legwear: item.id,
             inventory: newInventory
           })) {
-            character.legwear = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` removes ${removedItemTitle} and` : ''} slips into ${item.title}.`);
             emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} put on ${item.title}.`);
             return true;
@@ -856,12 +825,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.footwear).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             footwear: item.id,
             inventory: newInventory
           })) {
-            character.footwear = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` removes ${removedItemTitle} and` : ''} puts ${item.title} on their feet.`);
             emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} slip your feet into ${item.title}.`);
             return true;
@@ -876,12 +843,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.weapon).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             weapon: item.id,
             inventory: newInventory
           })) {
-            character.weapon = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` puts away ${removedItemTitle} and` : ''} wields ${item.title}.`);
             emitSelf(`You${removedItemTitle ? ` put away ${removedItemTitle} and` : ''} ready ${item.title} for combat.`);
             return true;
@@ -896,12 +861,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.offhand).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character.id, {
+          if (writeCharacterData(character, {
             offhand: item.id,
             inventory: newInventory
           })) {
-            character.offhand = item.id;
-            character.inventory = newInventory;
             emitOthers(`${character.name}${removedItemTitle ? ` puts away ${removedItemTitle} and` : ''} equips ${item.title} in their hand.`);
             emitSelf(`You${removedItemTitle ? ` put away ${removedItemTitle} and` : ''} equip ${item.title}.`);
             return true;
@@ -929,12 +892,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (character.headgear && items.get(character.headgear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.headgear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.headgear ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         headgear: null,
         inventory: newInventory
       })) {
-        character.headgear = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} removes ${item.title} from their head.`);
         emitSelf(`You remove ${item.title} from your head.`);
         return true;
@@ -944,12 +905,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.armor && items.get(character.armor).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.armor);
       const newInventory: ItemIds[] = [ ...character.inventory, character.armor ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         armor: null,
         inventory: newInventory
       })) {
-        character.armor = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} removes ${item.title}.`);
         emitSelf(`You remove ${item.title}.`);
         return true;
@@ -959,12 +918,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.gloves && items.get(character.gloves).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.gloves);
       const newInventory: ItemIds[] = [ ...character.inventory, character.gloves ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         gloves: null,
         inventory: newInventory
       })) {
-        character.gloves = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} pulls ${item.title} off of their hands.`);
         emitSelf(`You remove ${item.title} from your hands.`);
         return true;
@@ -974,12 +931,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.legwear && items.get(character.legwear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.legwear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.legwear ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         legwear: null,
         inventory: newInventory
       })) {
-        character.legwear = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} slips out of ${item.title}.`);
         emitSelf(`You pull ${item.title} off of your legs.`);
         return true;
@@ -989,12 +944,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.footwear && items.get(character.footwear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.footwear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.footwear ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         footwear: null,
         inventory: newInventory
       })) {
-        character.footwear = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} wrestles ${item.title} off of their feet.`);
         emitSelf(`You pry ${item.title} off of your feet.`);
         return true;
@@ -1004,12 +957,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.weapon && items.get(character.weapon).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.weapon);
       const newInventory: ItemIds[] = [ ...character.inventory, character.weapon ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         weapon: null,
         inventory: newInventory
       })) {
-        character.weapon = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} puts ${item.title} away.`);
         emitSelf(`You put away ${item.title}.`);
         return true;
@@ -1019,12 +970,10 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.offhand && items.get(character.offhand).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.offhand);
       const newInventory: ItemIds[] = [ ...character.inventory, character.offhand ];
-      if (writeCharacterData(character.id, {
+      if (writeCharacterData(character, {
         offhand: null,
         inventory: newInventory
       })) {
-        character.offhand = null;
-        character.inventory = newInventory;
         emitOthers(`${character.name} puts away ${item.title}.`);
         emitSelf(`You put ${item.title} away.`);
         return true;

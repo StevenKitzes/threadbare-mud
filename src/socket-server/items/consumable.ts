@@ -39,8 +39,7 @@ export function augment_statPotion (item: Item, stat: Stat, healthCost: number, 
       characterUpdate.inventory.splice(character.inventory.indexOf(item.id), 1);
       characterUpdate[stat] = character[stat] + statBoost;
       
-      if (writeCharacterData(character.id, characterUpdate)) {
-        Object.keys(characterUpdate).forEach(key => character[key] = characterUpdate[key]);
+      if (writeCharacterData(character, characterUpdate)) {
         emitOthers(`${name}'s skin glows for a moment and they shudder as they drink ${item.title}.`);
         emitSelf(`You gulp down ${item.title} and feel the Lifelight burning you up from the inside out.  ${feedback}`);
         return true;

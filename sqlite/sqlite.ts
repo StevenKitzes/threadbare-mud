@@ -86,7 +86,7 @@ export type Database = {
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
   writeActiveCharacterTransactable: (userId: string, characterId: string) => TransactBundle[];
-  writeCharacterData: (charId: string, opts: {
+  writeCharacterData: (character: Character, opts: {
     job?: string,
     health?: number,
     health_max?: number,
@@ -249,7 +249,7 @@ export const writeActiveCharacterTransactable = (userId: string, characterId: st
   }
 }
 
-export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): boolean => {
+export const writeCharacterData = (character: Character, opts: CharacterUpdateOpts): boolean => {
   try {
     const updatePrefix: string = "UPDATE characters SET ";
     const columnAssignments: string[] = [];
@@ -295,6 +295,10 @@ export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): b
     if (opts.scene_id !== undefined) {
       columnAssignments.push("scene_id = ?");
       values.push(opts.scene_id);
+    }
+    if (opts.checkpoint_id !== undefined) {
+      columnAssignments.push("checkpoint_id = ?");
+      values.push(opts.checkpoint_id);
     }
     if (opts.stories !== undefined) {
       columnAssignments.push("stories = ?");
@@ -354,7 +358,84 @@ export const writeCharacterData = (charId: string, opts: CharacterUpdateOpts): b
     }
 
     db.prepare(`${updatePrefix}${columnAssignments.join(', ')}${updateSuffix}`)
-      .run(...values, charId);
+      .run(...values, character.id);
+
+    if (opts.job !== undefined) {
+      character.job = opts.job;
+    }
+    if (opts.health !== undefined) {
+      character.health = opts.health;
+    }
+    if (opts.health_max !== undefined) {
+      character.health_max = opts.health_max;
+    }
+    if (opts.light_attack !== undefined) {
+      character.light_attack = opts.light_attack;
+    }
+    if (opts.heavy_attack !== undefined) {
+      character.heavy_attack = opts.heavy_attack;
+    }
+    if (opts.ranged_attack !== undefined) {
+      character.ranged_attack = opts.ranged_attack;
+    }
+    if (opts.agility !== undefined) {
+      character.agility = opts.agility;
+    }
+    if (opts.strength !== undefined) {
+      character.strength = opts.strength;
+    }
+    if (opts.savvy !== undefined) {
+      character.savvy = opts.savvy;
+    }
+    if (opts.scene_id !== undefined) {
+      character.scene_id = opts.scene_id;
+    }
+    if (opts.checkpoint_id !== undefined) {
+      character.checkpoint_id = opts.checkpoint_id;
+    }
+    if (opts.stories !== undefined) {
+      character.stories = opts.stories;
+    }
+    if (opts.scene_states !== undefined) {
+      character.scene_states = opts.scene_states;
+    }
+    if (opts.money !== undefined) {
+      character.money = opts.money;
+    }
+    if (opts.inventory !== undefined) {
+      character.inventory = opts.inventory;
+    }
+    if (opts.headgear !== undefined) {
+      character.headgear = opts.headgear;
+    }
+    if (opts.armor !== undefined) {
+      character.armor = opts.armor;
+    }
+    if (opts.gloves !== undefined) {
+      character.gloves = opts.gloves;
+    }
+    if (opts.legwear !== undefined) {
+      character.legwear = opts.legwear;
+    }
+    if (opts.footwear !== undefined) {
+      character.footwear = opts.footwear;
+    }
+    if (opts.weapon !== undefined) {
+      character.weapon = opts.weapon;
+    }
+    if (opts.offhand !== undefined) {
+      character.offhand = opts.offhand;
+    }
+    if (opts.xp !== undefined) {
+      character.xp = opts.xp;
+    }
+    if (opts.horse !== undefined) {
+      character.horse = opts.horse;
+    }
+    if (opts.factionAnger !== undefined) {
+      character.factionAnger = opts.factionAnger;
+    }
+
     return true;
   } catch (err: any) {
     console.error("Error updating faceted character data", err.toString());

@@ -75,8 +75,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       characterUpdate.factionAnger.splice(i, 1);
     }
   }
-  if (writeCharacterData(character.id, characterUpdate)) {
-    character.factionAnger = characterUpdate.factionAnger;
+  if (writeCharacterData(character, characterUpdate)) {
     socket.emit('game-text', {
       gameText: forgiven.map(f => `It took some time, but ${f} have forgiven you.`)
     });
