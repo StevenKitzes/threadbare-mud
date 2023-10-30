@@ -33,6 +33,11 @@ const navigables: Navigable[] = [
     keywords: "w west market square".split(' '),
     departureDescription: (name: string) => `${name} heads west, into the Market Square.`,
   },
+  {
+    sceneId: SceneIds.PARLIAMENT_SOUTHEAST_MARKET,
+    keywords: "s south market marketplace".split(' '),
+    departureDescription: (name: string) => `${name} heads south, deeper still into the market.`,
+  },
 ];
 
 const characterNpcs: Map<string, NPC[]> = new Map<string, NPC[]>();

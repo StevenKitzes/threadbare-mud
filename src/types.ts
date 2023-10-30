@@ -66,7 +66,7 @@ export type User = {
   email?: string;
 };
 
-export type StoryProgress = {
+export type StoryState = {
   main: number;
 };
 

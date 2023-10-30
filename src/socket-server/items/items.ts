@@ -135,6 +135,11 @@ export enum ItemIds {
   FILSTREDS_GUIDE_BOOK = "79",
   DEAD_RAT = "80",
   STANDARD_ISSUE_SHORTSWORD = "81",
+  TRAVELING_KIT = "82",
+  TRAVEL_RATIONS = "83",
+  LIGHT_LEATHER_BOOTS = "84",
+  LIGHT_LEATHER_TROUSERS = "85",
+  LIGHT_LEATHER_VEST = "86",
 }
 
 readItemCsv(() => {
@@ -189,6 +194,7 @@ readItemCsv(() => {
   augment_consumable(items.get(ItemIds.PLUM), REGEX_EAT_ALIASES);
   augment_consumable(items.get(ItemIds.SMALL_HEALING_POTION), REGEX_EAT_ALIASES);
   augment_consumable(items.get(ItemIds.SWEETROLL), REGEX_EAT_ALIASES);
+  augment_consumable(items.get(ItemIds.TRAVEL_RATIONS), REGEX_EAT_ALIASES);
   
   // augmentation of books
   augment_book(items.get(ItemIds.FILSTREDS_GUIDE_BOOK));
@@ -327,6 +333,7 @@ readItemCsv(() => {
       },
     ]
   });
+  augment_durable(items.get(ItemIds.TRAVELING_KIT), { quest: true });
 
   // augmentation of special items
   augment_statPotion(items.get(ItemIds.AGILITY_POTION), "agility", 100, 1, "When the sensation subsides, you feel your reflexes are sharper than before.");

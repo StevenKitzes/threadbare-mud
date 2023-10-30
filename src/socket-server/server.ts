@@ -128,16 +128,19 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       return;
     }
     // intercept ambiguous look requests
-    if (isAmbiguousLookRequest(handlerOptions, [
-      ...getInventoryAndWorn(character),
-      ...scene.publicInventory.map(i => items.get(i)),
-      ...getItemsForSaleAtScene(character.id, scene.id)
-    ])) return;
-    if (isAmbiguousPurchaseRequest(handlerOptions, scene)) return;
+    try {
+      if (isAmbiguousLookRequest(handlerOptions, [
+        ...getInventoryAndWorn(character),
+        ...scene.publicInventory.map(i => items.get(i)),
+        ...getItemsForSaleAtScene(character.id, scene.id)
+      ])) return;
+      if (isAmbiguousPurchaseRequest(handlerOptions, scene)) return;
+    } catch(err) {
+      console.error('encountered error checking for ambiguous look and purchase requests');
+    }
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {
     console.error('failed loading scene id', character.scene_id, ":", err.toString());
-    console.error('scene ids', scenes.keys())
   }
 
   // check if there are horse-related actions for this command

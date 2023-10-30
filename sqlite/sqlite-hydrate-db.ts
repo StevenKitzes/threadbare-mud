@@ -109,7 +109,7 @@ dbToHydrate.transaction(() => {
     '1',                                  //  scene_id,
     '1',                                  //  checkpoint_id,
     '0',                                  //  active,
-    '{"main":2}',                         //  stories,
+    '{"main":0}',                         //  stories,
     '{}',                                 //  scene_states,
     '100000',                             //  money,
     JSON.stringify(startingInventory),    //  inventory,

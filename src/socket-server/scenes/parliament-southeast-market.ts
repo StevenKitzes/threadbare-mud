@@ -3,43 +3,32 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { Navigable, navigate, SceneIds } from './scenes';
+import { navigate, Navigable, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
-import { handleFactionAggro } from '../../utils/combat';
-import { npcImports } from '../npcs/csvNpcImport';
 import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
+import { npcImports } from '../npcs/csvNpcImport';
+import { augment_adv_guild_owner } from '../npcs/adv-guild-owner';
 
-const id: SceneIds = SceneIds.PARLIAMENT_SOUTH_PROMENADE;
-const title: string = "Parliament Southern Promenade";
+const id: SceneIds = SceneIds.PARLIAMENT_SOUTHEAST_MARKET;
+const title: string = "Parliament Southeastern Market";
 const sentiment: SceneSentiment = SceneSentiment.neutral;
 const horseAllowed: boolean = true;
 const publicInventory: ItemIds[] = [];
-
 const navigables: Navigable[] = [
   {
-    sceneId: SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
-    keywords: 'w west market'.split(' '),
-    departureDescription: (name: string) => `${name} walks west, to another part of the market.`,
+    sceneId: SceneIds.PARLIAMENT_MARKET_GATE,
+    keywords: 'n north market gate'.split(' '),
+    departureDescription: (name: string) => `${name} leaves northward, toward the Market Gate.`,
   },
   {
-    sceneId: SceneIds.FROM_TALES_TO_TOMES,
-    keywords: 's south bookstore book store shop tales to tomes from'.split(' '),
-    departureDescription: (name: string) => `${name} walks into From Tales to Tomes, a book shop.`,
-  },
-  {
-    sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
-    keywords: 'n north market square'.split(' '),
-    departureDescription: (name: string) => `${name} heads north, to the Market Square.`,
-  },
-  {
-    sceneId: SceneIds.PARLIAMENT_SOUTHEAST_MARKET,
-    keywords: 'e east market marketplace'.split(' '),
-    departureDescription: (name: string) => `${name} heads east, deeper still into the market.`,
+    sceneId: SceneIds.PARLIAMENT_SOUTH_PROMENADE,
+    keywords: 'w west southern promenade'.split(' '),
+    departureDescription: (name: string) => `${name} heads west, toward the market's southern promenade.`,
   },
 ];
 
@@ -50,22 +39,24 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
-
+  
   if (command === 'enter') {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
       // Populate NPCs
       characterNpcs.set(character.id, [
-        npcFactory({
-          csvData: npcImports.get(NpcIds.GLOWERING_PEACEKEEPER),
+        augment_adv_guild_owner(npcFactory({
+          csvData: npcImports.get(NpcIds.ADVENTURERS_GUILD_OWNER),
           character,
-          lootInventory: [ ItemIds.STANDARD_ISSUE_SHORTSWORD ],
-        }),
-        npcFactory({
-          csvData: npcImports.get(NpcIds.SNEERING_PEACEKEEPER),
-          character,
-          lootInventory: [ ItemIds.SIMPLE_DAGGER ],
-        }),
+          vendorInventory: [
+            ItemIds.LIGHT_LEATHER_CAP,
+            ItemIds.LIGHT_LEATHER_VEST,
+            ItemIds.LIGHT_LEATHER_TROUSERS,
+            ItemIds.LIGHT_LEATHER_BOOTS,
+            ItemIds.TRAVELING_KIT,
+            ItemIds.TRAVEL_RATIONS,
+          ]
+        })),
       ]);
     } else {
       // Respawn logic
@@ -77,37 +68,38 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
-    })
-
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
-
+    });
+    
     return true;
   }
-
+  
   // Only relevant to scenes with npcs, delete otherwise
   const sceneNpcs: NPC[] = characterNpcs.get(character.id);
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
-
+  
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
-    emitOthers(`${name} looks around at the promenade.`);
 
+    emitOthers(`${name} peruses the various offerings available in this part of the market.`);
+    
     const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story
-    actorText.push(`The southern promenade of Parliament's marketplace provides a calm, scenic place for folk to stroll and relax.  It is enveloped by a colorful garden and topped by a canopy of lush trees.  To the south lies only a single storefront: a book store with a sign over the top reading [From Tales to Tomes].  The bustling marketplace sprawls to your [east] and [west], and the marvelous [Market Square] lies to the north.`);
+    actorText.push(`Here in the southeast corner of the market district is a tall, narrow building with a name emblazoned across the top of its door: The Adventurer's Guild.  You can tell at a glance, though, that it is less a guild, than a shop that has named itself "The Adventurer's Guild."  Tables have been set up outside under an awning with various goods that might be helpful to travelers.`);
+    actorText.push(`To the [north] lies the architecturally impressive Market Gate.  To the [west] is the market's southern promenade.`);
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
     characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
-
+    
     emitSelf(actorText);
-
+    
     return true;
   }
-
+  
   if (lookSceneItem(command, publicInventory, character.name, emitOthers, emitSelf)) return true;
   
+  // normal travel, concise
   if (isAmbiguousNavRequest(handlerOptions, navigables)) return true;
   for (let i = 0; i < navigables.length; i++) {
     if (navigate(

@@ -50,7 +50,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
-
+  
   if (command === 'enter') {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
@@ -78,24 +78,24 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
         if (c.getDeathTime() && Date.now() - new Date(c.getDeathTime()).getTime() > 600000) c.setHealth(c.getHealthMax());
       })
     }
-
+    
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     });
-
+    
     handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
-
+    
     return true;
   }
-
+  
   // Only relevant to scenes with npcs, delete otherwise
   const sceneNpcs: NPC[] = characterNpcs.get(character.id);
   for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
-
+  
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} gazes about the wondrous sights of the Market Square.`);
-
+    
     const actorText: string[] = [`{${title}}`, '- - -'];
     
     // This will be pushed to actor text independent of story

@@ -39,6 +39,15 @@ export function captureFrom_fromHorse (command: string, horseName: string) : str
   return matches[1];
 }
 
+export function captureGiveMatchWithRecipient (command: string, recipientKeywords: string[]): string | null {
+  const matches: string[] | null = command.match(
+    new RegExp(`^(?:${REGEX_GIVE_ALIASES}) (.*) to (.*)$`)
+  );
+  if (matches?.length !== 3) return null;
+  if (!allTokensMatchKeywords(matches[2], recipientKeywords)) return null;
+  return matches[1];
+}
+
 export function matchMatchesKeywords (match: string, keywords: string[]): boolean {
   if (match.split(' ').every(word => keywords.includes(word))) return true;
   return false;

@@ -2,8 +2,8 @@ import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_FIGHT_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { CharacterUpdateOpts } from "../../types";
 import getEmitters from "../../utils/emitHelper";
-import { commandMatchesKeywordsFor } from "../../utils/makeMatcher";
-import { ItemIds } from "../items/items";
+import { allTokensMatchKeywords, captureGiveMatchWithRecipient, commandMatchesKeywordsFor } from "../../utils/makeMatcher";
+import items, { ItemIds } from "../items/items";
 import { SceneIds } from "../scenes/scenes";
 import { HandlerOptions } from "../server";
 import { NPC, look } from "./npcs";
@@ -21,7 +21,14 @@ export function augment_audric (npc: NPC): NPC {
       npc.private.characterRef.stories.main === 2 &&
       npc.private.characterRef.scene_id === SceneIds.MAGNIFICENT_LIBRARY
     ) {
-      return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling supplies you return with!"`;
+      return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "I look forward to seeing the traveling kit you return with!"`;
+    }
+
+    if (
+      npc.private.characterRef.stories.main === 3 &&
+      npc.private.characterRef.scene_id === SceneIds.MAGNIFICENT_LIBRARY
+    ) {
+      return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "Have you gotten your hands on that traveling kit?"  You can [give ~kit~ to audric] if you are ready.`;
     }
 
     return npc.getDescription();
@@ -45,6 +52,7 @@ export function augment_audric (npc: NPC): NPC {
   
     // talk to Audric, this can move the story
     if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_TALK_ALIASES)) {
+      // main story at 1, scene at library
       if (character.stories.main === 1 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
         let characterUpdate: CharacterUpdateOpts = {};
         characterUpdate.stories = { ...character.stories, main: 2 };
@@ -62,7 +70,8 @@ export function augment_audric (npc: NPC): NPC {
         }
       }
 
-      if (character.stories.main === 2 && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
+      // main story at 2-3, scene at library
+      if ([2, 3].includes(character.stories.main) && character.scene_id === SceneIds.MAGNIFICENT_LIBRARY) {
         emitOthers(`${character.name} has a quiet conversation with Audric.`);
         emitSelf("Audric greets you warmly and continues to wait patiently for you to return with the [traveling kit] he requested.");
         return true;
@@ -73,6 +82,21 @@ export function augment_audric (npc: NPC): NPC {
       return true;
     }
   
+    // give to audric
+    const giveMatch: string | null = captureGiveMatchWithRecipient(command, npc.getKeywords());
+    // if given object is traveling kit
+    if (giveMatch !== null && allTokensMatchKeywords(giveMatch, items.get(ItemIds.TRAVELING_KIT).keywords)) {
+      emitSelf('here here')
+      // if story, location, and character inventory are correct
+      if (
+        character.stories.main === 3 &&
+        character.scene_id === SceneIds.MAGNIFICENT_LIBRARY && 
+        character.inventory.includes(ItemIds.TRAVELING_KIT)
+      ) {
+        emitSelf('audric will accept the kit once this is implemented')
+      }
+    }
+
     // fight this npc
     if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_FIGHT_ALIASES)) {
       emitOthers(`${character.name} looks about ready to try and fight ${npc.getName()}, but thinks better of it.`);

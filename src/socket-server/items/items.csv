@@ -80,3 +80,8 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 79;Filstred’s Guide to Life on the Continent;book;15;1;;;;;;tome volume;An outsized book, with a heavy wooden hardcover, titled Filstred’s Guide to Life on the Continent.  There is something fishy about it, like it doesn't fit in your hands properly.  No, more like it doesn't fit in your eyes properly.  No, it's something else...
 80;a dead rat;trinket;0;1;;;;;;corpse body;The body of a dead rat, ne’er to squeak or scurry again.
 81;a standard issue shortsword;lightWeapon;75;3;;8;slashing;;;short sword blade;A very plain, basic, minimally effective shortsword.  Typical of rank and file soldiers and guardsmen.
+82;a ~traveling kit~;trinket;40;;;;;;;;A ~traveling kit~, full of useful things one might want to have for some time on the road.
+83;travel rations;consumable;10;2;;;;;10;food meal;A package of dried and preserved foods for the road: fruit, nuts, salted meat, all the basics.
+84;a pair of light leather boots;footwear;10;2;2;;;;;;A light, but comfortable, pair of boots, suitable for lots of walking.
+85;a pair of tanned leather trousers;legwear;15;7;3;;;;;;A pair of protective trousers, light enough to be fit for lots of walking, but still offering minimal protection for life on the road.
+86;a light leather vest;armor;15;5;3;;;;;;A light leather vest, providing only minimal protection, but favoring comfort for life on the road, without completely sacrificing safety.

@@ -139,6 +139,7 @@ export enum NpcIds {
   KITSCHY_ENCHANTMENT_VENDOR = "20",
   SHOWY_SHIELDS_SHOPKEEPER = "21",
   TALES_TO_TOMES_OWNER = "22",
+  ADVENTURERS_GUILD_OWNER = "23",
 }
 
 readNpcCsv();
@@ -230,73 +231,73 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
       strength: csvData.strength,
       xp: csvData.xp,
     },
-
+    
     getId: undefined,
     getName: undefined,
     getKeywords: undefined,
     
     getAggro: undefined,
     setAggro: undefined,
-  
+    
     getAgility: undefined,
     setAgility: undefined,
-  
+    
     getArmor: undefined,
     setArmor: undefined,
-  
+    
     getArmorType: undefined,
     setArmorType: undefined,
-  
+    
     getAttackDescription: undefined,
     setAttackDescription: undefined,
-  
+    
     getCashLoot: undefined,
     setCashLoot: undefined,
-  
+    
     // characterRef is not gettable or settable, it is purely internal; only a factory should set it initially
-  
+    
     getCombatInterval: undefined,
     setCombatInterval: undefined,
-  
+    
     getDamageValue: undefined,
     setDamageValue: undefined,
-  
+    
     getDeathTime: undefined,
     setDeathTime: undefined,
-  
+    
     getDescription: undefined,
     setDescription: undefined,
-  
+    
     getFaction: undefined,
     setFaction: undefined,
-  
+    
     getHealth: undefined,
     setHealth: undefined,
-  
+    
     getHealthMax: undefined,
     setHealthMax: undefined,
-  
+    
     getItemLoot: undefined,
     setItemLoot: undefined,
-  
+    
     getTalkText: undefined,
     setTalkText: undefined,
-  
+    
     getSaleItems: undefined,
     setSaleItems: undefined,
-  
+    
     getSavvy: undefined,
     setSavvy: undefined,
-  
+    
     getStrength: undefined,
     setStrength: undefined,
-  
+    
     getXp: undefined,
     setXp: undefined,
-  
+    
     handleNpcCommand: undefined,
   };
-
+  
   npc.getId = () => npc.private.id;
   npc.getName = () => npc.private.name;
   npc.getKeywords = () => npc.private.keywords;
