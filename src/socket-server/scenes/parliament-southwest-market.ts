@@ -54,6 +54,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
+  const filterNpcsByStory = (): NPC[] => {
+    const npcs: NPC[] | null = characterNpcs.get(character.id);
+    if (npcs === null) return [];
+    return npcs.filter(npc => {
+      return true;
+    })
+  }
+
   if (command === 'enter') {
     return handleSceneCommand({
       ...handlerOptions,

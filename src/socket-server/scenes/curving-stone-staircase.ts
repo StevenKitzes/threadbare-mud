@@ -34,7 +34,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
-  
+
   if (command === 'enter') {
     emitOthers(`${character.name} steps onto the staircase.`);
 

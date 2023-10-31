@@ -50,18 +50,18 @@ function npcReady(
 }
 
 export function handleAggro(
-  characterNpcs: Map<string, NPC[]>,
+  npcs: NPC[],
   character: Character,
   handlerOptions: HandlerOptions
 ): void {
   const { emitSelf } = getEmitters(handlerOptions.socket, character.scene_id);
 
   // Aggro enemies attack!
-  characterNpcs.get(character.id)?.forEach(c => {
+  npcs.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && c.getAggro()) {
       emitSelf(`={${firstUpper(c.getName())}} looks ready to attack you!  Flee now or you'll enter combat!=`);
       setTimeout(() => {
-        c.handleNpcCommand({
+        c.handleNpcFight({
           ...handlerOptions,
           command: `fight ${c.getKeywords().join(' ')}`
         });
@@ -83,7 +83,7 @@ export function handleFactionAggro(
       emitOthers(`${firstUpper(c.getName())} remembers ${character.name} as an enemy of ${factionNames.get(c.getFaction())} and attacks!`);
       emitSelf(`=${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and prepares to attack!  Flee or you'll enter combat!=`);
       setTimeout(() => {
-        c.handleNpcCommand({
+        c.handleNpcCustom({
           ...handlerOptions,
           command: `fight ${c.getKeywords().join(' ')}`
         });
@@ -105,7 +105,7 @@ function fightAllInSceneExcept(
   
   npcs.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && c.getFaction() === npcFaction && c.getId() !== npcId) {
-      c.handleNpcCommand({
+      c.handleNpcCustom({
         ...handlerOptions,
         command: `fight ${c.getKeywords().join(' ')}`
       });

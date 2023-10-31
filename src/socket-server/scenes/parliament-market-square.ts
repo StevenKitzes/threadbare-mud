@@ -3,7 +3,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { navigate, Navigable, SceneIds } from './scenes';
+import { navigate, Navigable, SceneIds, handleNpcCommands } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -50,6 +50,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
+
+  const filterNpcsByStory = (): NPC[] => {
+    const npcs: NPC[] | null = characterNpcs.get(character.id);
+    if (npcs === null) return [];
+    return npcs.filter(npc => {
+      return true;
+    })
+  }
   
   if (command === 'enter') {
     // Only relevant to scenes with npcs, to set up npc state
@@ -89,9 +97,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     return true;
   }
   
-  // Only relevant to scenes with npcs, delete otherwise
-  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
-  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
+  if (handleNpcCommands(handlerOptions, filterNpcsByStory())) return true;
   
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} gazes about the wondrous sights of the Market Square.`);
@@ -105,7 +111,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
+    filterNpcsByStory().forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

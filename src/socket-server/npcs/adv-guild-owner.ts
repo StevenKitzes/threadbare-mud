@@ -1,20 +1,49 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { REGEX_BUY_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import getEmitters from "../../utils/emitHelper";
-import { captureFrom, commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
+import { commandMatchesKeywordsFor } from "../../utils/makeMatcher";
 import items, { Item, ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
-import { NPC, look, makePurchase } from "./npcs";
+import { NPC } from "./npcs";
 
 export function augment_adv_guild_owner (npc: NPC): NPC {
-  // this basic handler can be overridden in an npc augmentation
-  npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
+  npc.handleNpcCustom = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;
     const { name } = character;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   
-    // look at this npc
-    if (look(command, emitOthers, emitSelf, npc, character)) return true;
+    // intercept purchase requests for quest item and handle these specifically based on story state
+    const kit: Item = items.get(ItemIds.TRAVELING_KIT);
+    if (commandMatchesKeywordsFor(command, kit.keywords, REGEX_BUY_ALIASES)) {
+      if (character.stories.main === 2) {
+        if (character.money >= kit.getValue()) {
+          if (writeCharacterData(character, {
+            inventory: [ ...character.inventory, ItemIds.TRAVELING_KIT ],
+            money: character.money - kit.getValue(),
+            stories: { ...character.stories, main: 3 },
+          })) {
+            emitOthers(`${name} buys ${kit.title} from ${npc.getName()}.`);
+            emitSelf(`You buy ${kit.title} from ${npc.getName()}.`);
+            return true;
+          }
+        } else {
+          emitOthers(`${name} tries to buy ${kit.title} but can't afford it.`);
+          emitSelf(`You try to buy ${kit.title} but can't afford it.`);
+          return true;
+        }
+      } else {
+        console.log('wrong story state to buy travling kit');
+      }
+      return false;
+    } else {
+      console.log('no kit buy match with keywords', kit.keywords, 'on command', command)
+    }
+  }
+
+  npc.handleNpcTalk = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { name } = character;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   
     // talk to this npc
     if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_TALK_ALIASES)) {
@@ -37,6 +66,12 @@ export function augment_adv_guild_owner (npc: NPC): NPC {
       emitSelf(actorText);
       return true;
     }
+  }
+
+  npc.handleNpcLookSaleItem = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { name } = character;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
     // look at an item this npc has for sale
     const saleItems: Item[] = npc.getSaleItems();
@@ -50,42 +85,6 @@ export function augment_adv_guild_owner (npc: NPC): NPC {
         return true;
       }
     }
-
-    // intercept purchase requests for quest item and handle these specifically based on story state
-    const kit: Item = items.get(ItemIds.TRAVELING_KIT);
-    console.log('try buy kit')
-    if (commandMatchesKeywordsFor(command, kit.keywords, REGEX_BUY_ALIASES)) {
-      console.log('check story')
-      if (character.stories.main === 2) {
-        console.log('check money')
-        if (character.money >= kit.getValue()) {
-          console.log('try write db')
-          if (writeCharacterData(character, {
-            inventory: [ ...character.inventory, ItemIds.TRAVELING_KIT ],
-            money: character.money - kit.getValue(),
-            stories: { ...character.stories, main: 3 },
-          })) {
-            emitOthers(`${name} buys ${kit.title} from ${npc.getName()}.`);
-            emitSelf(`You buy ${kit.title} from ${npc.getName()}.`);
-            return true;
-          }
-        } else {
-          emitOthers(`${name} tries to buy ${kit.title} but can't afford it.`);
-          emitSelf(`You try to buy ${kit.title} but can't afford it.`);
-          return true;
-        }
-      } else {
-        console.log('wrong story state to buy travling kit');
-      }
-      return false;
-    } else {
-      console.log('no kit buy match with keywords', kit.keywords, 'on command', command)
-    }
-    
-    // purchase from this npc
-    if (makePurchase(command, npc, character, emitOthers, emitSelf)) return true;
-  
-    return false;
   }
 
   return npc;

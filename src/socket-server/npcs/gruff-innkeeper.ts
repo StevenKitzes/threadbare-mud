@@ -1,37 +1,17 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { NPC, look, makePurchase } from "./npcs";
-import { commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
-import { REGEX_LOOK_ALIASES, REGEX_REST_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
-import { Item } from "../items/items";
+import { NPC } from "./npcs";
+import { makeMatcher } from "../../utils/makeMatcher";
+import { REGEX_REST_ALIASES } from "../../constants";
 import { CharacterUpdateOpts } from "../../types";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 
 export function augment_gruffInnkeeper(npc: NPC): NPC {
-  npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
+  npc.handleNpcCustom = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;
     const { name } = character;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
   
-    // look at this npc
-    if (look(command, emitOthers, emitSelf, npc, character)) return true;
-  
-    // talk to this npc
-    if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_TALK_ALIASES)) {
-      const actorText: string[] = [npc.getTalkText()];
-      
-      // In case of mercantile activity
-      if (npc.getSaleItems() !== undefined) {
-        actorText.push(...npc.getSaleItems()
-        .map(item => `- ${item.title} (${item.type}) {${item.getValue()} coin${item.getValue() === 1 ? '' : 's'}}`));
-        actorText.push(`You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`);
-      }
-      
-      emitOthers(`${name} talks with ${npc.getName()}.`);
-      emitSelf(actorText);
-      return true;
-    }
-
     // handle resting here
     if (command.match(makeMatcher(REGEX_REST_ALIASES))) {
       const characterUpdate: CharacterUpdateOpts = {};
@@ -50,21 +30,6 @@ export function augment_gruffInnkeeper(npc: NPC): NPC {
         return true;
       }
     }
-  
-    // look at an item this npc has for sale
-    if (npc.getSaleItems() !== undefined) {
-      for(let i = 0; i < npc.getSaleItems().length; i++) {
-        const currentItem: Item = npc.getSaleItems()[i];
-        if (commandMatchesKeywordsFor(command, currentItem.keywords, REGEX_LOOK_ALIASES)) {
-          emitOthers(`${name} inspects ${currentItem.title} that ${npc.getName()} has for sale.`);
-          emitSelf(currentItem.description);
-          return true;
-        }
-      }
-    }
-  
-    // purchase from this npc
-    if (makePurchase(command, npc, character, emitOthers, emitSelf)) return true;
   
     return false;
   }

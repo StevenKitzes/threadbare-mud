@@ -3,7 +3,7 @@ import appendItemsHereString from '../../utils/appendItemsHereString';
 import appendSentimentText from '../../utils/appendSentimentText';
 import getEmitters from '../../utils/emitHelper';
 import lookSceneItem from '../../utils/lookSceneItem';
-import { Navigable, SceneIds, navigate } from './scenes';
+import { Navigable, SceneIds, handleNpcCommands, navigate } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
 import { SceneSentiment } from '../../types';
@@ -40,6 +40,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
+  const filterNpcsByStory = (): NPC[] => {
+    const npcs: NPC[] | null = characterNpcs.get(character.id);
+    if (npcs === null) return [];
+    return npcs.filter(npc => {
+      return true;
+    })
+  }
+
   if (command === 'enter') {
     // Only relevant to scenes with npcs, to set up npc state
     if (!characterNpcs.has(character.id)) {
@@ -64,9 +72,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     })
   }
 
-  // Only relevant to scenes with npcs, delete otherwise
-  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
-  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
+  if (handleNpcCommands(handlerOptions, filterNpcsByStory())) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${character.name} looks around.`);
@@ -79,7 +85,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
     // Only relevant to scenes with npcs, delete otherwise
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
+    filterNpcsByStory().forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 

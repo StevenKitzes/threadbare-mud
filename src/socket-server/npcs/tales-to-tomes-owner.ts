@@ -1,19 +1,16 @@
 import getEmitters from "../../utils/emitHelper";
 import { HandlerOptions } from "../server";
-import { NPC, look, makePurchase } from "./npcs";
+import { NPC } from "./npcs";
 import { commandMatchesKeywordsFor } from "../../utils/makeMatcher";
 import { REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import { Item } from "../items/items";
 import { ClassTypes } from "../../types";
 
 export function augment_talesToTomesOwner(npc: NPC): NPC {
-  npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
+  npc.handleNpcTalk = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;
     const { name } = character;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
-  
-    // look at this npc
-    if (look(command, emitOthers, emitSelf, npc, character)) return true;
   
     // talk to this npc
     if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_TALK_ALIASES)) {
@@ -29,21 +26,6 @@ export function augment_talesToTomesOwner(npc: NPC): NPC {
       ]);
       return true;
     }
-  
-    // look at an item this npc has for sale
-    if (npc.getSaleItems() !== undefined) {
-      for(let i = 0; i < npc.getSaleItems().length; i++) {
-        const currentItem: Item = npc.getSaleItems()[i];
-        if (commandMatchesKeywordsFor(command, currentItem.keywords, REGEX_LOOK_ALIASES)) {
-          emitOthers(`${name} inspects ${currentItem.title} that ${npc.getName()} has for sale.`);
-          emitSelf(currentItem.description);
-          return true;
-        }
-      }
-    }
-  
-    // purchase from this npc
-    if (makePurchase(command, npc, character, emitOthers, emitSelf)) return true;
   
     return false;
   }

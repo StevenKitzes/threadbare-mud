@@ -1,4 +1,4 @@
-import { captureFrom, commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
+import { allTokensMatchKeywords, captureFrom, commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
 import { Character, CharacterUpdateOpts, Faction } from "../../types";
 import { OptsType } from "../../utils/getGameTextObject";
 import items, { Item, ItemIds } from "../items/items";
@@ -104,7 +104,13 @@ export type NPC = {
   getXp: () => number;
   setXp: (x: number) => void;
 
-  handleNpcCommand: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcCustom: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcLook: (HandlerOptions: HandlerOptions) => boolean;
+  handleNpcLookSaleItem: (HandlerOptions: HandlerOptions) => boolean;
+  handleNpcGive: (HandlerOptions: HandlerOptions) => boolean;
+  handleNpcTalk: (HandlerOptions: HandlerOptions) => boolean;
+  handleNpcPurchase: (HandlerOptions: HandlerOptions) => boolean;
+  handleNpcFight: (HandlerOptions: HandlerOptions) => boolean;
 };
 
 export enum ArmorType {
@@ -144,59 +150,6 @@ export enum NpcIds {
 
 readNpcCsv();
   
-export function look(
-  command: string,
-  emitOthers: (text: string | string[], opts?: OptsType) => void,
-  emitSelf: (text: string | string[], opts?: OptsType) => void,
-  npc: NPC,
-  character: Character,
-): true {
-  if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_LOOK_ALIASES)) {
-    emitOthers(`${character.name} observes ${npc.getName()}.`);
-    
-    const actorText: string[] = [];
-    actorText.push(npc.getDescription());
-    emitSelf(actorText);
-    
-    return true;
-  }
-}
-
-export function makePurchase(
-  command: string,
-  npc: NPC,
-  character: Character,
-  emitOthers: (text: string | string[], opts?: OptsType) => void,
-  emitSelf: (text: string | string[], opts?: OptsType) => void,
-): boolean {
-  const buyMatch: string | null = captureFrom(command, REGEX_BUY_ALIASES);
-  if (buyMatch !== null) {
-    
-    const item: Item | undefined =
-      npc.getSaleItems().find((saleItem: Item) => buyMatch.match(makeMatcher(saleItem.keywords.join('|'))));
-    
-    if (item !== undefined) {
-      if (character.money >= item.getValue()) {
-        let characterUpdate: CharacterUpdateOpts = {
-          inventory: [ ...character.inventory, item.id ],
-          money: character.money - item.getValue()
-        };
-        if (writeCharacterData(character, characterUpdate)) {
-          emitOthers(`${character.name} buys ${item.title} from ${npc.getName()}.`);
-          emitSelf(`You buy ${item.title} from ${npc.getName()}.`);
-          return true;
-        }
-      } else {
-        emitOthers(`${character.name} tries to buy ${item.title} from ${npc.getName()} but can't afford it.`);
-        emitSelf(`You cannot afford to buy ${item.title}.`);
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 export type NPCFactoryManifest = {
   csvData: NpcImport,
   character: Character,
@@ -295,7 +248,13 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
     getXp: undefined,
     setXp: undefined,
     
-    handleNpcCommand: undefined,
+    handleNpcCustom: undefined,
+    handleNpcLook: undefined,
+    handleNpcLookSaleItem: undefined,
+    handleNpcGive: undefined,
+    handleNpcTalk: undefined,
+    handleNpcPurchase: undefined,
+    handleNpcFight: undefined,
   };
   
   npc.getId = () => npc.private.id;
@@ -368,15 +327,36 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
   npc.getXp = () => npc.private.xp;
   npc.setXp = (x: number) => npc.private.xp = x;
 
-  // this basic handler can be overridden in an npc augmentation
-  npc.handleNpcCommand = (handlerOptions: HandlerOptions): boolean => {
+  // these empty handlers (most npcs don't use) can be overridden with custom actions in an npc augmentation
+  npc.handleNpcCustom = (handlerOptions: HandlerOptions): boolean => {
+    return false;
+  }
+  npc.handleNpcGive = (handlerOptions: HandlerOptions): boolean => {
+    return false;
+  }
+
+  npc.handleNpcLook = (handlerOptions: HandlerOptions): boolean => {
     const { character, command, socket } = handlerOptions;
-    const { name } = character;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
-  
+
     // look at this npc
-    if (look(command, emitOthers, emitSelf, npc, character)) return true;
+    if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_LOOK_ALIASES)) {
+      emitOthers(`${character.name} observes ${npc.getName()}.`);
+      
+      const actorText: string[] = [];
+      actorText.push(npc.getDescription());
+      emitSelf(actorText);
+      
+      return true;
+    }
+
+    return false;
+  }
   
+  npc.handleNpcTalk = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+
     // talk to this npc
     if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_TALK_ALIASES)) {
       const actorText: string[] = [npc.getTalkText()];
@@ -388,31 +368,76 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
         actorText.push(`You currently have ${character.money} coin${character.money === 1 ? '' : 's'}.`);
       }
       
-      emitOthers(`${name} talks with ${npc.getName()}.`);
+      emitOthers(`${character.name} talks with ${npc.getName()}.`);
       emitSelf(actorText);
       return true;
     }
 
-    // look at an item this npc has for sale
-    if (npc.getSaleItems() !== undefined) {
-      for(let i = 0; i < npc.getSaleItems().length; i++) {
-        const currentItem: Item = npc.getSaleItems()[i];
-        if (commandMatchesKeywordsFor(command, currentItem.keywords, REGEX_LOOK_ALIASES)) {
-          emitOthers(`${name} inspects ${currentItem.title} that ${npc.getName()} has for sale.`);
-          emitSelf(currentItem.description);
+    return false;
+  }
+
+  npc.handleNpcLookSaleItem = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+
+    if (npc.getSaleItems() === undefined) return false;
+
+    for(let i = 0; i < npc.getSaleItems().length; i++) {
+      const currentItem: Item = npc.getSaleItems()[i];
+      if (commandMatchesKeywordsFor(command, currentItem.keywords, REGEX_LOOK_ALIASES)) {
+        emitOthers(`${name} inspects ${currentItem.title} that ${npc.getName()} has for sale.`);
+        emitSelf(currentItem.description);
+        return true;
+      }
+    }
+
+    return false;
+  }
+  
+  npc.handleNpcPurchase = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+
+    if (npc.getSaleItems() === undefined) return false;
+
+    const buyMatch: string | null = captureFrom(command, REGEX_BUY_ALIASES);
+    if (buyMatch === null) return false;
+      
+    const item: Item | undefined =
+      npc.getSaleItems().find((saleItem: Item) => allTokensMatchKeywords(buyMatch, saleItem.keywords));
+    
+    if (item !== undefined) {
+      if (character.money >= item.getValue()) {
+        let characterUpdate: CharacterUpdateOpts = {
+          inventory: [ ...character.inventory, item.id ],
+          money: character.money - item.getValue()
+        };
+        if (writeCharacterData(character, characterUpdate)) {
+          emitOthers(`${character.name} buys ${item.title} from ${npc.getName()}.`);
+          emitSelf(`You buy ${item.title} from ${npc.getName()}.`);
           return true;
         }
+      } else {
+        emitOthers(`${character.name} tries to buy ${item.title} from ${npc.getName()} but can't afford it.`);
+        emitSelf(`You cannot afford to buy ${item.title}.`);
+        return true;
       }
     }
   
-    // purchase from this npc
-    if (makePurchase(command, npc, character, emitOthers, emitSelf)) return true;
+    return false;
+  }
+  
+  npc.handleNpcFight = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
     // fight with this npc
-    if (
-      npc.getHealth() !== undefined &&
-      commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_FIGHT_ALIASES)
-    ) {
+    if ( commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_FIGHT_ALIASES) ) {
+      if (npc.getHealth() === undefined) {
+        emitOthers(`${character.name} tries to start something with ${npc.getName()}, but ${npc.getName()} is not having it.`);
+        emitSelf(`You find that ${npc.getName()} is not willing to engage in a fight with you.`);
+        return true;
+      }
       if (npc.getHealth() < 1) {
         emitOthers(`${character.name} is beating the corpse of ${npc.getName()}.`);
         emitSelf(`It's easy to hit ${npc.getName()} when they are already dead.`);

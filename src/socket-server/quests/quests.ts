@@ -14,8 +14,9 @@ export function handleQuestsCommand(handlerOptions: HandlerOptions): boolean {
     switch (character.stories.main) {
       case 0: /* storyline not yet started */ break;
       case 1: actorText.push(`Finding Yourself: You woke up in an unfamiliar bedroom.  What in the world?  Find someone to talk to to figure out what's going on!`); break;
-      case 2: actorText.push(`Finding Yourself: You met Audric in his library.  He wants you to buy a ~traveling kit~ in town and return to him.`); break;
+      case 2: actorText.push(`Finding Yourself: You met Audric in his library.  He wants you to buy a ~traveling kit~ at the Adventurer's Guild in town and return to him.`); break;
       case 3: actorText.push(`Finding Yourself: You found and purchased a ~traveling kit~, as Audric requested.  He wants you to bring it back to him at his library.`); break;
+      case 4: actorText.push(`Finding Yourself: You brought the ~traveling kit~ to Audric.`); break;
       default: break;
     }
   

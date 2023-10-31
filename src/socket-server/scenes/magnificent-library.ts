@@ -11,7 +11,7 @@ import { augment_audric } from "../npcs/audric";
 import { npcImports } from "../npcs/csvNpcImport";
 import { NPC, NpcIds, npcFactory } from "../npcs/npcs";
 import { HandlerOptions } from "../server";
-import { Navigable, SceneIds, navigate } from "./scenes";
+import { Navigable, SceneIds, handleNpcCommands, navigate } from "./scenes";
 
 const id: SceneIds = SceneIds.MAGNIFICENT_LIBRARY;
 const title: string = "A marvelous library";
@@ -41,6 +41,14 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
 
+  const filterNpcsByStory = (): NPC[] => {
+    const npcs: NPC[] | null = characterNpcs.get(character.id);
+    if (npcs === null) return [];
+    return npcs.filter(npc => {
+      return true;
+    })
+  }
+
   if (command === 'enter') {
     emitOthers(`${character.name} enters the library.`);
 
@@ -60,8 +68,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     })
   }
 
-  const sceneNpcs: NPC[] = characterNpcs.get(character.id);
-  for (let i = 0; i < sceneNpcs.length; i++) if (sceneNpcs[i].handleNpcCommand(handlerOptions)) return true;
+  if (handleNpcCommands(handlerOptions, filterNpcsByStory())) return true;
 
   if (command.match(makeMatcher(REGEX_LOOK_ALIASES))) {
     emitOthers(`${name} looks around the library.`);
@@ -72,7 +79,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     actorText.push("Aside from the [heavy wooden door] you first used to enter this room, there are a few others, but for now they are all locked.  You can also go down a curving stone [staircase].");
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);
-    characterNpcs.get(character.id).forEach(npc => actorText.push(npc.getDescription()));
+    filterNpcsByStory().forEach(npc => actorText.push(npc.getDescription()));
 
     emitSelf(actorText);
 
