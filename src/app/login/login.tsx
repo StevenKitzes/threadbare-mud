@@ -5,7 +5,6 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { LoginPayload } from '@/types';
 import postData from '@/utils/postData';
 
-const spanClassName = 'ml-2';
 const inputClassName = 'text-white bg-slate-700 m-2 p-2 rounded-lg border-2 border-slate-300';
 const linkClassName = 'text-violet-300 m-2 my-0.5 hover:underline';
 
@@ -23,12 +22,12 @@ const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element 
   function submit() {
     const errors = [];
     if (!usernameValue || !usernameValue.trim()) {
-      errors.push(<span className={spanClassName + ' text-red-500'} key="name">
+      errors.push(<span className='text-red-500' key="name">
         User name required.
       </span>);
     }
     if (!passwordValue) {
-      errors.push(<span className={spanClassName + ' text-red-500'} key="pass">
+      errors.push(<span className='text-red-500' key="pass">
         Password required.
       </span>);
     }
@@ -45,7 +44,7 @@ const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element 
             window.location.href="/character-select"
           } else {
             setErrorElements([
-              <span className={spanClassName + ' text-red-500'} key="pass">
+              <span className='text-red-500' key="pass">
                 Unable to log you in with those credentials.  Try again?
               </span>
             ]);
@@ -62,7 +61,7 @@ const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element 
       })
       .catch(err => {
         setErrorElements([
-          <span className={spanClassName + ' text-red-500'} key="pass">
+          <span className='text-red-500' key="pass">
             There was a problem logging you out.  You can try again if you want?
           </span>
         ]);
@@ -89,7 +88,7 @@ const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element 
   );
   return (
     <div className='w-60 pt-4 mr-4 flex flex-col align-middle'>
-      <span className={spanClassName}>User Name:</span>
+      <span className='ml-2'>User Name:</span>
       <input
         className={inputClassName}
         id='username-input'
@@ -97,7 +96,7 @@ const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element 
         onKeyUp={(e) => { if (e.key === 'Enter') submit() }}
         value={usernameValue}
       />
-      <span className={spanClassName}>Password:</span>
+      <span className='ml-2'>Password:</span>
       <input
         className={inputClassName}
         id='password-input'
@@ -122,7 +121,12 @@ const Login = ({ loggedIn, setLoggedIn, setUsername }: LoginProps): JSX.Element 
       </button>
       <a className={linkClassName} href="http://localhost:3000">Forgot user name?</a>
       <a className={linkClassName} href="http://localhost:3000">Forgot password?</a>
-      {errorElements}
+      <div
+        className='ml-2'
+        data-testid="login-error-elements"
+      >
+        {errorElements}
+      </div>
     </div>
   );
 };

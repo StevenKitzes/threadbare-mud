@@ -10,6 +10,8 @@ import jStr from '@/utils/jStr';
 
 export async function POST(req: NextRequest) {
   // Handle auth stuff
+
+
   const tokenCookie = cookies().get('token');
   const result: ConfirmedUser = getUserFromToken(tokenCookie);
 
@@ -21,7 +23,6 @@ export async function POST(req: NextRequest) {
   try {
     const user: User = result.user;
     writeActiveCharacter(user.id, id);
-    
     return new NextResponse(jStr(success200("New character selected successfully")), {
       status: 200
     });

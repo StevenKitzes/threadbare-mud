@@ -8,7 +8,7 @@ export const Page = (): JSX.Element => {
   }, []);
 
   return (
-    <div>Welcome to Threadbare.  Loading . . .</div>
+    <div data-testid='page-title'>Welcome to Threadbare.  Loading . . .</div>
   );
 }
 

@@ -35,7 +35,10 @@ const LoginPage = (): JSX.Element => {
 
   return (
     <div className='page-foundation'>
-      <div className='page-title'>
+      <div
+        className='page-title'
+        data-testid='page-title'
+      >
         { title }
       </div>
       <Login

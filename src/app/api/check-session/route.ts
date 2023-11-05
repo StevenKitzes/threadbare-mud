@@ -8,6 +8,8 @@ import { err401 } from '@/utils/apiResponses';
 import { getUserFromToken } from '@/utils/getUserFromToken';
 
 export async function POST() {
+
+
   const tokenCookie = cookies().get('token');
   const result: ConfirmedUser = getUserFromToken(tokenCookie);
 

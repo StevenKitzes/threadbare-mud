@@ -8,6 +8,8 @@ import { transact, writeUser } from '../../../../sqlite/sqlite';
 import jStr from '@/utils/jStr';
  
 export async function POST( req: NextRequest ) {
+
+
   const requestPayload: RegistrationPayload = await req.clone().json();
 
   try {

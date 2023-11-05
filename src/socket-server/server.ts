@@ -134,9 +134,16 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
         ...scene.publicInventory.map(i => items.get(i)),
         ...getItemsForSaleAtScene(character.id, scene.id)
       ])) return;
+    } catch(err) {
+      console.error('encountered error checking for ambiguous look requests:', err.toString());
+      console.error('character state:', command);
+      console.error('character state:', character);
+    }
+    try {
       if (isAmbiguousPurchaseRequest(handlerOptions, scene)) return;
     } catch(err) {
-      console.error('encountered error checking for ambiguous look and purchase requests');
+      console.error('encountered error checking for ambiguous purchase request with command:', command);
+      console.error('character state:', character);
     }
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {

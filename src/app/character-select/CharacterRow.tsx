@@ -30,15 +30,22 @@ export const CharacterRow = ({ active, bottom, id, name, top }: CharacterRowProp
   return (
     <div className="flex flex-row">
       {/* Describe whether it's active */}
-      <div className={`${top ? "rounded-tl-lg " : ""}${bottom ? "rounded-bl-lg " : ""}text-black bg-violet-300 p-3 w-24 flex align-middle justify-center border border-black`}>
+      <div
+        className={`${top ? "rounded-tl-lg " : ""}${bottom ? "rounded-bl-lg " : ""}text-black bg-violet-300 p-3 w-24 flex align-middle justify-center border border-black`}
+        data-testid={`character-row-active-${id}`}
+      >
         {active === 1 ? "Active" : ""}
       </div>
       {/* Character's name */}
-      <div className="text-black bg-violet-300 p-3 w-96 flex align-middle justify-center border border-black">
+      <div
+        className="text-black bg-violet-300 p-3 w-96 flex align-middle justify-center border border-black"
+        data-testid={`character-row-name-${id}`}
+      >
         {name}
       </div>
       <div
         className={`${top ? "rounded-tr-lg " : ""}${bottom ? "rounded-br-lg " : ""}text-black bg-violet-300 p-3 w-24 flex align-middle justify-center underline border border-black cursor-pointer`}
+        data-testid={`character-row-activate-button-${id}`}
         onClick={() => selectCharacter(id)}
       >
         Activate

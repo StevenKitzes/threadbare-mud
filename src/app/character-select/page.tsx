@@ -49,7 +49,10 @@ const CharacterSelectPage = (): JSX.Element => {
   if (loading) {
     return (
       <div className='page-foundation'>
-        <div className='page-title'>
+        <div
+          className='page-title'
+          data-testid='page-title'
+        >
           {loading && <div>Loading characters . . .</div>}
         </div>
       </div>
@@ -63,7 +66,10 @@ const CharacterSelectPage = (): JSX.Element => {
     )) {
       return (
         <div className='page-foundation'>
-          <div className='page-title'>
+          <div
+            className='page-title'
+            data-testid='page-title'
+          >
             <div>Log in to view your characters.</div>
           </div>
           <LoginCTA />
@@ -74,7 +80,7 @@ const CharacterSelectPage = (): JSX.Element => {
     return (
       <div className='page-foundation'>
         <div className='page-title'>
-          <div>Server error loading characters. <pre>{jStr(error, true)}</pre></div>
+          <div data-testid='page-title'>Server error loading characters. <pre>{jStr(error, true)}</pre></div>
         </div>
       </div>
     );
@@ -82,7 +88,7 @@ const CharacterSelectPage = (): JSX.Element => {
     return (
       <div className='page-foundation'>
         <div className='m-16 mr-auto text-6xl max-w-[calc(100vw-24rem)] flex flex-col'>
-          Choose your active character.
+          <div data-testid='page-title'>Choose your active character.</div>
           <CharacterList characters={data.user.characters} />
           <CharacterCreate />
         </div>

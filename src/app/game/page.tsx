@@ -138,7 +138,7 @@ export const Game = (): JSX.Element => {
   return (
     <div className='page-foundation'>
       <div className='page-title flex flex-col'>
-        Threadbare
+        <div data-testid="page-title">Threadbare</div>
         <div
           ref={gameTextRef}
           className='flex-grow bg-slate-900 mt-8 rounded-xl border-2 border-slate-500 p-4 w-full overflow-scroll'
@@ -170,6 +170,7 @@ export const Game = (): JSX.Element => {
         </div>
         <textarea
           className='bg-slate-800 my-4 rounded-xl border-2 border-slate-500 p-4 text-lg w-full h-20'
+          data-testid="player-input"
           onChange={(evt) => {
             setCommand(evt.target.value);
           }}

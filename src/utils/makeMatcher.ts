@@ -15,10 +15,15 @@ export function allTokensMatchKeywords (input: string, keywords: string[]): bool
 }
 
 export function commandMatchesKeywordsFor (command: string, keywords: string[], regex: string): boolean {
-  const capture: string | null = captureFrom(command, regex);
-  if (capture === null) return false;
-  if (allTokensMatchKeywords(capture, keywords)) return true;
-  return false;
+  try {
+    const capture: string | null = captureFrom(command, regex);
+    if (capture === null) return false;
+    if (allTokensMatchKeywords(capture, keywords)) return true;
+    return false;
+  } catch (err: any) {
+    console.error('Error in makeMatcher.commandMatchesKeywordsFor:', err.toString());
+    return false;
+  }
 }
 
 export function captureFrom (command: string, actionAliases: string): string | null {

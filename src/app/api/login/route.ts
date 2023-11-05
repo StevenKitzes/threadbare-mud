@@ -10,6 +10,8 @@ import killCookieResponse from '@/utils/killCookieResponse';
 import { err401, err500 } from '@/utils/apiResponses';
 
 export async function POST(req: NextRequest) {
+
+
   const requestPayload: LoginPayload = await req.clone().json();
   
   try {

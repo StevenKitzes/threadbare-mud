@@ -16,6 +16,8 @@ const server = new ApolloServer<object>({
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async () => {
+
+
     const tokenCookie = cookies().get('token');
     if (!tokenCookie) throw new Error("Unable to authenticate GraphQL request.");
 
@@ -29,6 +31,7 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
       if (user === undefined) {
         throw new Error("Got valid JWT but no matching user.");
       }
+      console.info('+ GraphQL Next handler returning')
       return {
         user,
         database

@@ -26,9 +26,16 @@ export function getWornItems (character: Character): Item[] {
 }
 
 export function getInventoryAndWorn (character: Character): Item[] {
-  const result: Item[] = [ ...character.inventory.map(i => items.get(i)) ];
-  result.push(...getWornItems(character));
-  return result;
+  const result: Item[] = [];
+  try {
+    result.push(...character.inventory.map(i => items.get(i)));
+    result.push(...getWornItems(character));
+    return result;
+  } catch (err) {
+    console.error('Error in character.getInventoryAndWorn:', err.toString());
+    console.error('character state:', character);
+    return result;
+  }
 }
 
 export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean {
@@ -361,7 +368,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     }
   }
 
-  // look at your stuff
+  // review your inventory
   if (command.match(makeMatcher(REGEX_INVENTORY_ALIASES))) {
     if (!character.job) {
       emitSelf("You must finish creating your new character first.");

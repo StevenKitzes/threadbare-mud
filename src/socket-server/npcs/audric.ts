@@ -100,7 +100,7 @@ export function augment_audric (npc: NPC): NPC {
         })
       ) {
         emitOthers(`${character.name} hands ${items.get(ItemIds.TRAVELING_KIT)} to ${npc.getName()}, and they have a chat together.`);
-        emitSelf(`You hand ${items.get(ItemIds.TRAVELING_KIT)} to ${npc.getName()} and he accepts it graciously.  "Ahh, thank you for picking that up for me!  It'll come in handy in the coming days, I assure you."`);
+        emitSelf(`You hand ${items.get(ItemIds.TRAVELING_KIT).title} to ${npc.getName()} and he accepts it graciously.  "Ahh, thank you for picking that up for me!  It'll come in handy in the coming days, I assure you."`);
         return true;
       }
     }

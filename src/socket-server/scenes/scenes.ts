@@ -79,26 +79,31 @@ import('./parliament-southeast-market').then(scene => scenes.set(scene.id, scene
 export default { scenes }
 
 export function getItemsForSaleAtScene(charId: string, sceneId: string): Item[] {
-  const scene: Scene = scenes.get(sceneId);
-  if (!scene || !scene.getSceneNpcs) return [];
-
-  const sceneNpcs: Map<string, NPC[]> = scene.getSceneNpcs();
-  if (!sceneNpcs) return [];
-
-  const npcs: NPC[] = sceneNpcs.get(charId);
-  if (!npcs) return [];
-
-  const result: Item[] = [];
-
-  for (let i = 0; i < npcs.length; i++) {
-    const npc: NPC = npcs[i];
-    const saleItems: Item[] | undefined = npc.getSaleItems();
-    if (saleItems === undefined) continue;
-
-    result.push(...saleItems);
+  try {
+    const scene: Scene = scenes.get(sceneId);
+    if (!scene || !scene.getSceneNpcs) return [];
+    
+    const sceneNpcs: Map<string, NPC[]> = scene.getSceneNpcs();
+    if (!sceneNpcs) return [];
+    
+    const npcs: NPC[] = sceneNpcs.get(charId);
+    if (!npcs) return [];
+    
+    const result: Item[] = [];
+    
+    for (let i = 0; i < npcs.length; i++) {
+      const npc: NPC = npcs[i];
+      const saleItems: Item[] | undefined = npc.getSaleItems();
+      if (saleItems === undefined) continue;
+      
+      result.push(...saleItems);
+    }
+    
+    return result;
+  } catch (err) {
+    console.error('Error in scenes.getItemsForSaleAtScene:', err.toString());
+    return [];
   }
-
-  return result;
 }
 
 export function navigate(
