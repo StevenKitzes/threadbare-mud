@@ -154,6 +154,7 @@ export function handleNpcCommands(handlerOptions: HandlerOptions, sceneNpcs: NPC
     if (sceneNpcs[i].handleNpcGive(handlerOptions)) return true;
     if (sceneNpcs[i].handleNpcTalk(handlerOptions)) return true;
     if (sceneNpcs[i].handleNpcPurchase(handlerOptions)) return true;
+    if (sceneNpcs[i].handleNpcSell(handlerOptions)) return true;
     if (sceneNpcs[i].handleNpcFight(handlerOptions)) return true;
   }
   return false;

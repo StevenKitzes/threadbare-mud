@@ -1,15 +1,16 @@
-import { allTokensMatchKeywords, captureFrom, commandMatchesKeywordsFor, makeMatcher } from "../../utils/makeMatcher";
+import { allTokensMatchKeywords, captureFrom, captureSellTo, commandMatchesKeywordsFor } from "../../utils/makeMatcher";
 import { Character, CharacterUpdateOpts, Faction } from "../../types";
-import { OptsType } from "../../utils/getGameTextObject";
 import items, { Item, ItemIds } from "../items/items";
 import { HandlerOptions } from "../server";
 import { csvNpcToKeywords } from "../../utils/csvPropsToKeywords";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { NpcImport, readNpcCsv } from "./csvNpcImport";
-import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELL_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
 import getEmitters from "../../utils/emitHelper";
 import startCombat from "../../utils/combat";
 import { coinValueRandomizer } from "../../utils/coinValueRandomizer";
+import { isAmbiguousSellBuyerRequest } from "../../utils/ambiguousRequestHelpers";
+import { scenes } from "../scenes/scenes";
 
 export type NPC = {
   private: {
@@ -105,12 +106,13 @@ export type NPC = {
   setXp: (x: number) => void;
 
   handleNpcCustom: (handlerOptions: HandlerOptions) => boolean;
-  handleNpcLook: (HandlerOptions: HandlerOptions) => boolean;
-  handleNpcLookSaleItem: (HandlerOptions: HandlerOptions) => boolean;
-  handleNpcGive: (HandlerOptions: HandlerOptions) => boolean;
-  handleNpcTalk: (HandlerOptions: HandlerOptions) => boolean;
-  handleNpcPurchase: (HandlerOptions: HandlerOptions) => boolean;
-  handleNpcFight: (HandlerOptions: HandlerOptions) => boolean;
+  handleNpcLook: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcLookSaleItem: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcGive: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcTalk: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcPurchase: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcSell: (handlerOptions: HandlerOptions) => boolean;
+  handleNpcFight: (handlerOptions: HandlerOptions) => boolean;
 };
 
 export enum ArmorType {
@@ -156,6 +158,10 @@ export type NPCFactoryManifest = {
   vendorInventory?: ItemIds[],
   lootInventory?: ItemIds[],
 };
+
+export function isMerchant(npc: NPC): boolean {
+  return (npc.getSaleItems() !== undefined || npc.getSaleItems().length >= 1);
+}
 
 export function npcFactory({csvData, character, vendorInventory, lootInventory}: NPCFactoryManifest): NPC {
   const npc: NPC = {
@@ -254,6 +260,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
     handleNpcGive: undefined,
     handleNpcTalk: undefined,
     handleNpcPurchase: undefined,
+    handleNpcSell: undefined,
     handleNpcFight: undefined,
   };
   
@@ -413,8 +420,8 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
           money: character.money - item.getValue()
         };
         if (writeCharacterData(character, characterUpdate)) {
-          emitOthers(`${character.name} buys ${item.title} from ${npc.getName()}.`);
-          emitSelf(`You buy ${item.title} from ${npc.getName()}.`);
+          emitOthers(`${character.name} buys ${item.title} from ${npc.getName()} for ${item.getValue()} coins.`);
+          emitSelf(`You buy ${item.title} from ${npc.getName()} for ${item.getValue()} coins.`);
           return true;
         }
       } else {
@@ -425,6 +432,54 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
     }
   
     return false;
+  }
+
+  npc.handleNpcSell = (handlerOptions: HandlerOptions): boolean => {
+    const { character, command, socket } = handlerOptions;
+    const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+
+    // try sell, specifying which merchant
+    const sellItemMatch: string | null = captureSellTo(command, npc);
+    if (sellItemMatch !== null) {
+      // make sure player has this item
+      for (let i = 0; i < character.inventory.length; i++) {
+        const item: Item = items.get(character.inventory[i]);
+        if (allTokensMatchKeywords(sellItemMatch, item.keywords)) {
+          const newInventory: ItemIds[] = [...character.inventory];
+          newInventory.splice(i, 1);
+          const salePrice: number = Math.ceil(item.getValue() * 0.65);
+          if (writeCharacterData(character, {
+            inventory: newInventory,
+            money: character.money + salePrice
+          })) {
+            emitSelf(`You sold ${item.title} to ${npc.getName()} for ${salePrice} coins.`);
+            emitOthers(`${character.name} sold ${item.title} to ${npc.getName()} for ${salePrice} coins.`);
+            return true;
+          }
+        }
+      };
+    }
+    // try sell without specifying which merchant
+    const sellMatch: string = captureFrom(command, REGEX_SELL_ALIASES);
+    if (sellMatch !== null) {
+      // make sure player has this item
+      for (let i = 0; i < character.inventory.length; i++) {
+        const item: Item = items.get(character.inventory[i]);
+        if (allTokensMatchKeywords(sellMatch, item.keywords)) {
+          const newInventory: ItemIds[] = [...character.inventory];
+          newInventory.splice(i, 1);
+          const salePrice: number = Math.ceil(item.getValue() * 0.65);
+          if (writeCharacterData(character, {
+            inventory: newInventory,
+            money: character.money + salePrice
+          })) {
+            emitSelf(`You sold ${item.title} to ${npc.getName()} for ${salePrice} coins.`);
+            emitOthers(`${character.name} sold ${item.title} to ${npc.getName()} for ${salePrice} coins.`);
+            return true;
+          }
+        }
+      };
+    }
   }
   
   npc.handleNpcFight = (handlerOptions: HandlerOptions): boolean => {

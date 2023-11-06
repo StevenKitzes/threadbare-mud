@@ -14,9 +14,9 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 13;a tasty sweetroll;consumable;3;1;;;;;3;sweet roll;A tasty looking sweetroll.
 14;a fresh loaf of bread;consumable;5;1;;;;;5;;A freshly baked loaf of bread, just firm enough and just fluffy enough, and it smells great.
 15;a tasty cake;consumable;8;1;;;;;5;;A freshly baked cake, sweet and covered with little bits of fruit and a sugar glaze.
-16;a shiny, red apple;consumable;3;1;;;;;2;;A shiny, juicy, delicious red apple, with a little stem sticking out the top with a leaf.
-17;an orange;consumable;4;1;;;;;3;;A nice, round, juicy, delicious orange, ready to peel and eat.
-18;a plum;consumable;3;1;;;;;2;;A purple plum, just ripe enough, just juicy enough, just sweet enough.
+16;a shiny, red apple;consumable;3;1;;;;;2;fruit;A shiny, juicy, delicious red apple, with a little stem sticking out the top with a leaf.
+17;an orange;consumable;4;1;;;;;3;fruit;A nice, round, juicy, delicious orange, ready to peel and eat.
+18;a plum;consumable;3;1;;;;;2;fruit;A purple plum, just ripe enough, just juicy enough, just sweet enough.
 19;an avocado;consumable;8;1;;;;;5;;A rare delicacy, this avocado is ripe and just the right texture.
 20;an elegant doublet;armor;250;2;1;;;;;shirt top;This fitted, elegant doublet features black, silken sleeves and a bodice that is beautifully embroidered with a motif of golden foliage.
 21;a fashionable beret;headgear;100;1;1;;;;;hat;This fashionable beret is made of fine wool and has a round, flat crown.  It is stitched with accents of golden thread.
@@ -53,8 +53,8 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 52;a set of Parliamentary plated boots;footwear;2000;6;6;;;;;;A sparkling set of polished plated boots, embossed with the crest of the town of Parliament, capital of the Realm of Ixpanne.
 53;a decorative Parliamentary longsword;heavyWeapon;1250;3;;10;slashing;;;long sword blade;"A mirror-polished decorative longsword, with the crest of the capital city of Parliament engraved into the hilt.  It is combat ready, if only just; more meant for show."
 54;a bottle of beer;consumable;5;1;;;;;3;;A decent bottle of beer, kept corked in a brown bottle for travel.
-55;a bottle of grain spirit;consumable;20;2;;;;;3;;A decent bottle of clear grain spirit, kept corked in a clear bottle for travel.
-56;a bottle of cheap grain spirit;consumable;10;2;;;;;3;;A cheap bottle of clear grain spirit, kept corked in a dirty bottle.
+55;a bottle of grain spirit;consumable;20;2;;;;;3;liquor;A decent bottle of clear grain spirit, kept corked in a clear bottle for travel.
+56;a bottle of cheap grain spirit;consumable;10;2;;;;;3;liquor;A cheap bottle of clear grain spirit, kept corked in a dirty bottle.
 57;a Parliamentary peacekeeper's longsword;lightWeapon;90;3;;10;slashing;;;long sword blade;A peacekeeper longsword lies here, unremarkable but for the crest of Parliament engraved upon the hilt.
 58;a cheap bow for basic hunting;rangedWeapon;80;3;;10;piercing;;;;A cheap bow, made of cheap wood.  Not the best you can get, but will get the job done for simple archery.
 59;a basic hunting bow;rangedWeapon;150;3;;15;piercing;;;;A basic hunting bow, made of sound wood.  A capable enough piece of equipment that it may even hold its own on the battlefield, though it isn't intended for that purpose.

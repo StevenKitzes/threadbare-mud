@@ -3,12 +3,14 @@ import { captureFrom, captureFrom_fromHorse, captureFrom_toHorse, makeMatcher } 
 import { HandlerOptions } from "../server";
 import { getEmitters } from '../../utils/emitHelper';
 import { scenes } from "../scenes/scenes";
-import { Character, Horse } from "../../types";
+import { Character, Horse, InventoryDescriptionHelper } from "../../types";
 import { OptsType } from "../../utils/getGameTextObject";
 import items, { Item, ItemIds } from "../items/items";
 import { writeCharacterData } from "../../../sqlite/sqlite";
 import { getEncumbranceString } from "../../utils/encumbrance";
 import { firstUpper } from "../../utils/firstUpper";
+import { getInventoryAndWorn } from "../character/character";
+import { isAmbiguousCaptureForItemList } from "../../utils/ambiguousRequestHelpers";
 
 // capacity mapping
 export const saddlebagCapacityMap: Map<ItemIds, number> = new Map<ItemIds, number>();
@@ -54,7 +56,23 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
     const saddlebagsTitle: string = items.get(character.horse.saddlebagsId).title;
     const actorText: string[] = [];
     actorText.push(`You see ${character.horse.name}, wearing ${saddlebagsTitle}.`);
-    character.horse.inventory.map(i => actorText.push(`In ${saddlebagsTitle} you find ${items.get(i).title}.`));
+
+    const itemDescriptions: InventoryDescriptionHelper[] = [];
+
+    character.horse.inventory.forEach(i => {
+      const item: Item = items.get(i);
+      const itemDesc: InventoryDescriptionHelper =
+        itemDescriptions.find(desc => desc.id === item.id);
+      if (!itemDesc) itemDescriptions.push({ id: item.id, desc: item.title, type: item.type, count: 1 });
+      else itemDesc.count++;
+    })
+
+    actorText.push(...[
+      "Among your belongings you find:",
+      ...itemDescriptions.map(i => `${i.desc}${i.count > 1 ? ` {x${i.count}}` : ''} (${i.type})`),
+      "(Try [inspect +item+] for a closer inspection.)"
+    ])
+
     actorText.push(getHorseEncumbranceString(character.horse));
     actorText.push(`You can [give {item} to horse], [get {item} from horse], [rename horse {new-name}].`);
     emitSelf(actorText);
@@ -88,6 +106,13 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
   if (giveMatch !== null) {
     // make sure player has this item
 
+    // intercept ambiguous request
+    if( isAmbiguousCaptureForItemList(giveMatch, getInventoryAndWorn(character)) ) {
+      emitOthers(`${character.name} can't decide what to move to their horse.`);
+      emitSelf(`You have multiple items that can be described as [${giveMatch}].  Be more specific so you don't give the wrong thing to your horse!`);
+      return true;
+    }
+
     for (let i = 0; i < character.inventory.length; i++) {
       const item: Item = items.get(character.inventory[i]);
       if (item.keywords.includes(giveMatch)) {
@@ -111,7 +136,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
           }
         })) {
           emitSelf([
-            `You put ${item.title} away in ${items.get(character.horse.saddlebagsId).title}.`,
+            `You put ${item.title} away in ${character.horse.name}'s ${items.get(character.horse.saddlebagsId).title}.`,
             getHorseEncumbranceString(character.horse),
             getEncumbranceString(character),
           ]);
@@ -126,6 +151,13 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
 
   const getMatch: string = captureFrom_fromHorse(command, character.horse.name.toLowerCase());
   if (getMatch !== null) {
+    // intercept ambiguous request
+    if( isAmbiguousCaptureForItemList(getMatch, character.horse.inventory.map(i => items.get(i))) ) {
+      emitOthers(`${character.name} can't decide what to pull from their horse's saddlebags.`);
+      emitSelf(`${character.horse.name} is carrying multiple items that can be described as [${getMatch}].  Be more specific so you don't pull the right thing out of the saddlebags!`);
+      return true;
+    }
+
     for (let i = 0; i < character.horse.inventory.length; i++) {
       const item: Item = items.get(character.horse.inventory[i]);
       if (item.keywords.includes(getMatch)) {
@@ -140,7 +172,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
           }
         })) {
           emitSelf([
-            `You grabbed ${item.title} out of ${items.get(character.horse.saddlebagsId).title}.`,
+            `You grabbed ${item.title} out of ${character.horse.name}'s ${items.get(character.horse.saddlebagsId).title}.`,
             getHorseEncumbranceString(character.horse),
             getEncumbranceString(character),
           ]);
@@ -149,7 +181,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
         }
       }
     };
-    emitSelf(`There is no [${getMatch}] in ${items.get(character.horse.saddlebagsId).title}.`);
+    emitSelf(`There is no [${getMatch}] in ${character.horse.name}'s ${items.get(character.horse.saddlebagsId).title}.`);
     return true;
   }
 

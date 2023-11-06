@@ -8,6 +8,7 @@
     "create": "ts-node-esm sqlite/sqlite-create-db.ts",
     "dev": "next dev",
     "hydrate": "npm run create && ts-node-esm sqlite/sqlite-hydrate-db.ts",
+    "hydrate-for-test": "npm run create && ts-node-esm sqlite/sqlite-hydrate-db-for-test.ts",
     "lint": "next lint",
     "sockets": "ts-node-esm src/socket-server/server.ts",
     "start": "next start",

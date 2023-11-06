@@ -22,8 +22,8 @@ export function augment_adv_guild_owner (npc: NPC): NPC {
             money: character.money - kit.getValue(),
             stories: { ...character.stories, main: 3 },
           })) {
-            emitOthers(`${name} buys ${kit.title} from ${npc.getName()}.`);
-            emitSelf(`You buy ${kit.title} from ${npc.getName()}.`);
+            emitOthers(`${name} buys ${kit.title} from ${npc.getName()} for ${kit.getValue()} coins.`);
+            emitSelf(`You buy ${kit.title} from ${npc.getName()} for ${kit.getValue()} coins.`);
             return true;
           }
         } else {

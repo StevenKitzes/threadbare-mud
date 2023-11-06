@@ -601,7 +601,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
   
     const sceneInventory: string[] = scenes.get(character.scene_id).publicInventory;
 
-    const count: number = uniqueMatchCount(command, getInventoryAndWorn(character), REGEX_GET_ALIASES);
+    const count: number = uniqueMatchCount(command, sceneInventory.map(i => items.get(i)), REGEX_GET_ALIASES);
     if (count > 1) {
       emitOthers(`${name} looks around, trying to decide what item to pick up.`);
       emitSelf(`There are multiple items here that could be described as [${getMatch}].  Be more specific so you don't drop pick up the wrong thing.`);

@@ -35,7 +35,7 @@ import handleCharacterCommand, { getInventoryAndWorn } from './character/charact
 import { Scene, getItemsForSaleAtScene, scenes } from './scenes/scenes';
 import { handleHorseCommand } from './horse/horse';
 import { firstUpper } from '../utils/firstUpper';
-import { isAmbiguousLookRequest, isAmbiguousPurchaseRequest } from '../utils/ambiguousRequestHelpers';
+import { isAmbiguousLookRequest, isAmbiguousPurchaseRequest, isAmbiguousSellBuyerRequest, isAmbiguousSellItemRequest } from '../utils/ambiguousRequestHelpers';
 
 export type HandlerOptions = {
   io: Server;
@@ -139,11 +139,28 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       console.error('character state:', command);
       console.error('character state:', character);
     }
+    // intercept ambiguous purchase requests
     try {
       if (isAmbiguousPurchaseRequest(handlerOptions, scene)) return;
     } catch(err) {
       console.error('encountered error checking for ambiguous purchase request with command:', command);
       console.error('character state:', character);
+      console.error('error:', err.toString());
+    }
+    // intercept ambiguous sell requests
+    try {
+      if (isAmbiguousSellItemRequest(handlerOptions)) return;
+    } catch(err) {
+      console.error('encountered error checking for ambiguous sale request with command:', command);
+      console.error('character state:', character);
+      console.error('error:', err.toString());
+    }
+    try {
+      if (isAmbiguousSellBuyerRequest(handlerOptions, scene)) return;
+    } catch(err) {
+      console.error('encountered error checking for ambiguous buyer request with command:', command);
+      console.error('character state:', character);
+      console.error('error:', err.toString());
     }
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {
@@ -161,12 +178,12 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   else if (targetName = captureFrom(command, REGEX_DROP_ALIASES)) output = `You aren't carrying any {${targetName}}.`;
   else if (targetName = captureFrom(command, REGEX_EAT_ALIASES)) output = `You don't have any {${targetName}} to eat.`;
   else if (targetName = captureFrom(command, REGEX_EQUIP_ALIASES)) output = `You don't have any {${targetName}} to equip.`;
-  else if (targetName = captureFrom(command, REGEX_EVAL_ALIASES)) output = `You find nothing interesting about {${targetName}} beyond the surface.`;
+  else if (targetName = captureFrom(command, REGEX_EVAL_ALIASES)) output = `You find nothing interesting about {${targetName}} beyond the surface (or there is no ${targetName} here).`;
   else if (targetName = captureFrom(command, REGEX_FIGHT_ALIASES)) output = `There isn't any {${targetName}} worth fighting here.`;
   else if (targetName = captureFrom(command, REGEX_GET_ALIASES)) output = `You can't get {${targetName}} here.`;
   else if (targetName = captureFrom(command, REGEX_GIVE_ALIASES)) output = `You can't give {${targetName}} right now.`;
   else if (targetName = captureFrom(command, REGEX_GO_ALIASES)) output = `{${firstUpper(targetName)}} isn't somewhere you can go right now.`;
-  else if (targetName = captureFrom(command, REGEX_LOOK_ALIASES)) output = `You find nothing interesting about {${targetName}} beyond the surface.`;
+  else if (targetName = captureFrom(command, REGEX_LOOK_ALIASES)) output = `You find nothing interesting about {${targetName}} beyond the surface (or there is no ${targetName} here).`;
   else if (targetName = captureFrom(command, REGEX_READ_ALIASES)) output = `You are not carrying any {${targetName}} to read.`;
   else if (targetName = captureFrom(command, REGEX_TALK_ALIASES)) output = `You do not see {${targetName}} here to talk to.`;
   else if (targetName = captureFrom(command, REGEX_UNEQUIP_ALIASES)) output = `You don't have any {${targetName}} equipped.`;
