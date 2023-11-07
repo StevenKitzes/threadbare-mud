@@ -68,7 +68,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
     })
 
     actorText.push(...[
-      "Among your belongings you find:",
+      `In ${character.horse.name}'s saddlebags you find:`,
       ...itemDescriptions.map(i => `${i.desc}${i.count > 1 ? ` {x${i.count}}` : ''} (${i.type})`),
       "(Try [inspect +item+] for a closer inspection.)"
     ])

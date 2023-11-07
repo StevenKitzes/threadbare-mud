@@ -443,6 +443,10 @@ export const writeCharacterData = (character: Character, opts: CharacterUpdateOp
   }
 }
 
+export const writeLiteralForTest_DANGEROUS = (query: string): void => {
+  db.prepare(query).run();
+}
+
 export const writeNewCharacter = (charId: string, userId: string, name: string): TransactBundle => {
   return {
     statement: db.prepare(`

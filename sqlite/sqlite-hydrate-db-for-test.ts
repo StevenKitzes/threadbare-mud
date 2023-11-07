@@ -261,6 +261,72 @@
       "46",                                 //  offhand
     ]);
   })();
+  dbToHydrate.transaction(() => {
+    hydrate(`
+      INSERT INTO characters (
+        id,
+        user_id,
+        name,
+        job,
+        health,
+        health_max,
+        light_attack,
+        heavy_attack,
+        ranged_attack,
+        agility,
+        strength,
+        savvy,
+        scene_id,
+        checkpoint_id,
+        active,
+        stories,
+        scene_states,
+        money,
+        inventory,
+        xp,
+        horse,
+        faction_anger,
+        headgear,
+        armor,
+        gloves,
+        legwear,
+        footwear,
+        weapon,
+        offhand
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    `, [
+      'horse-tester',                       //  id,
+      testUserId,                           //  user_id,
+      "HorseTester",                        //  name,
+      'peacemaker',                         //  job,
+      '100',                                //  health,
+      '100',                                //  health_max,
+      '10',                                 //  light_attack,
+      '10',                                 //  heavy_attack,
+      '10',                                 //  ranged_attack,
+      '10',                                 //  agility,
+      '10',                                 //  strength,
+      '10',                                 //  savvy,
+      '10',                                 //  scene_id,
+      '1',                                  //  checkpoint_id,
+      '0',                                  //  active,
+      '{"main":1}',                         //  stories,
+      '{}',                                 //  scene_states,
+      '10000',                              //  money,
+      '["16", "16", "16", "17", "17", "17"]',//  inventory,
+      "0",                                  //  xp,
+      null,                                 //  horse,
+      "[]",                                 //  faction_anger
+      "48",                                 //  headgear
+      "49",                                 //  armor
+      "50",                                 //  gloves
+      "51",                                 //  legwear
+      "52",                                 //  footwear
+      "53",                                 //  weapon
+      "46",                                 //  offhand
+    ]);
+  })();
 
   // Non-admin user
   dbToHydrate.transaction(() => {
