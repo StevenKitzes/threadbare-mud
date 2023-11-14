@@ -8,6 +8,7 @@ import jStr from '@/utils/jStr';
 import bcrypt from 'bcrypt';
 import killCookieResponse from '@/utils/killCookieResponse';
 import { err401, err500 } from '@/utils/apiResponses';
+import { errorParts, log } from '@/utils/log';
 
 export async function POST(req: NextRequest) {
 
@@ -18,7 +19,7 @@ export async function POST(req: NextRequest) {
     const user: User | undefined = await readUserByName(requestPayload.user);
 
     if (!user) {
-      console.info("User not found by name in login flow.");
+      log("User not found by name in login flow.");
       return killCookieResponse(err401());
     }
 
@@ -41,16 +42,16 @@ export async function POST(req: NextRequest) {
         }
 
         // otherwise, we have bad password match
-        console.info("User login attempt with mismatched credentials.");
+        log("User login attempt with mismatched credentials.");
         return killCookieResponse(err401());
       })
       .catch((err) => {
-        console.error("bcrypt error in login api route.", err.toString());
+        errorParts(["bcrypt error in login api route.", err.toString()]);
         return killCookieResponse(err500());
       });
   } catch ( err: any ) {
     const errString: string = err.toString();
-    console.error("Error in login API", errString);
+    errorParts(["Error in login API", errString]);
     return killCookieResponse(err500());
   }
 }

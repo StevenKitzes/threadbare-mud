@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { ApiResponse, RegistrationPayload } from '@/types';
 import { transact, writeUser } from '../../../../sqlite/sqlite';
 import jStr from '@/utils/jStr';
+import { errorParts } from '@/utils/log';
  
 export async function POST( req: NextRequest ) {
 
@@ -21,7 +22,7 @@ export async function POST( req: NextRequest ) {
           ]);
         } catch (err: any) {
           const errString = err.toString();
-          console.error("Error caught in register API", errString);
+          errorParts(["Error caught in register API", errString]);
           if (errString.includes('UNIQUE') && errString.includes('.email')) {
             const err400: ApiResponse = {
               message: "This email address was already used.",
@@ -52,7 +53,7 @@ export async function POST( req: NextRequest ) {
         return new NextResponse(jStr(success), { status: success.status });
       })
   } catch (err: any) {
-    console.error("bcrypt error in register api route handler.", err.toString());
+    errorParts(["bcrypt error in register api route handler.", err.toString()]);
     const err500: ApiResponse = {
       message: "Server error detected.",
       status: 500

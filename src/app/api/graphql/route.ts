@@ -8,6 +8,7 @@ import typeDefs from '@/graphql/schema';
 import resolvers from '@/graphql/resolvers';
 import { User } from '@/types';
 import database, { readUserBySession } from '../../../../sqlite/sqlite';
+import { error, log } from '@/utils/log';
 
 const server = new ApolloServer<object>({
   typeDefs,
@@ -31,13 +32,13 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
       if (user === undefined) {
         throw new Error("Got valid JWT but no matching user in GraphQL call.");
       }
-      console.info('+ GraphQL Next handler returning')
+      log('+ GraphQL Next handler returning')
       return {
         user,
         database
       }
     } catch (err: any) {
-      console.error(err.toString());
+      error(err.toString());
       throw new Error("Error validating JWT in GraphQL request.");
     }
   }

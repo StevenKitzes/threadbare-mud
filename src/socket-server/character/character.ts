@@ -12,6 +12,7 @@ import { captureFrom, makeMatcher, matchMatchesKeywords } from '../../utils/make
 import { REGEX_DROP_ALIASES, REGEX_EQUIP_ALIASES, REGEX_EVAL_ALIASES, REGEX_GET_ALIASES, REGEX_INVENTORY_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELF_ALIASES, REGEX_UNEQUIP_ALIASES } from '../../constants';
 import { getEncumbranceString } from '../../utils/encumbrance';
 import { saddlebagCapacityMap } from '../horse/horse';
+import { errorParts } from '../../utils/log';
 
 export function getWornItems (character: Character): Item[] {
   const worn: Item[] = [];
@@ -32,8 +33,8 @@ export function getInventoryAndWorn (character: Character): Item[] {
     result.push(...getWornItems(character));
     return result;
   } catch (err) {
-    console.error('Error in character.getInventoryAndWorn:', err.toString());
-    console.error('character state:', character);
+    errorParts(['Error in character.getInventoryAndWorn:', err.toString()]);
+    errorParts(['character state:', character]);
     return result;
   }
 }
@@ -262,7 +263,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'agility') {
       const cost: number = getCost(character.agility);
       if (character.xp >= cost) {
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           agility: character.agility + 1,
           xp: character.xp - cost
         })) {
@@ -280,7 +281,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'strength') {
       const cost: number = getCost(character.strength);
       if (character.xp >= cost) {
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           strength: character.strength + 1,
           xp: character.xp - cost
         })) {
@@ -298,7 +299,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'savvy') {
       const cost: number = getCost(character.savvy);
       if (character.xp >= cost) {
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           savvy: character.savvy + 1,
           xp: character.xp - cost
         })) {
@@ -316,7 +317,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'light') {
       const cost: number = getCost(character.light_attack);
       if (character.xp >= cost) {
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           light_attack: character.light_attack + 1,
           xp: character.xp - cost
         })) {
@@ -334,7 +335,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'heavy') {
       const cost: number = getCost(character.heavy_attack);
       if (character.xp >= cost) {
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           heavy_attack: character.heavy_attack + 1,
           xp: character.xp - cost
         })) {
@@ -352,7 +353,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (levelMatch === 'ranged') {
       const cost: number = getCost(character.ranged_attack);
       if (character.xp >= cost) {
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           ranged_attack: character.ranged_attack + 1,
           xp: character.xp - cost
         })) {
@@ -434,7 +435,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
         }
         const newInventory: ItemIds[] = [...character.inventory];
         newInventory.splice(i, 1);
-        if (writeCharacterData(character, { inventory: newInventory })) {
+        if (writeCharacterData(handlerOptions, { inventory: newInventory })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You dropped ${item.title}.`,
@@ -454,7 +455,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { headgear: null })) {
+        if (writeCharacterData(handlerOptions, { headgear: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -474,7 +475,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { armor: null })) {
+        if (writeCharacterData(handlerOptions, { armor: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -494,7 +495,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { gloves: null })) {
+        if (writeCharacterData(handlerOptions, { gloves: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -514,7 +515,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { legwear: null })) {
+        if (writeCharacterData(handlerOptions, { legwear: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -534,7 +535,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { footwear: null })) {
+        if (writeCharacterData(handlerOptions, { footwear: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -554,7 +555,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { weapon: null })) {
+        if (writeCharacterData(handlerOptions, { weapon: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -574,7 +575,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           emitSelf(`You can't leave ${item.title} behind, you'll need it later.`);
           return true;
         }
-        if (writeCharacterData(character, { offhand: null })) {
+        if (writeCharacterData(handlerOptions, { offhand: null })) {
           scenes.get(character.scene_id).publicInventory.push(item.id);
           emitSelf([
             `You removed and dropped [${item.title}].`,
@@ -612,7 +613,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       const item: Item = items.get(sceneInventory[i]);
       if (matchMatchesKeywords(getMatch, item.keywords)) {
         const newInventory: ItemIds[] = [...character.inventory, item.id];
-        if (writeCharacterData(character, { inventory: newInventory })) {
+        if (writeCharacterData(handlerOptions, { inventory: newInventory })) {
           sceneInventory.splice(i, 1);
           emitSelf([
             `You picked up ${item.title}.`,
@@ -742,7 +743,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
           newInventory.splice(i, 1);
           newHorse.saddlebagsId = item.id;
 
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             horse: newHorse,
             inventory: newInventory
           })) {
@@ -760,7 +761,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.headgear).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             headgear: item.id,
             inventory: newInventory
           })) {
@@ -778,7 +779,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.armor).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             armor: item.id,
             inventory: newInventory
           })) {
@@ -796,7 +797,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.gloves).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             gloves: item.id,
             inventory: newInventory
           })) {
@@ -814,7 +815,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.legwear).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             legwear: item.id,
             inventory: newInventory
           })) {
@@ -832,7 +833,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.footwear).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             footwear: item.id,
             inventory: newInventory
           })) {
@@ -850,7 +851,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.weapon).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             weapon: item.id,
             inventory: newInventory
           })) {
@@ -868,7 +869,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             removedItemTitle = items.get(character.offhand).title;
           }
           newInventory.splice(i, 1);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             offhand: item.id,
             inventory: newInventory
           })) {
@@ -899,7 +900,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     if (character.headgear && items.get(character.headgear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.headgear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.headgear ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         headgear: null,
         inventory: newInventory
       })) {
@@ -912,7 +913,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.armor && items.get(character.armor).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.armor);
       const newInventory: ItemIds[] = [ ...character.inventory, character.armor ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         armor: null,
         inventory: newInventory
       })) {
@@ -925,7 +926,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.gloves && items.get(character.gloves).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.gloves);
       const newInventory: ItemIds[] = [ ...character.inventory, character.gloves ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         gloves: null,
         inventory: newInventory
       })) {
@@ -938,7 +939,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.legwear && items.get(character.legwear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.legwear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.legwear ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         legwear: null,
         inventory: newInventory
       })) {
@@ -951,7 +952,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.footwear && items.get(character.footwear).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.footwear);
       const newInventory: ItemIds[] = [ ...character.inventory, character.footwear ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         footwear: null,
         inventory: newInventory
       })) {
@@ -964,7 +965,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.weapon && items.get(character.weapon).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.weapon);
       const newInventory: ItemIds[] = [ ...character.inventory, character.weapon ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         weapon: null,
         inventory: newInventory
       })) {
@@ -977,7 +978,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
     else if (character.offhand && items.get(character.offhand).keywords.includes(unequipMatch)) {
       const item: Item = items.get(character.offhand);
       const newInventory: ItemIds[] = [ ...character.inventory, character.offhand ];
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         offhand: null,
         inventory: newInventory
       })) {

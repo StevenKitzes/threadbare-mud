@@ -419,7 +419,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
           inventory: [ ...character.inventory, item.id ],
           money: character.money - item.getValue()
         };
-        if (writeCharacterData(character, characterUpdate)) {
+        if (writeCharacterData(handlerOptions, characterUpdate)) {
           emitOthers(`${character.name} buys ${item.title} from ${npc.getName()} for ${item.getValue()} coins.`);
           emitSelf(`You buy ${item.title} from ${npc.getName()} for ${item.getValue()} coins.`);
           return true;
@@ -450,7 +450,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
           const newInventory: ItemIds[] = [...character.inventory];
           newInventory.splice(i, 1);
           const salePrice: number = Math.ceil(item.getValue() * 0.65);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             inventory: newInventory,
             money: character.money + salePrice
           })) {
@@ -471,7 +471,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
           const newInventory: ItemIds[] = [...character.inventory];
           newInventory.splice(i, 1);
           const salePrice: number = Math.ceil(item.getValue() * 0.65);
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             inventory: newInventory,
             money: character.money + salePrice
           })) {

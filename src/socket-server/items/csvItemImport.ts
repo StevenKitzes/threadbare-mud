@@ -4,6 +4,7 @@ import { items, DamageType, ItemIds, ItemTypes, Item } from './items';
 import { csvItemToKeywords } from '../../utils/csvPropsToKeywords';
 import { coinValueRandomizer } from '../../utils/coinValueRandomizer';
 import { HandlerOptions } from '../server';
+import { log } from '../../utils/log';
 
 export type ItemImport = {
   id: ItemIds,
@@ -57,7 +58,7 @@ export function readItemCsv(callback?: () => void) {
       itemFactory(itemImport);
     })
     .on('end', () => {
-      console.log('Items imported.');
+      log('Items imported.');
       if (callback) callback();
     });
 }

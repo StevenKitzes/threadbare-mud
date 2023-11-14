@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { v4 } from 'uuid';
 
-import { transact, writeActiveCharacter, writeActiveCharacterTransactable, writeNewCharacter } from '../../../../sqlite/sqlite';
+import { transact, writeActiveCharacterTransactable, writeNewCharacter } from '../../../../sqlite/sqlite';
 import { ConfirmedUser } from '@/types';
 import killCookieResponse from '@/utils/killCookieResponse';
 import { err400, err401, err500, success200 } from '@/utils/apiResponses';
 import { getUserFromToken } from '@/utils/getUserFromToken';
 import jStr from '@/utils/jStr';
+import { errorParts } from '@/utils/log';
 
 export async function POST(req: NextRequest) {
   // Handle auth stuff
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     });
   } catch ( err: any ) {
     const errString: string = err.toString();
-    console.error("Error in character creation API", errString);
+    errorParts(["Error in character creation API", errString]);
     if (errString.includes("UNIQUE")) {
       return new NextResponse(jStr(err400("Character name already in use.")), {
         status: 400

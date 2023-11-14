@@ -90,7 +90,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
       emitSelf(`That name is too long.  Your horse won't be able to remember it (20 characters at most)!`);
       return true;
     } else {
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         horse: {
           ...character.horse,
           name: formattedRenameMatch
@@ -128,7 +128,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
         const newInventory: ItemIds[] = [...character.inventory];
         const newHorseInventory: ItemIds[] = [...character.horse.inventory];
         newHorseInventory.push(newInventory.splice(i, 1)[0]);
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           inventory: newInventory,
           horse: {
             ...character.horse,
@@ -164,7 +164,7 @@ export function handleHorseCommand (handlerOptions: HandlerOptions): boolean {
         const newInventory: ItemIds[] = [...character.inventory];
         const newHorseInventory: ItemIds[] = [...character.horse.inventory];
         newInventory.push(newHorseInventory.splice(i, 1)[0]);
-        if (writeCharacterData(character, {
+        if (writeCharacterData(handlerOptions, {
           inventory: newInventory,
           horse: {
             ...character.horse,

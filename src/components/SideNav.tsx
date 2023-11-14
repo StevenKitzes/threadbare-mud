@@ -1,3 +1,4 @@
+import { errorParts } from '@/utils/log';
 import React from 'react';
 
 export type LogoutCTAProps = {
@@ -11,7 +12,7 @@ function logout() {
       window.location.assign('/login');
     })
     .catch(err => {
-      console.error("Unable to log out for some reason.", err.toString());
+      errorParts(["Unable to log out for some reason.", err.toString()]);
     })
 }
 

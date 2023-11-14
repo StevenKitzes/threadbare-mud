@@ -2,6 +2,7 @@ import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import jwt from 'jsonwebtoken';
 import { ConfirmedUser, User } from "@/types";
 import { readUserBySession } from "../../sqlite/sqlite";
+import { error, log } from "./log";
 
 export const getUserFromToken = (tokenCookie: RequestCookie | undefined): ConfirmedUser => {
   if (!tokenCookie) return false;
@@ -14,7 +15,7 @@ export const getUserFromToken = (tokenCookie: RequestCookie | undefined): Confir
     // verify it belongs to an actual user
     const user: User | undefined = readUserBySession(token);
     if (user === undefined) {
-      console.info("Got valid JWT but no matching user in user retrieval.");
+      log("Got valid JWT but no matching user in user retrieval.");
       return false;
     }
     return {
@@ -23,10 +24,10 @@ export const getUserFromToken = (tokenCookie: RequestCookie | undefined): Confir
   } catch (err: any) {
     // if it is expired
     if (err.toString().includes("TokenExpiredError")) {
-      console.info("Token found but was expired.");
+      log("Token found but was expired.");
       return false;
     }
-    console.error("Problem with JWT verification.");
+    error("Problem with JWT verification.");
     return false;
   }
 }

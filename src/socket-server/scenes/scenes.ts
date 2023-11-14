@@ -3,6 +3,7 @@ import { REGEX_GO_ALIASES } from '../../constants';
 import { SceneSentiment } from '../../types';
 import characterCanMove from '../../utils/encumbrance';
 import getGameTextObject, { OptsType } from '../../utils/getGameTextObject';
+import { errorParts } from '../../utils/log';
 import { allTokensMatchKeywords, commandMatchesKeywordsFor } from '../../utils/makeMatcher';
 import { Item, ItemIds } from '../items/items';
 import { NPC } from '../npcs/npcs';
@@ -101,7 +102,7 @@ export function getItemsForSaleAtScene(charId: string, sceneId: string): Item[] 
     
     return result;
   } catch (err) {
-    console.error('Error in scenes.getItemsForSaleAtScene:', err.toString());
+    errorParts(['Error in scenes.getItemsForSaleAtScene:', err.toString()]);
     return [];
   }
 }
@@ -132,7 +133,7 @@ export function navigate(
       return true;
     }
     
-    if (writeCharacterData(character, { scene_id: destination })) {
+    if (writeCharacterData(handlerOptions, { scene_id: destination })) {
       emitOthers(departureString);
       
       socket.leave(character.scene_id);

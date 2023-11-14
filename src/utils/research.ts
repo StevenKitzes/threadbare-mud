@@ -1,4 +1,5 @@
 import { writeFile } from "fs";
+import { errorParts } from "./log";
 
 const research: {
   playerAttack: string[],
@@ -10,10 +11,10 @@ const research: {
 
 setInterval(() => {
   writeFile('./docs/player-attacks.csv', research.playerAttack.join('\n'), { flag: 'w' }, (err: any) => {
-    if (err) console.error("Error writing player attack documentation.", err.toString());
+    if (err) errorParts(["Error writing player attack documentation.", err.toString()]);
   });
   writeFile('./docs/npc-attacks.csv', research.npcAttack.join('\n'), { flag: 'w' }, (err: any) => {
-    if (err) console.error("Error writing npc attack.", err.toString());
+    if (err) errorParts(["Error writing npc attack.", err.toString()]);
   });
 }, 1000 * 60);
 

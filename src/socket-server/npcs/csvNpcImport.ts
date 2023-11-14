@@ -2,6 +2,7 @@ import { parse } from 'csv-parse';
 import { createReadStream } from 'fs';
 import { NpcIds } from './npcs';
 import { Faction } from '../../types';
+import { log } from '../../utils/log';
 
 export type NpcImport = {
   id: NpcIds,
@@ -74,7 +75,7 @@ export function readNpcCsv(callback?: () => void) {
       npcImports.set(npcImport.id, npcImport);
     })
     .on('end', () => {
-      console.log('NPCs imported.');
+      log('NPCs imported.');
       if (callback) callback();
     });
 }

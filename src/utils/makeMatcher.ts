@@ -1,5 +1,6 @@
 import { NPC } from "../socket-server/npcs/npcs";
 import { REGEX_GET_ALIASES, REGEX_GIVE_ALIASES, REGEX_HORSE_ALIASES, REGEX_SELL_ALIASES } from "../constants";
+import { errorParts } from "./log";
 
 export function makeMatcher (actionAliases: string, targetAliases?: string): RegExp {
   if (!targetAliases) return new RegExp(`^(?:${actionAliases})$`);
@@ -22,7 +23,7 @@ export function commandMatchesKeywordsFor (command: string, keywords: string[], 
     if (allTokensMatchKeywords(capture, keywords)) return true;
     return false;
   } catch (err: any) {
-    console.error('Error in makeMatcher.commandMatchesKeywordsFor:', err.toString());
+    errorParts(['Error in makeMatcher.commandMatchesKeywordsFor:', err.toString()]);
     return false;
   }
 }
@@ -34,7 +35,7 @@ export function commandMatchesKeywordsForSaleTo (command: string, keywords: stri
     if (allTokensMatchKeywords(capture, keywords)) return true;
     return false;
   } catch (err: any) {
-    console.error('Error in makeMatcher.commandMatchesKeywordsFor:', err.toString());
+    errorParts(['Error in makeMatcher.commandMatchesKeywordsFor:', err.toString()]);
     return false;
   }
 }

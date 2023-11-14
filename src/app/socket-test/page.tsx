@@ -1,5 +1,6 @@
 'use client';
 
+import { log } from '@/utils/log';
 import React, { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
@@ -11,7 +12,7 @@ export const SocketTest = (): JSX.Element => {
     const skt = io('ws://localhost:3030');
     setSocket(skt);
     skt.on('connect', () => {
-      console.log('Connected to Socket.io');
+      log('Connected to Socket.io');
     });
 
     // Handle socket events here
@@ -27,7 +28,7 @@ export const SocketTest = (): JSX.Element => {
       <button
         onClick={() => {
           if (socket !== null) {
-            console.log('socket emit');
+            log('socket emit');
             socket.emit("data", { message: "client data" });
           }
         }}

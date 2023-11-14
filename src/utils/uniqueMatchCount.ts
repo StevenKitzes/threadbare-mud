@@ -1,4 +1,5 @@
 import { Item, ItemIds } from "../socket-server/items/items";
+import { errorParts } from "./log";
 import { commandMatchesKeywordsFor, commandMatchesKeywordsForSaleTo } from "./makeMatcher";
 
 export function uniqueMatchCount(command: string, items: Item[], aliases: string): number {
@@ -9,8 +10,7 @@ export function uniqueMatchCount(command: string, items: Item[], aliases: string
       if (commandMatchesKeywordsFor(command, items[i].keywords, aliases)) foundIds.add(items[i].id);
     }
   } catch (err: any) {
-    console.error('Error in uniqueMatchCount:', err.toString());
-    console.trace();
+    errorParts(['Error in uniqueMatchCount:', err.toString()]);
     return 0;
   }
 
@@ -25,8 +25,7 @@ export function uniqueSellToMatchCount(command: string, items: Item[]): number {
       if (commandMatchesKeywordsForSaleTo(command, items[i].keywords)) foundIds.add(items[i].id);
     }
   } catch (err: any) {
-    console.error('Error in uniqueMatchCount:', err.toString());
-    console.trace();
+    errorParts(['Error in uniqueMatchCount:', err.toString()]);
     return 0;
   }
 

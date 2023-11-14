@@ -7,6 +7,7 @@ import { v4 } from 'uuid';
 import '../../app/globals.css';
 import { GameText } from '@/types';
 import SideNav from '@/components/SideNav';
+import { log } from '@/utils/log';
 
 export const Game = (): JSX.Element => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -98,13 +99,13 @@ export const Game = (): JSX.Element => {
     setToken(tokenStr);
 
     // Create socket connection
-    console.log(process.env.NEXT_PUBLIC_WSS_URL);
+    log(process.env.NEXT_PUBLIC_WSS_URL);
     const skt = io(process.env.NEXT_PUBLIC_WSS_URL);
     setSocket(skt);
 
     // On successful connection . . .
     skt.on('request-initialization', (payload) => {
-      console.info('Connected to Socket.io');
+      log('Connected to Socket.io');
       handleGameText(payload);
       // Confirm auth
       skt.emit('provide-token', {

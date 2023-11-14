@@ -13,6 +13,7 @@ import research from "./research";
 import { Character, CharacterUpdateOpts, Faction, FactionAnger } from "../types";
 import { firstUpper } from "./firstUpper";
 import { AGGRO_TIMER, factionNames } from "../constants";
+import { error } from "./log";
 
 const COMBAT_TIMER: number = 1900;
 const COMBAT_RANDOMIZATION: number = 200;
@@ -23,23 +24,23 @@ function npcReady(
   emitSelf: (text: string | string[], opts?: OptsType | undefined) => void
 ): boolean {
   let ready: boolean = true;
-  if ( npc.getAgility() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing agility stat for combat.`); }
-  if ( npc.getArmor() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing armor stat for combat.`); }
-  if ( npc.getArmorType() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing armorType list for combat.`); }
-  if ( npc.getAttackDescription() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing attackDescription for combat.`); }
-  if ( npc.getCashLoot() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing cashLoot for combat.`); }
-  if ( npc.getCombatInterval() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing combatInterval for combat.`); }
-  if ( npc.getDamageValue() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing damageValue stat for combat.`); }
-  if ( npc.getDeathTime() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing deathTime tracker for combat.`); }
-  if ( npc.getHealth() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing health stat for combat.`); }
-  if ( npc.getHealthMax() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing healthMax stat for combat.`); }
-  if ( npc.getItemLoot() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing itemLoot list for combat.`); }
-  if ( npc.getSavvy() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing savvy stat for combat.`); }
-  if ( npc.setCombatInterval === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing setCombatInterval setter for combat.`); }
-  if ( npc.setDeathTime === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing setDeathTime setter for combat.`); }
-  if ( npc.setHealth === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing setHealth setter for combat.`); }
-  if ( npc.getStrength() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing strength stat for combat.`); }
-  if ( npc.getXp() === undefined ) { ready = false; console.error(`NPC ${npc.getName()} was missing xp stat for combat.`); }
+  if ( npc.getAgility() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing agility stat for combat.`); }
+  if ( npc.getArmor() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing armor stat for combat.`); }
+  if ( npc.getArmorType() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing armorType list for combat.`); }
+  if ( npc.getAttackDescription() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing attackDescription for combat.`); }
+  if ( npc.getCashLoot() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing cashLoot for combat.`); }
+  if ( npc.getCombatInterval() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing combatInterval for combat.`); }
+  if ( npc.getDamageValue() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing damageValue stat for combat.`); }
+  if ( npc.getDeathTime() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing deathTime tracker for combat.`); }
+  if ( npc.getHealth() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing health stat for combat.`); }
+  if ( npc.getHealthMax() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing healthMax stat for combat.`); }
+  if ( npc.getItemLoot() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing itemLoot list for combat.`); }
+  if ( npc.getSavvy() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing savvy stat for combat.`); }
+  if ( npc.setCombatInterval === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing setCombatInterval setter for combat.`); }
+  if ( npc.setDeathTime === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing setDeathTime setter for combat.`); }
+  if ( npc.setHealth === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing setHealth setter for combat.`); }
+  if ( npc.getStrength() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing strength stat for combat.`); }
+  if ( npc.getXp() === undefined ) { ready = false; error(`NPC ${npc.getName()} was missing xp stat for combat.`); }
 
   if (!ready) {
     emitSelf(`You are ready to fight, but ${npc.getName()} is not.`);
@@ -126,7 +127,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
         ...character.factionAnger,
         { faction: npc.getFaction(), expiry: Date.now() + FACTION_ANGER_DURATION } as FactionAnger
       ];
-      if (writeCharacterData(character, characterUpdate)) {
+      if (writeCharacterData(handlerOptions, characterUpdate)) {
         emitOthers(`${character.name} has enraged ${npc.getFaction()}!`);
         emitSelf(`=You have enraged {${npc.getFaction()}} and you may be +attacked on sight+!=`);
         fightAllInSceneExcept(character, npc.getFaction(), npc.getId(), handlerOptions);
@@ -161,7 +162,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
 
       const actorText: string[] = [`You see the Lifelight fade from the eyes of ${npc.getName()}.`];
       emitOthers(`${character.name} has defeated ${npc.getName()}.`);
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         money: character.money + cashLoot,
         inventory: [ ...character.inventory, ...npc.getItemLoot() ],
         xp: character.xp + npc.getXp()
@@ -186,7 +187,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       emitOthers(`${character.name} was killed by ${npc.getName()}!  You see their body fade away into the Lifelight.`);
       emitSelf(`You fall to ${npc.getName()}.  You hear a chorus of singing voices and see the Lifelight bleeding into your vision...`);
       const newHealth: number = Math.ceil(character.health_max * 0.6);
-      if (writeCharacterData(character, {
+      if (writeCharacterData(handlerOptions, {
         health: newHealth, scene_id: character.checkpoint_id, xp: 0
       })) {
         socket.leave(combatScene);
@@ -391,7 +392,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     const healthBoost: number = Math.floor(damage / (character.health_max / 10))
 
     // Handle result and output
-    if (attack > defenseWithDodge && writeCharacterData(character, {
+    if (attack > defenseWithDodge && writeCharacterData(handlerOptions, {
       health: character.health - damage,
       health_max: character.health_max + healthBoost
     })) {

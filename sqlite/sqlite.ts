@@ -6,6 +6,8 @@ import { Character, CharacterUpdateOpts, FactionAnger, Horse, Stories, User } fr
 import { SceneIds } from '../src/socket-server/scenes/scenes';
 import { ItemIds } from '../src/socket-server/items/items';
 import jStr from '../src/utils/jStr';
+import { logParts } from '../src/utils/log';
+import { HandlerOptions } from '../src/socket-server/server';
 
 type CharacterDBIntermediary = {
   id: string;
@@ -86,7 +88,7 @@ export type Database = {
   transact: (bundles: TransactBundle[]) => void;
   writeActiveCharacter: (userId: string, characterId: string) => boolean;
   writeActiveCharacterTransactable: (userId: string, characterId: string) => TransactBundle[];
-  writeCharacterData: (character: Character, opts: {
+  writeCharacterData: (handlerOptions: HandlerOptions, opts: {
     job?: string,
     health?: number,
     health_max?: number,
@@ -249,7 +251,7 @@ export const writeActiveCharacterTransactable = (userId: string, characterId: st
   }
 }
 
-export const writeCharacterData = (character: Character, opts: CharacterUpdateOpts): boolean => {
+export const writeCharacterData = ({ character, command }: HandlerOptions, opts: CharacterUpdateOpts): boolean => {
   try {
     const updatePrefix: string = "UPDATE characters SET ";
     const columnAssignments: string[] = [];
@@ -359,6 +361,8 @@ export const writeCharacterData = (character: Character, opts: CharacterUpdateOp
 
     db.prepare(`${updatePrefix}${columnAssignments.join(', ')}${updateSuffix}`)
       .run(...values, character.id);
+
+    logParts(['user command <', command, '> triggered character db write:', opts]);
 
     if (opts.job !== undefined) {
       character.job = opts.job;

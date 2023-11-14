@@ -1,3 +1,4 @@
+import { error } from '@/utils/log';
 import React, { ReactNode, createContext, useState } from 'react';
 
 export type UserContextType = {
@@ -6,7 +7,7 @@ export type UserContextType = {
 }
 
 const initialUserContext: UserContextType = {
-  setUsername: () => { console.error("UserContext needs implementation."); },
+  setUsername: () => { error("UserContext needs implementation."); },
   username: ''
 }
 

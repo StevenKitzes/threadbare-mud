@@ -142,7 +142,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       }
     }
     
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       inventory: newInventory,
       money: character.money + (5 * ratCount) })
     ) {

@@ -56,7 +56,7 @@ export function augment_audric (npc: NPC): NPC {
         characterUpdate.money = character.money + 50;
         characterUpdate.inventory = [ ...character.inventory, ItemIds.FILSTREDS_GUIDE_BOOK ];
     
-        if (writeCharacterData(character, characterUpdate)) {
+        if (writeCharacterData(handlerOptions, characterUpdate)) {
           const actorText: string[] = [];
           actorText.push(`"Welcome, my friend!"  The old man rises to greet you.  "You must be wondering why you are here.  First of all, my name is [Audric], and it is a pleasure, I'm sure!  You are a guest in my home, in the city of Parliament, capital of the Realm of Ixpanne.  You would surely like to know more about how you've come to be here, but I'm afraid I must ask something in return.  I'd like you to run an errand for me in town.  Would you please buy and bring me a [traveling kit] from the Adventurer's Guild?  They keep their shop in the market.  Oh, yes, on my coin, of course!"`);
           actorText.push(`He hands you a fistful of coin and gestures toward the [staircase] leading out of the library.  "I look forward to your success!"`);
@@ -93,7 +93,7 @@ export function augment_audric (npc: NPC): NPC {
         character.stories.main === 3 &&
         character.scene_id === SceneIds.MAGNIFICENT_LIBRARY && 
         character.inventory.includes(ItemIds.TRAVELING_KIT) &&
-        writeCharacterData(character, {
+        writeCharacterData(handlerOptions, {
           inventory: [ ...character.inventory ]
             .splice(character.inventory.findIndex(i => items.get(i).id === ItemIds.TRAVELING_KIT), 1),
           stories: { ...character.stories, main: 4 },

@@ -2,6 +2,7 @@ import { writeCharacterData } from "../../../sqlite/sqlite";
 import { ITEM_VALUE_RANDOMIZER_TIMER, REGEX_DRINK_ALIASES, REGEX_EAT_ALIASES, REGEX_USE_ALIASES } from "../../constants";
 import { CharacterUpdateOpts, EffectStat, StatEffect, TemporaryEffect } from "../../types";
 import getEmitters from "../../utils/emitHelper";
+import { log } from "../../utils/log";
 import { commandMatchesKeywordsFor } from "../../utils/makeMatcher";
 import { HandlerOptions } from "../server";
 import { augment_statPotion, augment_consumable } from "./consumable";
@@ -346,7 +347,7 @@ readItemCsv(() => {
 
 setInterval(() => {
   items.forEach(item => item.randomizeValue());
-  console.log('Item values randomized.');
+  log('Item values randomized.');
 }, ITEM_VALUE_RANDOMIZER_TIMER);
 
 export type ConsumeItemOpts = {
@@ -400,7 +401,7 @@ export function consumeItem({
       characterUpdate = extraEffects(handlerOptions, extraEffectsOpts);
     }
 
-    if (writeCharacterData(character, characterUpdate)) {
+    if (writeCharacterData(handlerOptions, characterUpdate)) {
       let actionString: string;
       if (actionAliases === REGEX_DRINK_ALIASES) actionString = 'drink';
       if (actionAliases === REGEX_EAT_ALIASES) actionString = 'eat';

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { ApiResponse, User } from '@/types';
 import killCookieResponse from '@/utils/killCookieResponse';
 import { readUserBySession, writeSessionToUser } from '../../../../sqlite/sqlite';
+import { log } from '@/utils/log';
 
 const success: ApiResponse = {
   message: "Logged out.",
@@ -22,7 +23,7 @@ export async function GET() {
       // verify it belongs to an actual user
       user = readUserBySession(clientToken.value);
       if (user === undefined) {
-        console.info("Client tried to log out with valid JWT but no matching user.");
+        log("Client tried to log out with valid JWT but no matching user.");
         return killCookieResponse(success);
       }
       writeSessionToUser(user.id, null);

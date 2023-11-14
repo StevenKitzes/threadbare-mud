@@ -1,11 +1,12 @@
 import { InventoryDescriptionHelper } from "../types";
 import { Item, items } from "../socket-server/items/items";
 import { Scene, scenes } from "../socket-server/scenes/scenes";
+import { errorParts } from "./log";
 
 export function appendItemsHereString(actorText: string[], sceneId: string): void {
   const scene: Scene | undefined = scenes.get(sceneId);
   if (scene === undefined) {
-    return console.error("Could not find scene by id trying to append items to actorText.", sceneId);
+    return errorParts(["Could not find scene by id trying to append items to actorText.", sceneId]);
   }
 
   const itemDescriptions: InventoryDescriptionHelper[] = [];

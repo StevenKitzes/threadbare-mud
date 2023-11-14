@@ -55,7 +55,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   let destination: SceneIds = SceneIds.COLD_BEDROOM;
 
   if (command === 'weaver') {
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       job: ClassTypes.weaver,
       scene_id: destination,
       light_attack: 6,
@@ -68,7 +68,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       emitSelf(`Welcome, Weaver ${character.name}.  May the Lifelight shine upon you along your journey.`);
     }
   } else if (command === 'peacemaker') {
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       job: ClassTypes.peacemaker,
       scene_id: destination,
       light_attack: 10,
@@ -81,7 +81,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       emitSelf(`Welcome, ${character.name}, wise Peacemaker.  May you uplift the downtrodden along your journey.`);
     }
   } else if (command === 'skyguard') {
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       job: ClassTypes.skyguard,
       scene_id: destination,
       light_attack: 8,
@@ -94,7 +94,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       emitSelf(`Welcome, Master ${character.name}.  May you bring honor and glory to the Empire of the Sky!`);
     }
   } else if (command === 'ranger') {
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       job: ClassTypes.ranger,
       scene_id: destination,
       light_attack: 8,
@@ -107,7 +107,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       emitSelf(`Welcome, ${character.name}.  May your hand hold evil at bay.`);
     }
   } else if (command === 'spymaster') {
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       job: ClassTypes.spymaster,
       scene_id: destination,
       light_attack: 12,
@@ -120,7 +120,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       emitSelf(`Welcome, ${character.name}.  May your endeavors go unnoticed.`);
     }
   } else if (command === 'rogue') {
-    if (writeCharacterData(character, {
+    if (writeCharacterData(handlerOptions, {
       job: ClassTypes.rogue,
       scene_id: destination,
       light_attack: 10,

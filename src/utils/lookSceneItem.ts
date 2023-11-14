@@ -2,6 +2,7 @@ import { OptsType } from "./getGameTextObject";
 import { Item, items } from '../socket-server/items/items';
 import { captureFrom } from "./makeMatcher";
 import { REGEX_LOOK_ALIASES } from "../constants";
+import { errorParts } from "./log";
 
 export function lookSceneItem(
   command: string,
@@ -15,7 +16,7 @@ export function lookSceneItem(
     for (let i = 0; i < inventory.length; i++) {
       const item: Item | undefined = items.get(inventory[i]);
       if (item === undefined) {
-        console.error("Could not find item by id while character tries to look at an item, item id:", inventory[i]);
+        errorParts(["Could not find item by id while character tries to look at an item, item id:", inventory[i]]);
         return false;
       }
 

@@ -36,6 +36,7 @@ import { Scene, getItemsForSaleAtScene, scenes } from './scenes/scenes';
 import { handleHorseCommand } from './horse/horse';
 import { firstUpper } from '../utils/firstUpper';
 import { isAmbiguousLookRequest, isAmbiguousPurchaseRequest, isAmbiguousSellBuyerRequest, isAmbiguousSellItemRequest } from '../utils/ambiguousRequestHelpers';
+import { error, errorParts, log } from '../utils/log';
 
 export type HandlerOptions = {
   io: Server;
@@ -75,10 +76,12 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       characterUpdate.factionAnger.splice(i, 1);
     }
   }
-  if (writeCharacterData(character, characterUpdate)) {
-    socket.emit('game-text', {
-      gameText: forgiven.map(f => `It took some time, but ${f} have forgiven you.`)
-    });
+  if (character.factionAnger.length !== characterUpdate.factionAnger.length) {
+    if (writeCharacterData(handlerOptions, characterUpdate)) {
+      socket.emit('game-text', {
+        gameText: forgiven.map(f => `It took some time, but ${f} have forgiven you.`)
+      });
+    }
   }
 
   // check if the player just needs a little help
@@ -124,7 +127,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   try {
     const scene: Scene | undefined = scenes.get(character.scene_id);
     if (scene === undefined) {
-      console.error("Could not get character's scene at handleGameAction in server.ts with sceneId:", character.scene_id);
+      errorParts(["Could not get character's scene at handleGameAction in server.ts with sceneId:", character.scene_id]);
       return;
     }
     // intercept ambiguous look requests
@@ -135,36 +138,36 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
         ...getItemsForSaleAtScene(character.id, scene.id)
       ])) return;
     } catch(err) {
-      console.error('encountered error checking for ambiguous look requests:', err.toString());
-      console.error('character state:', command);
-      console.error('character state:', character);
+      errorParts(['encountered error checking for ambiguous look requests:', err.toString()]);
+      errorParts(['character state:', command]);
+      errorParts(['character state:', character]);
     }
     // intercept ambiguous purchase requests
     try {
       if (isAmbiguousPurchaseRequest(handlerOptions, scene)) return;
     } catch(err) {
-      console.error('encountered error checking for ambiguous purchase request with command:', command);
-      console.error('character state:', character);
-      console.error('error:', err.toString());
+      errorParts(['encountered error checking for ambiguous purchase request with command:', command]);
+      errorParts(['character state:', character]);
+      errorParts(['error:', err.toString()]);
     }
     // intercept ambiguous sell requests
     try {
       if (isAmbiguousSellItemRequest(handlerOptions)) return;
     } catch(err) {
-      console.error('encountered error checking for ambiguous sale request with command:', command);
-      console.error('character state:', character);
-      console.error('error:', err.toString());
+      errorParts(['encountered error checking for ambiguous sale request with command:', command]);
+      errorParts(['character state:', character]);
+      errorParts(['error:', err.toString()]);
     }
     try {
       if (isAmbiguousSellBuyerRequest(handlerOptions, scene)) return;
     } catch(err) {
-      console.error('encountered error checking for ambiguous buyer request with command:', command);
-      console.error('character state:', character);
-      console.error('error:', err.toString());
+      errorParts(['encountered error checking for ambiguous buyer request with command:', command]);
+      errorParts(['character state:', character]);
+      errorParts(['error:', err.toString()]);
     }
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {
-    console.error('failed loading scene id', character.scene_id, ":", err.toString());
+    errorParts(['failed loading scene id', character.scene_id, ":", err.toString()]);
   }
 
   // check if there are horse-related actions for this command
@@ -199,7 +202,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
 }
 
 io.on('connection', (socket) => {
-  console.info('A user connected');
+  log('A user connected');
   socket.emit('request-initialization', {
     gameText: "Connected.  Divining your character information . . .",
     options: {
@@ -211,13 +214,13 @@ io.on('connection', (socket) => {
     // Validate socket connection
     const secret: string = process.env.JWT_SECRET || '';
     if (secret === '') {
-      console.error("Unable to parse JWT secret key for auth.");
+      error("Unable to parse JWT secret key for auth.");
       process.exit(6);  // 6 chosen randomly
     }
     try {
       jwt.verify(payload.token, secret);
     } catch (err: any) {
-      console.error('Error validating session in socket connection during provide-token event');
+      error('Error validating session in socket connection during provide-token event');
       const errText: GameText = {
         gameText: "Unable to verify your login session.",
         options: {
@@ -260,10 +263,10 @@ io.on('connection', (socket) => {
           options: { other: true }
         })
         characters.delete(connectedCharacter.id);
-        console.info(`Character ${connectedCharacter.name} disconnected`);
-        // console.log("Characters in session:");
+        log(`Character ${connectedCharacter.name} disconnected`);
+        // log("Characters in session:");
         // characters.forEach((value: Character) => {
-        //   console.log("We got", value.name);
+        //   log("We got", value.name);
         // });
       });
 
@@ -287,12 +290,12 @@ io.on('connection', (socket) => {
         command: 'enter'
       });
 
-      // console.log("Characters in session:");
+      // log("Characters in session:");
       // characters.forEach((value: Character) => {
-      //   console.log("We got", value.name);
+      //   log("We got", value.name);
       // })
     } catch (err: any) {
-      console.error("Error reading character from session", err.toString());
+      errorParts(["Error reading character from session", err.toString()]);
       const errText: GameText = {
         gameText: "Problem encountered reading character from database.",
         options: {
@@ -305,5 +308,5 @@ io.on('connection', (socket) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  log(`Server is running on port ${port}`);
 });

@@ -17,7 +17,7 @@ export function augment_adv_guild_owner (npc: NPC): NPC {
     if (commandMatchesKeywordsFor(command, kit.keywords, REGEX_BUY_ALIASES)) {
       if (character.stories.main === 2) {
         if (character.money >= kit.getValue()) {
-          if (writeCharacterData(character, {
+          if (writeCharacterData(handlerOptions, {
             inventory: [ ...character.inventory, ItemIds.TRAVELING_KIT ],
             money: character.money - kit.getValue(),
             stories: { ...character.stories, main: 3 },
@@ -31,12 +31,8 @@ export function augment_adv_guild_owner (npc: NPC): NPC {
           emitSelf(`You try to buy ${kit.title} but can't afford it.`);
           return true;
         }
-      } else {
-        console.log('wrong story state to buy travling kit');
       }
       return false;
-    } else {
-      console.log('no kit buy match with keywords', kit.keywords, 'on command', command)
     }
   }
 

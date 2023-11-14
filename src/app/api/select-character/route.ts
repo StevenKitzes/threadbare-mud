@@ -7,6 +7,7 @@ import killCookieResponse from '@/utils/killCookieResponse';
 import { err401, err500, success200 } from '@/utils/apiResponses';
 import { getUserFromToken } from '@/utils/getUserFromToken';
 import jStr from '@/utils/jStr';
+import { errorParts } from '@/utils/log';
 
 export async function POST(req: NextRequest) {
   // Handle auth stuff
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     });
   } catch ( err: any ) {
     const errString: string = err.toString();
-    console.error("Error in character selection API", errString);
+    errorParts(["Error in character selection API", errString]);
     return new NextResponse(jStr(err500("Error on server while selecting character.")), {
       status: 500
     });
