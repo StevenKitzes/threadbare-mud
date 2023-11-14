@@ -438,6 +438,8 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
     const { character, command, socket } = handlerOptions;
     const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
+    if (npc.getSaleItems() === undefined) return false;
+
     // try sell, specifying which merchant
     const sellItemMatch: string | null = captureSellTo(command, npc);
     if (sellItemMatch !== null) {

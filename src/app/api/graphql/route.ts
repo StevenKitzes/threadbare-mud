@@ -29,7 +29,7 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
       // verify it belongs to an actual user
       user = readUserBySession(tokenCookie.value);
       if (user === undefined) {
-        throw new Error("Got valid JWT but no matching user.");
+        throw new Error("Got valid JWT but no matching user in GraphQL call.");
       }
       console.info('+ GraphQL Next handler returning')
       return {

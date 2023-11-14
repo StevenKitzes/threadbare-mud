@@ -365,11 +365,11 @@ export function consumeItem({
   actionAliases,
   extraEffects,
   extraEffectsOpts,
-  healAmount,
   consumeEffects,
 }: ConsumeItemOpts): boolean {
   const { character, character: {name}, command, socket} = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+  const healAmount: number = item.healAmount || 0;
 
   if ( commandMatchesKeywordsFor(command, item.keywords, actionAliases) ) {
     let characterUpdate: CharacterUpdateOpts = {};
@@ -407,7 +407,8 @@ export function consumeItem({
       if (actionAliases === REGEX_USE_ALIASES) actionString = 'use';
       
       let healString: string;
-      if (healAmount < character.health_max * 0.1) healString = 'a little rejuvenated';
+      if (healAmount <= 0) healString = 'about the same as before';
+      else if (healAmount < character.health_max * 0.1) healString = 'a little rejuvenated';
       else if (healAmount < character.health_max * 0.2) healString = 'quite rejuvenated';
       else if (healAmount < character.health_max * 0.3) healString = 'refreshed';
       else if (healAmount < character.health_max * 0.4) healString = 'very refreshed';

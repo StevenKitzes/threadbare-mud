@@ -439,6 +439,8 @@ export const writeCharacterData = (character: Character, opts: CharacterUpdateOp
     return true;
   } catch (err: any) {
     console.error("Error updating faceted character data", err.toString());
+    console.error('character', character);
+    console.error('CharacterUpdateOpts', opts);
     return false;
   }
 }

@@ -14,7 +14,7 @@ export const getUserFromToken = (tokenCookie: RequestCookie | undefined): Confir
     // verify it belongs to an actual user
     const user: User | undefined = readUserBySession(token);
     if (user === undefined) {
-      console.info("Got valid JWT but no matching user.");
+      console.info("Got valid JWT but no matching user in user retrieval.");
       return false;
     }
     return {

@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { writeCharacterData, writeLiteralForTest_DANGEROUS } from '../sqlite/sqlite';
-import { Character } from '@/types';
+import { writeLiteralForTest_DANGEROUS } from '../sqlite/sqlite';
 
-test('Test character creation and selection', async ({ page }) => {
+test('Test horse related activities', async ({ page }) => {
   await page.goto('http://localhost:3000/login');
   await expect(page.getByTestId('page-title')).toHaveText('Please log in to continue.');
   await page.locator('#username-input').pressSequentially("testUserUsername");
@@ -20,7 +19,7 @@ test('Test character creation and selection', async ({ page }) => {
   await page.waitForURL('http://localhost:3000/game');
   await expect(page.getByTestId('page-title')).toHaveText('Threadbare');
   await expect(page.getByTestId('player-input')).toBeVisible();
-  // unequip tests
+
   await expect(await page.getByText('Parliament Northwestern Marketplace')).toBeVisible();
 
   await page.getByTestId('player-input').pressSequentially('talk stablemaster');

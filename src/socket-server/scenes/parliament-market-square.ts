@@ -106,7 +106,7 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
     
     // This will be pushed to actor text independent of story
     actorText.push(`The Parliament Market Square is the ultimate expression of the wealth and grandeur of Ixpanne.  While the wizard towers that stand through the city might be more expensive at the bottom line, the beauty of the Square stands alone.  The gardens, paths, and statuary here are downright palatial, though they are on display here for all to enjoy.  At the center of the Square is a fountain, over which spans a bridge, all cut from marble.  Water, fed by some unseen source, gushes out of the many likenesses of animals and monsters all over the fountain and its bridge.  The Market Square is so expansive that when standing at its center, the hustle and bustle of the surrounding market seems distant, muted.`);
-    actorText.push(`The market proper can be reached either to the [east] or the [west].  You can see Audric's tower rising ever skyward, father to the west.  To the [north] and [south], the Market Square extends into a longer promenade.`)
+    actorText.push(`The market proper can be reached either to the [east] or the [west].  You can see Audric's tower rising ever skyward, farther to the west.  To the [north] and [south], the Market Square extends into a longer promenade.`)
     appendSentimentText(character.job, sentiment, actorText);
     appendAlsoHereString(actorText, character, characterList);
     appendItemsHereString(actorText, id);

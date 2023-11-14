@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Test character creation and selection', async ({ page }) => {
+test('Test buying and selling items', async ({ page }) => {
   await page.goto('http://localhost:3000/login');
   await expect(page.getByTestId('page-title')).toHaveText('Please log in to continue.');
   await page.locator('#username-input').pressSequentially("testUserUsername");
@@ -18,7 +18,7 @@ test('Test character creation and selection', async ({ page }) => {
   await page.waitForURL('http://localhost:3000/game');
   await expect(page.getByTestId('page-title')).toHaveText('Threadbare');
   await expect(page.getByTestId('player-input')).toBeVisible();
-  // unequip tests
+
   await expect(await page.getByText('Parliament Western Marketplace')).toBeVisible();
 
   await page.getByTestId('player-input').pressSequentially('talk baker');
@@ -105,8 +105,12 @@ test('Test character creation and selection', async ({ page }) => {
   await page.keyboard.press('Enter');
   await expect(await page.getByText(/^You sold a shiny/)).toBeVisible();
 
-  await page.getByTestId('player-input').pressSequentially('sell orange to baker');
+  await page.getByTestId('player-input').pressSequentially('eat orange');
   await page.keyboard.press('Enter');
-  await expect(await page.getByText(/^You sold an orange/)).toBeVisible();
+  await expect(await page.getByText(/^You eat an orange and feel a little rejuvenated./)).toBeVisible();
+
+  await page.getByTestId('player-input').pressSequentially('eat orange');
+  await page.keyboard.press('Enter');
+  await expect(await page.getByText(/^You don't have any orange to eat/)).toBeVisible();
 
 });

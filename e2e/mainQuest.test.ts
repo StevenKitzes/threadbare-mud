@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { v4 } from 'uuid';
 
-test('Test character creation and selection', async ({ page }) => {
+test('Test quest progression', async ({ page }) => {
   await page.goto('http://localhost:3000/login');
   await expect(page.getByTestId('page-title')).toHaveText('Please log in to continue.');
   await page.locator('#username-input').pressSequentially("testUserUsername");
