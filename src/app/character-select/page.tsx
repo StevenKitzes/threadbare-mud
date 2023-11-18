@@ -32,7 +32,7 @@ const GET_CHARACTERS = gql`
 
 const CharacterSelectPage = (): JSX.Element => {
   const { loading, error, data } = useQuery(GET_CHARACTERS, { client });
-  const [username, setUsername] = useState<string>('[loading . . .]');
+  const [username, setUsername] = useState<string|null>(null);
 
   useEffect(() => {
     fetch('api/check-session', { method: "POST" })

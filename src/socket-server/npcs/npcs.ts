@@ -370,6 +370,13 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
 
     // talk to this npc
     if (commandMatchesKeywordsFor(command, npc.getKeywords(), REGEX_TALK_ALIASES)) {
+      // don't talk to dead npcs
+      if (npc.getHealth() !== undefined && npc.getHealth() <= 0) {
+        emitOthers(`${character.name} is talking down to ${npc.getName()}'s corpse.  It is fairly disturbing.`);
+        emitSelf(`You talk to ${npc.getName()}'s lifeless body, but it is not very talkative.`);
+        return true;
+      }
+
       const actorText: string[] = [npc.getTalkText()];
       
       // In case of mercantile activity

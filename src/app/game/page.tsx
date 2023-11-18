@@ -14,7 +14,7 @@ export const Game = (): JSX.Element => {
   const [gameTextList, setGameTextList] = useState<GameText[]>([ { gameText: 'Game initializing . . .', options: { error: true } } ]);
   const [command, setCommand] = useState<string>('');
   const [token, setToken] = useState<string|null>(null);
-  const [username, setUsername] = useState<string>('[loading . . .]');
+  const [username, setUsername] = useState<string|null>(null);
 
   useEffect(() => {
     fetch('api/check-session', { method: "POST" })

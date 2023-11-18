@@ -100,13 +100,19 @@ function fightAllInSceneExcept(
   handlerOptions: HandlerOptions
 ): void {
   const combatScene: Scene | undefined = scenes.get(character.scene_id);
-  if (!combatScene || !combatScene.getSceneNpcs) return;
+  if (!combatScene || !combatScene.getSceneNpcs) {
+    error('Unable to retrive scene in fightAllInSceneExcept');
+    return;
+  }
   const npcs: NPC[] | undefined = combatScene.getSceneNpcs().get(character.id);
-  if (npcs === undefined) return;
+  if (npcs === undefined) {
+    error('Unable to retrieve NPCs in fightAllInSceneExcept');
+    return;
+  }
   
   npcs.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && c.getFaction() === npcFaction && c.getId() !== npcId) {
-      c.handleNpcCustom({
+      c.handleNpcFight({
         ...handlerOptions,
         command: `fight ${c.getKeywords().join(' ')}`
       });
