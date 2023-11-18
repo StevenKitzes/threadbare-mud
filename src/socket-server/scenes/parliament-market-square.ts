@@ -87,12 +87,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
     
+    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     });
-    
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
     
     return true;
   }

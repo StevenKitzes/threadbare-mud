@@ -69,13 +69,13 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
+    handleAggro(filterNpcsByStory(), character, handlerOptions);
+    handleFactionAggro(filterNpcsByStory(), character, handlerOptions, emitOthers, emitSelf);
+
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
-    });
-
-    handleAggro(filterNpcsByStory(), character, handlerOptions);
-    handleFactionAggro(filterNpcsByStory(), character, handlerOptions, emitOthers, emitSelf);
+    });  
 
     return true;
   }

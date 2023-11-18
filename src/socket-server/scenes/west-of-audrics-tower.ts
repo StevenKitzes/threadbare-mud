@@ -72,12 +72,12 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
     
+    handleAggro(filterNpcsByStory(), character, handlerOptions);
+
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
-    })
-
-    handleAggro(filterNpcsByStory(), character, handlerOptions);
+    })  
 
     return true;
   }
