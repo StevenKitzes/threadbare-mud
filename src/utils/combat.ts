@@ -13,7 +13,7 @@ import research from "./research";
 import { Character, CharacterUpdateOpts, Faction, FactionAnger } from "../types";
 import { firstUpper } from "./firstUpper";
 import { AGGRO_TIMER, factionNames } from "../constants";
-import { error } from "./log";
+import { error, log, logParts } from "./log";
 
 const COMBAT_TIMER: number = 1900;
 const COMBAT_RANDOMIZATION: number = 200;
@@ -84,7 +84,7 @@ export function handleFactionAggro(
       emitOthers(`${firstUpper(c.getName())} remembers ${character.name} as an enemy of ${factionNames.get(c.getFaction())} and attacks!`);
       emitSelf(`=${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and prepares to attack!  Flee or you'll enter combat!=`);
       setTimeout(() => {
-        c.handleNpcCustom({
+        c.handleNpcFight({
           ...handlerOptions,
           command: `fight ${c.getKeywords().join(' ')}`
         });
@@ -117,7 +117,6 @@ function fightAllInSceneExcept(
 export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
   const { character, socket } = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
-  const combatScene: string = character.scene_id;
 
   if (npc.getFaction()) {
     // if character has not already angered this faction
@@ -143,7 +142,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     if (!(npc.setCombatInterval !== undefined && npc.getHealth() !== undefined && npc.setDeathTime !== undefined && npc.getCashLoot() !== undefined && npc.getItemLoot() !== undefined && npc.getXp() !== undefined)) return true;
 
     // If character has fled or died/gone to checkpoint
-    if (character.scene_id !== combatScene) {
+    if (character.scene_id !== npc.getSceneId()) {
       const interval: NodeJS.Timeout | null = npc.getCombatInterval();
       if (interval !== null) clearInterval(interval);
       npc.setCombatInterval(null);
@@ -190,7 +189,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
       if (writeCharacterData(handlerOptions, {
         health: newHealth, scene_id: character.checkpoint_id, xp: 0
       })) {
-        socket.leave(combatScene);
+        socket.leave(character.scene_id);
         socket.join(character.checkpoint_id);
         
         scenes.get(character.checkpoint_id)?.handleSceneCommand({
@@ -453,7 +452,7 @@ export const startCombat = (npc: NPC, handlerOptions: HandlerOptions): void => {
     }
 
     // If character has fled or died/gone to checkpoint
-    if (character.scene_id !== combatScene) {
+    if (character.scene_id !== npc.getSceneId()) {
       const interval: NodeJS.Timeout | null = npc.getCombatInterval();
       if (interval !== null) clearInterval(interval);
       npc.setCombatInterval(null);

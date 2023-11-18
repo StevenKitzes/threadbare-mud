@@ -9,8 +9,7 @@ import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELL_
 import getEmitters from "../../utils/emitHelper";
 import startCombat from "../../utils/combat";
 import { coinValueRandomizer } from "../../utils/coinValueRandomizer";
-import { isAmbiguousSellBuyerRequest } from "../../utils/ambiguousRequestHelpers";
-import { scenes } from "../scenes/scenes";
+import { SceneIds } from "../scenes/scenes";
 
 export type NPC = {
   private: {
@@ -33,10 +32,11 @@ export type NPC = {
     healthMax: number;
     itemLoot: ItemIds[];
     keywords: string[];
-    talkText: string;
     saleItems: Item[];
     savvy: number;
+    sceneId: SceneIds;
     strength: number;
+    talkText: string;
     xp: number;
   };
 
@@ -44,6 +44,7 @@ export type NPC = {
   getId: () => NpcIds;
   getName: () => string;
   getKeywords: () => string[];
+  getSceneId: () => SceneIds;
   
   // these are settable
   getAggro: () => boolean;
@@ -90,17 +91,17 @@ export type NPC = {
   getItemLoot: () => ItemIds[];
   setItemLoot: (i: ItemIds[]) => void;
 
-  getTalkText: () => string;
-  setTalkText: (t: string) => void;
-
   getSaleItems: () => Item[];
   setSaleItems: (s: Item[]) => void;
-
+  
   getSavvy: () => number;
   setSavvy: (s: number) => void;
-
+  
   getStrength: () => number;
   setStrength: (s: number) => void;
+  
+  getTalkText: () => string;
+  setTalkText: (t: string) => void;
 
   getXp: () => number;
   setXp: (x: number) => void;
@@ -184,16 +185,18 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
       healthMax: csvData.healthMax,
       itemLoot: lootInventory || [],
       keywords: csvNpcToKeywords(csvData),
-      talkText: csvData.talkText,
       saleItems: vendorInventory?.map(i => items.get(i)),
       savvy: csvData.savvy,
+      sceneId: character.scene_id,
       strength: csvData.strength,
+      talkText: csvData.talkText,
       xp: csvData.xp,
     },
     
     getId: undefined,
     getName: undefined,
     getKeywords: undefined,
+    getSceneId: undefined,
     
     getAggro: undefined,
     setAggro: undefined,
@@ -239,9 +242,6 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
     getItemLoot: undefined,
     setItemLoot: undefined,
     
-    getTalkText: undefined,
-    setTalkText: undefined,
-    
     getSaleItems: undefined,
     setSaleItems: undefined,
     
@@ -250,6 +250,9 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
     
     getStrength: undefined,
     setStrength: undefined,
+    
+    getTalkText: undefined,
+    setTalkText: undefined,
     
     getXp: undefined,
     setXp: undefined,
@@ -267,6 +270,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
   npc.getId = () => npc.private.id;
   npc.getName = () => npc.private.name;
   npc.getKeywords = () => npc.private.keywords;
+  npc.getSceneId = () => npc.private.sceneId;
   
   npc.getAggro = () => npc.private.aggro;
   npc.setAggro = (a: boolean) => npc.private.aggro = a;
@@ -501,7 +505,7 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
         return true;
       }
       if (npc.getCombatInterval() !== null) {
-        emitSelf(`You are already fighting ${npc.getName()}!`);
+        emitSelf(`Your fight with ${npc.getName()} continues!`);
         return true;
       }
       startCombat(npc, handlerOptions);
