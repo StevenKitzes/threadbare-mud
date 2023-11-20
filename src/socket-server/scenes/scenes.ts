@@ -12,6 +12,7 @@ import { HandlerOptions } from '../server';
 export type Navigable = {
   sceneId: SceneIds;
   keywords: string[];
+  escapeKeyword: string;
   departureDescription: (name: string) => string;
   extraActionAliases?: string;
 }
@@ -52,6 +53,7 @@ export enum SceneIds {
   PARLIAMENT_MARKET_GATE = "20",
   PARLIAMENT_MARKET_SQUARE = "21",
   PARLIAMENT_SOUTHEAST_MARKET = "22",
+  DIRTY_NOOK = "23",
 }
 
 import('./cold-bedroom').then(scene => {scenes.set(scene.id, scene);});
@@ -76,6 +78,7 @@ import('./from-tales-to-tomes').then(scene => scenes.set(scene.id, scene));
 import('./parliament-market-gate').then(scene => scenes.set(scene.id, scene));
 import('./parliament-market-square').then(scene => scenes.set(scene.id, scene));
 import('./parliament-southeast-market').then(scene => scenes.set(scene.id, scene));
+import('./dirty-nook').then(scene => scenes.set(scene.id, scene));
 
 export default { scenes }
 

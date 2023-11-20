@@ -802,7 +802,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
             inventory: newInventory
           })) {
             emitOthers(`${character.name}${removedItemTitle ? ` removes ${removedItemTitle} and` : ''} slips ${item.title} onto their hands.`);
-            emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} slip your hands into ${item.title}.`);
+            emitSelf(`You${removedItemTitle ? ` remove ${removedItemTitle} and` : ''} slip on ${item.title}.`);
             return true;
           }
         }

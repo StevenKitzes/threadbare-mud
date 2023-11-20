@@ -23,11 +23,13 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.OUTSIDE_AUDRICS_TOWER,
     keywords: 'e east market marketplace'.split(' '),
+    escapeKeyword: '[east]',
     departureDescription: (name: string) => `${name} heads east.`,
   },
   {
     sceneId: SceneIds.WEST_OF_AUDRICS_TOWER,
     keywords: 's south alley'.split(' '),
+    escapeKeyword: '[south]',
     departureDescription: (name: string) => `${name} heads into a quiet alley.`,
   },
 ];

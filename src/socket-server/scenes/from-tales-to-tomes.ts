@@ -24,6 +24,7 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_SOUTH_PROMENADE,
     keywords: 'n north promenade southern'.split(' '),
+    escapeKeyword: '[north]',
     departureDescription: (name: string) => `${name} leaves the bookshop, exiting to the promenade.`,
   },
 ];

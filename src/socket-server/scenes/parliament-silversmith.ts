@@ -23,6 +23,7 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
     keywords: 'e east market'.split(' '),
+    escapeKeyword: '[east]',
     departureDescription: (name: string) => `${name} leaves the silver shop to return to the market outside.`,
   },
 ];

@@ -3,10 +3,12 @@ import { Item } from "../socket-server/items/items";
 import getEmitters from "./emitHelper";
 import { uniqueMatchCount, uniqueSellToMatchCount } from "./uniqueMatchCount";
 import { Navigable, Scene, getItemsForSaleAtScene } from "../socket-server/scenes/scenes";
-import { REGEX_BUY_ALIASES, REGEX_GO_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELL_ALIASES } from "../constants";
+import { REGEX_BUY_ALIASES, REGEX_FIGHT_ALIASES, REGEX_GO_ALIASES, REGEX_LOOK_ALIASES, REGEX_SELL_ALIASES } from "../constants";
 import { allTokensMatchKeywords, captureFrom, captureSellItemToVendor, commandMatchesKeywordsFor, makeMatcher } from "./makeMatcher";
 import { getInventoryAndWorn } from "../socket-server/character/character";
 import { NPC, isMerchant } from "../socket-server/npcs/npcs";
+import jStr from "./jStr";
+import { log } from "./log";
 
 export function isAmbiguousPurchaseRequest(handlerOptions: HandlerOptions, scene: Scene): boolean {
   const { emitOthers, emitSelf } = getEmitters(handlerOptions.socket, scene.id);
@@ -100,7 +102,7 @@ export function isAmbiguousSellBuyerRequest(handlerOptions: HandlerOptions, scen
   const { character, command, socket } = handlerOptions;
   const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
 
-  // check if this is ambiguous due to sell request to vender keywords that match multiple vendors
+  // check if this is ambiguous due to sell request to vendor keywords that match multiple vendors
   const specifiers = captureSellItemToVendor(command);
   if (specifiers !== null && scene.getSceneNpcs) {
     const npcs: NPC[] | undefined = scene.getSceneNpcs().get(handlerOptions.character.id);
@@ -144,5 +146,36 @@ export function isAmbiguousSellBuyerRequest(handlerOptions: HandlerOptions, scen
     return false;
   }
 
+  return false;
+}
+
+export function isAmbiguousFightRequest(handlerOptions: HandlerOptions, scene: Scene): boolean {
+  const { character, command, socket } = handlerOptions;
+  const { emitOthers, emitSelf } = getEmitters(socket, character.scene_id);
+
+  const fightMatch: string | null = captureFrom(command, REGEX_FIGHT_ALIASES);
+  if (fightMatch !== null && scene.getSceneNpcs) {
+    const npcs: NPC[] | undefined = scene.getSceneNpcs().get(handlerOptions.character.id);
+
+    if (npcs !== undefined) {
+      let fightMatchCount = 0;
+      for (let m = 0; m < npcs.length; m++) {
+        log(jStr(npcs[m]));
+        if (
+          allTokensMatchKeywords(fightMatch, npcs[m].getKeywords()) &&
+          npcs[m].getHealth() !== undefined &&
+          npcs[m].getHealth() > 0
+        ) {
+          fightMatchCount++;
+          if (fightMatchCount > 1) {
+            emitOthers(`${character.name} can't decide who they'd like to start a fight with.`);
+            emitSelf(`There are multiple enemies here that could be described as [${fightMatch}].  Be more specific so you don't fight the wrong enemy!`);
+            return true;
+          }
+        }
+      }
+    }
+
+  }
   return false;
 }

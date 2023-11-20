@@ -4,7 +4,7 @@ export const SESSION_TIMEOUT: number = 60 * 60 * 24 * 30;  // 30 days
 
 export const ITEM_VALUE_RANDOMIZER_TIMER: number = 1000 * 60 * 10;  // 10 minutes
 
-export const AGGRO_TIMER: number = 1000 * 3;  // 3 seconds
+export const AGGRO_TIMER: number = 1000 * 5;  // 3 seconds
 
 export const REGEX_BUY_ALIASES: string = 'buy|purchase|shop';
 export const REGEX_DRINK_ALIASES: string = 'use|consume|drink|quaff|gulp';
@@ -15,7 +15,7 @@ export const REGEX_EVAL_ALIASES: string = 'eval|eval self|evaluate|evaluate self
 export const REGEX_FIGHT_ALIASES: string = 'fight|battle|hit|attack|strike';
 export const REGEX_GET_ALIASES: string = 'get|collect|grab|take|pick up|obtain';
 export const REGEX_GIVE_ALIASES: string = 'give|send|move'
-export const REGEX_GO_ALIASES: string = 'go|move|travel';
+export const REGEX_GO_ALIASES: string = 'go|move|travel|flee';
 export const REGEX_HORSE_ALIASES: string = 'horse|steed|mount'
 export const REGEX_INVENTORY_ALIASES: string = 'inventory|inv';
 export const REGEX_LOOK_ALIASES: string = 'look|observe|inspect|check|scan|investigate|peek';

@@ -3,7 +3,7 @@ import { DamageType, Item, ItemTypes, items } from '../socket-server/items/items
 import { ArmorType, NPC, NpcIds } from "../socket-server/npcs/npcs";
 import getEmitters from "./emitHelper";
 import { writeCharacterData } from "../../sqlite/sqlite";
-import { Scene, scenes } from "../socket-server/scenes/scenes";
+import { Navigable, Scene, scenes } from "../socket-server/scenes/scenes";
 import npcHealthText from "./npcHealthText";
 import characterHealthText from "./characterHealthText";
 import { xpAmountString } from "./leveling";
@@ -54,13 +54,30 @@ export function handleAggro(
   npcs: NPC[],
   character: Character,
   handlerOptions: HandlerOptions
-): void {
+): boolean {
   const { emitSelf } = getEmitters(handlerOptions.socket, character.scene_id);
+
+  let aggroDetected: boolean = false;
 
   // Aggro enemies attack!
   npcs.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && c.getAggro()) {
-      emitSelf(`={${firstUpper(c.getName())}} looks ready to attack you!  Flee now or you'll enter combat!=`);
+      aggroDetected = true;
+      const fleeNavigables: Navigable[] | undefined = scenes.get(character.scene_id)?.navigables;
+      if (fleeNavigables === undefined) {
+        error(`Unable to retrieve navigables from scene ID ${character.scene_id}`);
+        return true;
+      }
+
+      emitSelf([
+        `Before you can even look around, {${firstUpper(c.getName())}} lunges to attack you!  =Stand and fight, or flee to escape!=`,
+        `You can flee ${fleeNavigables.map((n, i) => {
+          if (i === fleeNavigables.length - 1) {
+            return `or ${n.escapeKeyword}`;
+          }
+          return n.escapeKeyword;
+        }).join(', ')}.`
+      ]);
       setTimeout(() => {
         c.handleNpcFight({
           ...handlerOptions,
@@ -69,6 +86,8 @@ export function handleAggro(
       }, AGGRO_TIMER);
     }
   });
+
+  return aggroDetected;
 }
 
 export function handleFactionAggro(
@@ -77,12 +96,29 @@ export function handleFactionAggro(
   handlerOptions: HandlerOptions,
   emitOthers: (text: string | string[], opts?: OptsType) => void,
   emitSelf: (text: string | string[], opts?: OptsType) => void
-): void {
+): boolean {
   // Angered faction enemies attack!
+  let aggroDetected: boolean = false;
+
   characterNpcs.get(character.id)?.forEach(c => {
     if (c.getHealth() && c.getHealth() > 0 && character.factionAnger.find(fa => fa.faction === c.getFaction())) {
+      aggroDetected = true;
+      const fleeNavigables: Navigable[] | undefined = scenes.get(character.scene_id)?.navigables;
+      if (fleeNavigables === undefined) {
+        error(`Unable to retrieve navigables from scene ID ${character.scene_id}`);
+        return true;
+      }
+
       emitOthers(`${firstUpper(c.getName())} remembers ${character.name} as an enemy of ${factionNames.get(c.getFaction())} and attacks!`);
-      emitSelf(`=${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and prepares to attack!  Flee or you'll enter combat!=`);
+      emitSelf([
+        `Before you can even look around, ${firstUpper(c.getName())} {recognizes you} as an enemy of ${factionNames.get(c.getFaction())} and attacks!  =Stand and fight, or flee to escape!=`,
+        `You can flee ${fleeNavigables.map((n, i) => {
+          if (i === fleeNavigables.length - 1) {
+            return `or ${n.escapeKeyword}`;
+          }
+          return n.escapeKeyword;
+        }).join(', ')}.`
+      ]);
       setTimeout(() => {
         c.handleNpcFight({
           ...handlerOptions,
@@ -91,6 +127,8 @@ export function handleFactionAggro(
       }, AGGRO_TIMER);
     }
   });
+
+  return aggroDetected;
 }
 
 function fightAllInSceneExcept(

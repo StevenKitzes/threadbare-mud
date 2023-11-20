@@ -26,16 +26,19 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_MARKET_GATE,
     keywords: "n north market marketplace".split(' '),
+    escapeKeyword: '[north]',
     departureDescription: (name: string) => `${name} walks off north, toward another part of the market.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
     keywords: "w west market square".split(' '),
+    escapeKeyword: '[west]',
     departureDescription: (name: string) => `${name} heads west, into the Market Square.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_SOUTHEAST_MARKET,
     keywords: "s south market marketplace".split(' '),
+    escapeKeyword: '[south]',
     departureDescription: (name: string) => `${name} heads south, deeper still into the market.`,
   },
 ];
@@ -72,7 +75,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    const factionAggro: boolean = handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    if (factionAggro) return true;
 
     handleSceneCommand({
       ...handlerOptions,

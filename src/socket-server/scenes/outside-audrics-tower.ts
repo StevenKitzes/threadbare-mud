@@ -20,21 +20,25 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.CURVING_STONE_STAIRCASE,
     keywords: 'w tower stairs staircase inside west'.split(' '),
+    escapeKeyword: '[west]',
     departureDescription: (name: string) => `${name} disappears into Audric's tower.`,
   },
   {
     sceneId: SceneIds.NORTH_OF_AUDRICS_TOWER,
     keywords: 'nw northwest lane small'.split(' '),
+    escapeKeyword: '[northwest]',
     departureDescription: (name: string) => `${name} heads around Audric's tower via a small lane.`,
   },
   {
     sceneId: SceneIds.SOUTH_OF_AUDRICS_TOWER,
     keywords: 'sw southwest road larger large'.split(' '),
+    escapeKeyword: '[southwest]',
     departureDescription: (name: string) => `${name} takes the larger road south of Audric's tower.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_WEST_MARKET,
     keywords: 'e east market marketplace'.split(' '),
+    escapeKeyword: '[east]',
     departureDescription: (name: string) => `${name} heads east and disappears into the marketplace crowd.`,
   },
 ];

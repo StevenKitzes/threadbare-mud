@@ -24,21 +24,25 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.OUTSIDE_AUDRICS_TOWER,
     keywords: "w tower audrics west".split(' '),
+    escapeKeyword: '[west]',
     departureDescription: (name: string) => `${name} moves off toward Audric's tower.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_NORTHWEST_MARKET,
     keywords: "n north".split(' '),
+    escapeKeyword: '[north]',
     departureDescription: (name: string) => `${name} moves off northward into another part of the market.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
     keywords: "s south".split(' '),
+    escapeKeyword: '[south]',
     departureDescription: (name: string) => `${name} moves off southward into another part of the market.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
     keywords: "e east market square".split(' '),
+    escapeKeyword: '[east]',
     departureDescription: (name: string) => `${name} moves off southward into another part of the market.`,
   },
 ];
@@ -102,7 +106,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
     
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    const factionAggro: boolean = handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    if (factionAggro) return true;
 
     handleSceneCommand({
       ...handlerOptions,

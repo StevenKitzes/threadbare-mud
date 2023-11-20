@@ -97,7 +97,7 @@ test('Test inventory related activities', async ({ page }) => {
 
   await page.getByTestId('player-input').pressSequentially('wear gloves');
   await page.keyboard.press('Enter');
-  await expect(await page.getByText(/^You slip your hands into .*.$/)).toBeVisible();
+  await expect(await page.getByText(/^You slip on .*.$/)).toBeVisible();
 
   await page.getByTestId('player-input').pressSequentially('wear legwear');
   await page.keyboard.press('Enter');

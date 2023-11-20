@@ -22,26 +22,31 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_WEST_MARKET,
     keywords: "n north market".split(' '),
+    escapeKeyword: '[north]',
     departureDescription: (name: string) => `${name} moves off north, toward the western part of the market.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_SILVERSMITH,
     keywords: "w west silver shop silversmith boutique".split(' '),
+    escapeKeyword: '[west]',
     departureDescription: (name: string) => `${name} walks into a silversmith's shop.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_ALCHEMY_SHOP,
     keywords: "s south alchemist alchemy shop".split(' '),
+    escapeKeyword: '[south]',
     departureDescription: (name: string) => `${name} fades into the darkness of a mysterious alchemy shop.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_DECORATIVE_ARMORY,
     keywords: "sw southwest armory decorative armorer".split(' '),
+    escapeKeyword: '[southwest]',
     departureDescription: (name: string) => `${name} walks into the decorative armory.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_SOUTH_PROMENADE,
     keywords: "e east southern promenade".split(' '),
+    escapeKeyword: '[east]',
     departureDescription: (name: string) => `${name} walks away eastward, onto the marketplace's south promenade.`,
   },
 ];

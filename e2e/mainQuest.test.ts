@@ -29,7 +29,7 @@ test('Test quest progression', async ({ page }) => {
 
   await page.getByTestId('player-input').pressSequentially('quest');
   await page.keyboard.press('Enter');
-  await expect(await page.getByText(/^Finding Yourself: You woke up/)).toBeVisible();
+  await expect(await page.getByText(/^\[Finding Yourself\]: You woke up/)).toBeVisible();
 
   await page.getByTestId('player-input').pressSequentially('door');
   await page.keyboard.press('Enter');

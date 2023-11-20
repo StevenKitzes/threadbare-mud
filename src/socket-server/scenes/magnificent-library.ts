@@ -23,12 +23,14 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.COLD_BEDROOM,
     keywords: 'door heavy wooden'.split(' '),
+    escapeKeyword: 'through a wooden [door]',
     departureDescription: (name: string) => `${name} departs through a heavy wooden door.`,
     extraActionAliases: 'open',
   },
   {
     sceneId: SceneIds.CURVING_STONE_STAIRCASE,
     keywords: 'stairs stairway staircase steps'.split(' '),
+    escapeKeyword: '[down] the stairs',
     departureDescription: (name: string) => `${name} heads down a curving stone staircase.`,
   },
 ];
@@ -40,6 +42,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
   const { character, characterList, command, socket } = handlerOptions;
   const { name, scene_id: sceneId } = character;
   const { emitOthers, emitSelf } = getEmitters(socket, sceneId);
+  console.log('call')
+  console.log('command', command)
 
   const filterNpcsByStory = (): NPC[] => {
     const npcs: NPC[] | null = characterNpcs.get(character.id);

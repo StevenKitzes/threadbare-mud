@@ -21,11 +21,13 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.MAGNIFICENT_LIBRARY,
     keywords: 'up library stairs stairway staircase'.split(' '),
+    escapeKeyword: '[up]',
     departureDescription: (name: string) => `${name} wanders up the stairs.`,
   },
   {
     sceneId: SceneIds.OUTSIDE_AUDRICS_TOWER,
     keywords: 'door heavy wooden market'.split(' '),
+    escapeKeyword: 'through a wooden [door]',
     departureDescription: (name: string) => `${name} exits through the heavy, wooden door.`,
   },
 ];

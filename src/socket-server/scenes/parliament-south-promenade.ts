@@ -24,21 +24,25 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
     keywords: 'w west market'.split(' '),
+    escapeKeyword: '[west]',
     departureDescription: (name: string) => `${name} walks west, to another part of the market.`,
   },
   {
     sceneId: SceneIds.FROM_TALES_TO_TOMES,
     keywords: 's south bookstore book store shop tales to tomes from'.split(' '),
+    escapeKeyword: '[south]',
     departureDescription: (name: string) => `${name} walks into From Tales to Tomes, a book shop.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_MARKET_SQUARE,
     keywords: 'n north market square'.split(' '),
+    escapeKeyword: '[north]',
     departureDescription: (name: string) => `${name} heads north, to the Market Square.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_SOUTHEAST_MARKET,
     keywords: 'e east market marketplace'.split(' '),
+    escapeKeyword: '[east]',
     departureDescription: (name: string) => `${name} heads east, deeper still into the market.`,
   },
 ];
@@ -82,7 +86,8 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
     
-    handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    const factionAggro: boolean = handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    if (factionAggro) return true;
 
     handleSceneCommand({
       ...handlerOptions,

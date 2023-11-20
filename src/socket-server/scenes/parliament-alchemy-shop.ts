@@ -23,6 +23,7 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_SOUTHWEST_MARKET,
     keywords: 'n north market'.split(' '),
+    escapeKeyword: '[north]',
     departureDescription: (name: string) => `${name} leaves the alchemy shop for the market.`,
   },
 ];

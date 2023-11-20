@@ -23,11 +23,13 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.PARLIAMENT_NORTH_PROMENADE,
     keywords: "w west north promenade".split(' '),
+    escapeKeyword: '[west]',
     departureDescription: (name: string) => `${name} moves off west, toward the market's north promenade.`,
   },
   {
     sceneId: SceneIds.PARLIAMENT_MARKET_GATE,
     keywords: "s south market gate".split(' '),
+    escapeKeyword: '[south]',
     departureDescription: (name: string) => `${name} heads south, toward the Parliament Market Gate.`,
   },
 ];

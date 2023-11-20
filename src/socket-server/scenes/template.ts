@@ -12,7 +12,7 @@ import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_GO_ALIASES, REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';
-import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
+import { isAmbiguousFightRequest, isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
 
 const id: SceneIds = SceneIds.;
 const title: string = ;
@@ -24,11 +24,13 @@ const navigables: Navigable[] = [
   {
     sceneId: 
     keywords: 
+    escapeKeyword: 
     departureDescription: (name: string) => 
   },
   {
     sceneId: 
     keywords: 
+    escapeKeyword: 
     departureDescription: (name: string) => 
   },
 ];
@@ -69,16 +71,20 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
       })
     }
 
-    handleAggro(filterNpcsByStory(), character, handlerOptions);
-    handleFactionAggro(filterNpcsByStory(), character, handlerOptions, emitOthers, emitSelf);
+    const aggro: boolean = handleAggro(filterNpcsByStory(), character, handlerOptions);
+    const factionAggro: boolean = handleFactionAggro(characterNpcs, character, handlerOptions, emitOthers, emitSelf);
+    if (aggro) return true;
+    if (factionAggro) return true;
 
     handleSceneCommand({
       ...handlerOptions,
       command: 'look'
     });  
-
+    
     return true;
   }
+  
+  if (isAmbiguousFightRequest(handlerOptions, scenes.get(character.scene_id))) return true;
 
   if (handleNpcCommands(handlerOptions, filterNpcsByStory())) return true;
 

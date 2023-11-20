@@ -25,6 +25,7 @@ const navigables: Navigable[] = [
   {
     sceneId: SceneIds.MAGNIFICENT_LIBRARY,
     keywords: 'heavy wooden door library'.split(' '),
+    escapeKeyword: 'through a wooden [door]',
     departureDescription: (name: string) => `${name} departs through a heavy wooden door.`,
     extraActionAliases: 'open',
   },

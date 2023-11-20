@@ -141,6 +141,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       errorParts(['encountered error checking for ambiguous look requests:', err.toString()]);
       errorParts(['character state:', command]);
       errorParts(['character state:', character]);
+      return;
     }
     // intercept ambiguous purchase requests
     try {
@@ -149,6 +150,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       errorParts(['encountered error checking for ambiguous purchase request with command:', command]);
       errorParts(['character state:', character]);
       errorParts(['error:', err.toString()]);
+      return;
     }
     // intercept ambiguous sell requests
     try {
@@ -157,6 +159,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       errorParts(['encountered error checking for ambiguous sale request with command:', command]);
       errorParts(['character state:', character]);
       errorParts(['error:', err.toString()]);
+      return;
     }
     try {
       if (isAmbiguousSellBuyerRequest(handlerOptions, scene)) return;
@@ -164,10 +167,12 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
       errorParts(['encountered error checking for ambiguous buyer request with command:', command]);
       errorParts(['character state:', character]);
       errorParts(['error:', err.toString()]);
+      return;
     }
     if (scene.handleSceneCommand(handlerOptions)) return;
   } catch(err) {
     errorParts(['failed loading scene id', character.scene_id, ":", err.toString()]);
+    return;
   }
 
   // check if there are horse-related actions for this command
@@ -191,6 +196,22 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   else if (targetName = captureFrom(command, REGEX_TALK_ALIASES)) output = `You do not see {${targetName}} here to talk to.`;
   else if (targetName = captureFrom(command, REGEX_UNEQUIP_ALIASES)) output = `You don't have any {${targetName}} equipped.`;
   else if (targetName = captureFrom(command, REGEX_USE_ALIASES)) output = `You are not carrying any {${targetName}} you can use.`;
+
+  else if (command.match(REGEX_BUY_ALIASES)) output = 'What do you want to [buy]?';
+  else if (command.match(REGEX_DRINK_ALIASES)) output = 'What do you want to [drink]?';
+  else if (command.match(REGEX_DROP_ALIASES)) output = 'What do you want to [drop]?';
+  else if (command.match(REGEX_EAT_ALIASES)) output = 'What do you want to [eat]?';
+  else if (command.match(REGEX_EQUIP_ALIASES)) output = 'What do you want to [equip]?';
+  else if (command.match(REGEX_EVAL_ALIASES)) output = 'What do you want to [inspect]?';
+  else if (command.match(REGEX_FIGHT_ALIASES)) output = 'Who do you want to [fight]?';
+  else if (command.match(REGEX_GET_ALIASES)) output = 'What do you want to [get]?';
+  else if (command.match(REGEX_GIVE_ALIASES)) output = 'What do you want to [give] and to whom?';
+  else if (command.match(REGEX_GO_ALIASES)) output = 'Where do you want to [go]?';
+  else if (command.match(REGEX_READ_ALIASES)) output = 'What do you want to [read]?';
+  else if (command.match(REGEX_TALK_ALIASES)) output = 'Who do you want to [talk] to?';
+  else if (command.match(REGEX_UNEQUIP_ALIASES)) output = 'What do you want to [remove]?';
+  else if (command.match(REGEX_USE_ALIASES)) output = 'What do you want to [use]?';
+
   else output = `You can't {${command}} here.`;
 
   socket.emit('game-text', {
