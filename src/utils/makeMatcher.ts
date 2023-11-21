@@ -79,7 +79,7 @@ export function captureSellItemToVendor(command: string): { itemSpecifier: strin
   const matches: string[] | null = command.match(
     new RegExp(`^(?:${REGEX_SELL_ALIASES}) (.*) to (.*)$`)
   );
-  if (matches?.length !== 3) return null;
+  if (matches === null || matches?.length !== 3) return null;
   return {
     itemSpecifier: matches[1],
     vendorSpecifier: matches[2]

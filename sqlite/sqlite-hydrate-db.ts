@@ -8,6 +8,16 @@
   const adminPassword = "$2b$12$.SGrzXKGj4pTZjfZLgfgseyIyIZcm6ipk9l3fssYO1D5NIDgga7d6";
   const adminEmail = "email@fake1.com";
 
+  const storiesMain1 = JSON.stringify({
+    main: 1,
+    csiThreadbare: {
+      grayOne: 0,
+      skyguard: 0,
+      weaver: 0,
+      princeling: 0,
+    }
+  });
+
   const hydrate = (sql: string, runArgs: (string | null)[]) => {
     try {
       dbToHydrate.prepare(sql).run(...runArgs);
@@ -73,7 +83,7 @@
       '1',                                  //  scene_id,
       '1',                                  //  checkpoint_id,
       '1',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '10000000',                           //  money,
       '[]',                                 //  inventory,

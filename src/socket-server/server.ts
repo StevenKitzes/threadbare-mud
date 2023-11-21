@@ -24,6 +24,7 @@ import {
   REGEX_GIVE_ALIASES,
   REGEX_GO_ALIASES,
   REGEX_LOOK_ALIASES,
+  REGEX_QUEST_ALIASES,
   REGEX_READ_ALIASES,
   REGEX_TALK_ALIASES,
   REGEX_UNEQUIP_ALIASES,
@@ -196,6 +197,7 @@ function handleGameAction(handlerOptions: HandlerOptions): void {
   else if (targetName = captureFrom(command, REGEX_TALK_ALIASES)) output = `You do not see {${targetName}} here to talk to.`;
   else if (targetName = captureFrom(command, REGEX_UNEQUIP_ALIASES)) output = `You don't have any {${targetName}} equipped.`;
   else if (targetName = captureFrom(command, REGEX_USE_ALIASES)) output = `You are not carrying any {${targetName}} you can use.`;
+  else if (targetName = captureFrom(command, REGEX_QUEST_ALIASES)) output = `You have no active quest called {${targetName}} at the moment.`;
 
   else if (command.match(REGEX_BUY_ALIASES)) output = 'What do you want to [buy]?';
   else if (command.match(REGEX_DRINK_ALIASES)) output = 'What do you want to [drink]?';

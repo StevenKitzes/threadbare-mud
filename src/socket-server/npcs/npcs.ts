@@ -149,6 +149,7 @@ export enum NpcIds {
   SHOWY_SHIELDS_SHOPKEEPER = "21",
   TALES_TO_TOMES_OWNER = "22",
   ADVENTURERS_GUILD_OWNER = "23",
+  SIGGA = "24",
 }
 
 readNpcCsv();
@@ -161,7 +162,7 @@ export type NPCFactoryManifest = {
 };
 
 export function isMerchant(npc: NPC): boolean {
-  return (npc.getSaleItems() !== undefined || npc.getSaleItems().length >= 1);
+  return (npc.getSaleItems() !== undefined && npc.getSaleItems().length >= 1);
 }
 
 export function npcFactory({csvData, character, vendorInventory, lootInventory}: NPCFactoryManifest): NPC {
@@ -458,6 +459,11 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
       for (let i = 0; i < character.inventory.length; i++) {
         const item: Item = items.get(character.inventory[i]);
         if (allTokensMatchKeywords(sellItemMatch, item.keywords)) {
+          if (item.quest) {
+            emitOthers(`${character.name} looks ready to sell something, but thinks better of it.`);
+            emitSelf(`You can't sell ${item.title}, you'll need it later.`);
+            return true;
+          }
           const newInventory: ItemIds[] = [...character.inventory];
           newInventory.splice(i, 1);
           const salePrice: number = Math.ceil(item.getValue() * 0.65);
@@ -479,6 +485,11 @@ export function npcFactory({csvData, character, vendorInventory, lootInventory}:
       for (let i = 0; i < character.inventory.length; i++) {
         const item: Item = items.get(character.inventory[i]);
         if (allTokensMatchKeywords(sellMatch, item.keywords)) {
+          if (item.quest) {
+            emitOthers(`${character.name} looks ready to sell something, but thinks better of it.`);
+            emitSelf(`You can't sell ${item.title}, you'll need it later.`);
+            return true;
+          }
           const newInventory: ItemIds[] = [...character.inventory];
           newInventory.splice(i, 1);
           const salePrice: number = Math.ceil(item.getValue() * 0.65);

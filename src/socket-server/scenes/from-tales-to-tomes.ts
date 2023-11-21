@@ -6,7 +6,7 @@ import lookSceneItem from '../../utils/lookSceneItem';
 import { handleNpcCommands, Navigable, navigate, SceneIds } from './scenes';
 import { HandlerOptions } from '../server';
 import { NPC, NpcIds, npcFactory } from '../npcs/npcs';
-import { SceneSentiment, StoryState } from '../../types';
+import { SceneSentiment } from '../../types';
 import { makeMatcher } from '../../utils/makeMatcher';
 import { REGEX_LOOK_ALIASES } from '../../constants';
 import { ItemIds } from '../items/items';

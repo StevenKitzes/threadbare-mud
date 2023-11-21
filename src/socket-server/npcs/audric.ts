@@ -1,5 +1,5 @@
 import { writeCharacterData } from "../../../sqlite/sqlite";
-import { REGEX_FIGHT_ALIASES, REGEX_TALK_ALIASES } from "../../constants";
+import { REGEX_TALK_ALIASES } from "../../constants";
 import { CharacterUpdateOpts } from "../../types";
 import getEmitters from "../../utils/emitHelper";
 import { allTokensMatchKeywords, captureGiveMatchWithRecipient, commandMatchesKeywordsFor } from "../../utils/makeMatcher";
@@ -31,7 +31,14 @@ export function augment_audric (npc: NPC): NPC {
       return `[Audric] sits on a luxurious couch, with his hands folded over his lap and a pleasant smile on his face.  "Have you gotten your hands on that traveling kit?"  You can [give ~kit~ to audric] if you are ready.`;
     }
 
-    return npc.getDescription();
+    if (
+      npc.private.characterRef.stories.main >= 4 &&
+      npc.private.characterRef.scene_id === SceneIds.MAGNIFICENT_LIBRARY
+    ) {
+      return `[Audric] rests on his luxurious couch, enjoying a cup of tea.  "Have you gone to meet my friend at the Market Inn?  She should be waiting for you there, north of the market, which is itself east of here.  I expect you'll have no trouble finding it.  Or her!  Good luck!"`;
+    }
+
+    return `[Audric] rests here with a light smile on his face.  His rich robes and jewelry lie easy on his thin frame.`;
   }
 
   npc.getName = function (): string {

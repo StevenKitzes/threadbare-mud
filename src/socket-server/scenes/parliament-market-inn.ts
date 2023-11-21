@@ -13,6 +13,7 @@ import { ItemIds } from '../items/items';
 import { npcImports } from '../npcs/csvNpcImport';
 import { augment_gruffInnkeeper } from '../npcs/gruff-innkeeper';
 import { isAmbiguousNavRequest } from '../../utils/ambiguousRequestHelpers';
+import { augment_sigga } from '../npcs/sigga';
 
 const id: SceneIds = SceneIds.PARLIAMENT_MARKET_INN;
 const title: string = "The Parliament Market Inn";
@@ -59,6 +60,10 @@ const handleSceneCommand = (handlerOptions: HandlerOptions): boolean => {
             ItemIds.BOTTLE_OF_CHEAP_GRAIN_SPIRIT,
             ItemIds.BREAD_LOAF,
           ],
+        })),
+        augment_sigga(npcFactory({
+          csvData: npcImports.get(NpcIds.SIGGA),
+          character,
         })),
       ]);
     }

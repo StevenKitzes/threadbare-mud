@@ -5,6 +5,12 @@ import { SceneIds } from "./socket-server/scenes/scenes";
 
 export type Stories = {
   main: number;
+  csiThreadbare: {
+    grayOne: number;
+    skyguard: number;
+    weaver: number;
+    princeling: number;
+  };
 };
 
 export type Character = {
@@ -64,10 +70,6 @@ export type User = {
   username: string;
   password: string;
   email?: string;
-};
-
-export type StoryState = {
-  main: number;
 };
 
 export enum ClassTypes {

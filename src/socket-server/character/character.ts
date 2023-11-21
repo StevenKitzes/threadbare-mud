@@ -91,7 +91,7 @@ export function handleCharacterCommand(handlerOptions: HandlerOptions): boolean 
       naked = false;
     }
     if (character.gloves) {
-      actorText.push(`Covering your hands: ${items.get(character.gloves).title}.`);
+      actorText.push(`Upon your hands: ${items.get(character.gloves).title}.`);
       naked = false;
     }
     if (character.legwear) {

@@ -32,6 +32,25 @@
   const testCharacter3Id = "testCharacter3Id";
   const testCharacter3Name = "CharacterThree";
 
+  const storiesMain0 = JSON.stringify({
+    main: 0,
+    csiThreadbare: {
+      grayOne: 0,
+      skyguard: 0,
+      weaver: 0,
+      princeling: 0,
+    }
+  });
+  const storiesMain1 = JSON.stringify({
+    main: 1,
+    csiThreadbare: {
+      grayOne: 0,
+      skyguard: 0,
+      weaver: 0,
+      princeling: 0,
+    }
+  });
+
   const hydrate = (sql: string, runArgs: (string | null)[]) => {
     try {
       dbToHydrate.prepare(sql).run(...runArgs);
@@ -59,7 +78,7 @@
       INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `, [
-      adminCharacterId, adminId, adminCharacterName, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', '{"main":0}', '{}', '0', JSON.stringify(startingInventory), "0", null, "[]"
+      adminCharacterId, adminId, adminCharacterName, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', storiesMain0, '{}', '0', JSON.stringify(startingInventory), "0", null, "[]"
     ]);
     // super power testing dude
     hydrate(`
@@ -111,7 +130,7 @@
       '1',                                  //  scene_id,
       '1',                                  //  checkpoint_id,
       '1',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '10000000',                           //  money,
       '[]',                                 //  inventory,
@@ -179,7 +198,7 @@
       '1',                                  //  scene_id,
       '1',                                  //  checkpoint_id,
       '0',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '0',                                  //  money,
       '["1"]',                              //  inventory,
@@ -245,7 +264,7 @@
       '9',                                  //  scene_id,
       '1',                                  //  checkpoint_id,
       '0',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '100',                                //  money,
       '["1"]',                              //  inventory,
@@ -311,7 +330,7 @@
       '10',                                 //  scene_id,
       '1',                                  //  checkpoint_id,
       '0',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '10000',                              //  money,
       '["16", "16", "16", "17", "17", "17"]',//  inventory,
@@ -377,7 +396,7 @@
       '20',                                 //  scene_id,
       '1',                                  //  checkpoint_id,
       '0',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '0',                                  //  money,
       '["80"]',                             //  inventory,
@@ -443,7 +462,7 @@
       '20',                                 //  scene_id,
       '1',                                  //  checkpoint_id,
       '0',                                  //  active,
-      '{"main":1}',                         //  stories,
+      storiesMain1,                         //  stories,
       '{}',                                 //  scene_states,
       '0',                                  //  money,
       '["80", "80", "80"]',                 //  inventory,
@@ -466,19 +485,19 @@
       INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `, [
-      testCharacter1Id, testUserId, testCharacter1Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', '{"main":0}', '{}', '0', '["1"]', "0", null, "[]"
+      testCharacter1Id, testUserId, testCharacter1Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '1', storiesMain0, '{}', '0', '["1"]', "0", null, "[]"
     ]);
     hydrate(`
       INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `, [
-      testCharacter2Id, testUserId, testCharacter2Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '0', '{"main":0}', '{}', '0', '["1"]', "0", null, "[]"
+      testCharacter2Id, testUserId, testCharacter2Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '0', storiesMain0, '{}', '0', '["1"]', "0", null, "[]"
     ]);
     hydrate(`
       INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `, [
-      testCharacter3Id, testUserId, testCharacter3Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '0', '{"main":0}', '{}', '0', '["1"]', "0", null, "[]"
+      testCharacter3Id, testUserId, testCharacter3Name, null, '100', '100', '10', '10', '10', '10', '10', '10', testScene1Id, '1', '0', storiesMain0, '{}', '0', '["1"]', "0", null, "[]"
     ]);
   })();
 }

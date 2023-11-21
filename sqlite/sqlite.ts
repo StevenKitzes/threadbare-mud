@@ -124,6 +124,18 @@ export type TransactBundle = {
   runValues: any[]
 };
 
+function newStoryTracking (): string {
+  return JSON.stringify({
+    main: 0,
+    csiThreadbare: {
+      grayOne: 0,
+      skyguard: 0,
+      weaver: 0,
+      princeling: 0,
+    }
+  });
+}
+
 export const accountHasActiveCharacter = (token: string): boolean => {
   try {
     const count: number = db.prepare(`
@@ -457,9 +469,9 @@ export const writeNewCharacter = (charId: string, userId: string, name: string):
   return {
     statement: db.prepare(`
     INSERT INTO characters (id, user_id, name, job, health, health_max, light_attack, heavy_attack, ranged_attack, agility, strength, savvy, scene_id, checkpoint_id, active, stories, scene_states, money, inventory, xp, horse, faction_anger)
-      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', '{\"main\": 0}', '{}', 0, '[]', 0, null, '[]');
+      VALUES (?, ?, ?, null, '100', '100', '10', '10', '10', '10', '10', '10', '4', '1', '1', ?, '{}', 0, '[]', 0, null, '[]');
     `),
-    runValues: [charId, userId, name]
+    runValues: [charId, userId, name, newStoryTracking()],
   };
 }
 

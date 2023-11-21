@@ -86,3 +86,5 @@ id;title;type;value;weight;armorValue;damageValue;damageType;hitBonus;healAmount
 85;a pair of tanned leather trousers;legwear;15;7;3;;;;;;A pair of protective trousers, light enough to be fit for lots of walking, but still offering minimal protection for life on the road.
 86;a light leather vest;armor;15;5;3;;;;;;A light leather vest, providing only minimal protection, but favoring comfort for life on the road, without completely sacrificing safety.
 87;Audric’s signet;gloves;100;0;0;;;;;ring;A simple signet given to you by Audric, with a distinctive pattern etched into it.  It reminds you of the dry, cracked sands of the desert.
+88;a mysterious, iron token;trinket;1;1;;;;;;coin disc;A mysterious, [iron token], a circular disc with no markings.  It is hot to the touch, so hot that it is difficult to manage with your bare hands.
+89;a parchment with crime scene information;book;0;0;;;;;;list;A small, thin parchment, no larger than it needs to be to carry crucial information to the reader.

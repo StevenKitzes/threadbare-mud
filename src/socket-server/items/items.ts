@@ -142,6 +142,8 @@ export enum ItemIds {
   LIGHT_LEATHER_TROUSERS = "85",
   LIGHT_LEATHER_VEST = "86",
   AUDRICS_SIGNET = "87",
+  MYSTERIOUS_TOKEN = "88",
+  CRIME_SCENE_LIST = "89",
 }
 
 readItemCsv(() => {
@@ -204,6 +206,7 @@ readItemCsv(() => {
   augment_book(items.get(ItemIds.PERSONAL_GROWTH_BOOK));
   augment_book(items.get(ItemIds.REALM_GUIDE_BOOK));
   augment_book(items.get(ItemIds.THE_FIVE_REALMS_BOOK));
+  augment_book(augment_durable(items.get(ItemIds.CRIME_SCENE_LIST), { quest: true }));
   
   // augmentation of durable items
   augment_durable(items.get(ItemIds.AUDRICS_COIN_POUCH), { quest: true });
@@ -340,6 +343,7 @@ readItemCsv(() => {
   });
   augment_durable(items.get(ItemIds.TRAVELING_KIT), { quest: true });
   augment_durable(items.get(ItemIds.AUDRICS_SIGNET), { quest: true });
+  augment_durable(items.get(ItemIds.MYSTERIOUS_TOKEN), { quest: true });
 
   // augmentation of special items
   augment_statPotion(items.get(ItemIds.AGILITY_POTION), "agility", 100, 1, "When the sensation subsides, you feel your reflexes are sharper than before.");
